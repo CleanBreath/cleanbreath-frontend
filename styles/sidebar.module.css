@@ -1,0 +1,98 @@
+.sidebar {
+    width: 100px;
+    height: 1080px;
+    flex-shrink: 0;
+    background-color: #007E8F;
+    box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
+    z-index: 1;
+    transition: width 1s;
+}
+
+.sidebarHeader {
+    padding: 24.5px 18px 23px;
+}
+.sidebarHeader a {
+    text-decoration: none;
+}
+
+.menu {
+    margin-left: 18px;
+}
+
+.menu svg {
+    width: 60px;
+    height: 45px;
+}
+
+.menu div {
+    display: flex;
+    align-items: center;
+    width: 60px;
+    height: 55px;
+    margin-bottom: 22px;
+}
+
+.menu .listIcon:hover {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+.menu .addIcon:hover {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+.menu .settingIcon:hover {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+/* 사이드바가 오픈할 경우 */
+
+.sidebarOpen {
+    transition: width 1s;
+    width: 500px;
+    background-color: #007E8F;
+}
+
+.sidebarOpen .sidebarHeader {
+    display: flex;
+}
+
+.sidebarOpen .sidebarHeader p {
+    margin-top: 20px;
+    margin-left: 15px;
+    font-size: 40px;
+    font-weight: bold;
+    color: #fff;
+}
+
+
+/* 리스트 버튼 클릭할 경우 */
+.sidebarOpen .list {
+    width: 300px;
+    height: 98.7%;
+    font-size: 20px;
+    color: #000;
+    background-color: #fff;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    border: none;
+    overflow-y: scroll;
+}
+.sidebarOpen .list .listdata {
+    display: grid;
+    grid-template-columns: 0.2fr 2fr 0.6fr;
+    column-gap: 25px;
+    width: 300px;
+    height: 50px;
+    align-items: center;
+    padding-left: 13px;
+    cursor: pointer;
+}
+.sidebarOpen .list .listdata svg {
+    fill: #000;
+}
+.sidebarOpen .list .listdata:hover {
+    background-color: #d9d9d9;
+}
+
