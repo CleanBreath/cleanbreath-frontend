@@ -1,16 +1,17 @@
 .sidebar {
     width: 100px;
-    height: 1080px;
-    flex-shrink: 0;
+    height: 100vh;
+    animation-name: Close;
+    animation-duration: 0.5s;
     background-color: #007E8F;
     box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
     z-index: 1;
-    transition: width 1s;
 }
 
 .sidebarHeader {
     padding: 24.5px 18px 23px;
 }
+
 .sidebarHeader a {
     text-decoration: none;
 }
@@ -31,25 +32,87 @@
     height: 55px;
     margin-bottom: 22px;
 }
-
+/*리스트 메뉴 css*/
 .menu .listIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
+
+.menu .listIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .listIconOpen:active, .listIcon:active {
+    transform: scale(0.9);
+}
+/*추가버튼 css*/
 .menu .addIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
+
+.menu .addIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .addIcon:active, .addIconOpen:active {
+    transform: scale(0.9);
+}
+
+/*nonSmokingIcon css*/
+.menu .nonSmokingIcon:hover {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .nonSmokingIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .nonSmokingIcon:active, .nonSmokingIconOpen:active {
+    transform: scale(0.9);
+}
+
+/*smokingIcon css*/
+.menu .smokingIcon:hover{
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .smokingIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .smokingIcon:active, .smokingIconOpen:active {
+    transform: scale(0.9);
+}
+
+/*설정버튼 css*/
 .menu .settingIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
 
+.menu .settingIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .settingIcon:active, .settingIconOpen:active {
+    transform: scale(0.9);
+}
+
 /* 사이드바가 오픈할 경우 */
 
 .sidebarOpen {
-    transition: width 1s;
-    width: 500px;
+    width: auto;
+    display: block;
+    animation-name: Open;
+    animation-duration: 1s;
     background-color: #007E8F;
 }
 
@@ -68,8 +131,9 @@
 
 /* 리스트 버튼 클릭할 경우 */
 .sidebarOpen .list {
-    width: 300px;
+    width: inherit;
     height: 98.7%;
+    animation: none;
     font-size: 20px;
     color: #000;
     background-color: #fff;
@@ -83,8 +147,10 @@
     display: grid;
     grid-template-columns: 0.2fr 2fr 0.6fr;
     column-gap: 25px;
-    width: 300px;
+    width: inherit;
     height: 50px;
+    animation: none;
+    animation-play-state: paused;
     align-items: center;
     padding-left: 13px;
     cursor: pointer;
@@ -96,3 +162,20 @@
     background-color: #d9d9d9;
 }
 
+@keyframes Open {
+    from {
+        width: 100px;
+    }
+    to {
+        width: 400px;
+    }
+}
+
+@keyframes Close {
+    from {
+        width: 400px;
+    }
+    to {
+        width: 100px;
+    }
+}
