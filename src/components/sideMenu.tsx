@@ -15,6 +15,8 @@ export default function SideMenu() {
       const [isListOpen, setIsListOpen] = useState(false);
       const [isAddOpen, setIsAddOpen] = useState(false);
       const [isSettingOpen, setIsSettingOpen] = useState(false);
+      const [isNonSmoking, setIsNonSmoking] = useState(false);
+      const [isSmoking, setIsSmoking] = useState(false);
 
       const listToggle = () => {
         setIsListOpen(!isListOpen);
@@ -35,6 +37,13 @@ export default function SideMenu() {
         setIsSettingOpen(!isSettingOpen);
       };
 
+      const nonSmokingToggle = () => {
+        setIsNonSmoking(!isNonSmoking);
+      }
+      const smokingToggle = () => {
+        setIsSmoking(!isSmoking);
+      }
+
     return (
       <div className={isOpen ? styles.sidebarOpen : styles.sidebar}>
         <div className={styles.sidebarHeader}>
@@ -44,19 +53,19 @@ export default function SideMenu() {
           {isOpen ? <p>CleanBreath</p> : null}
         </div>
         <div className={styles.menu}>
-          <div className={styles.listIcon} onClick={listToggle}>
+          <div className={isListOpen ? styles.listIconOpen : styles.listIcon} onClick={listToggle}>
             <LIST_ICON />
           </div>
-          <div className={styles.addIcon} onClick={addToggle}>
+          <div className={isAddOpen ? styles.addIconOpen : styles.addIcon} onClick={addToggle}>
             <ADD_ICON />
           </div>
-          <div>
+          <div className={isNonSmoking ? styles.nonSmokingIconOpen : styles.nonSmokingIcon} onClick={nonSmokingToggle}>
             <NON_SMOKING_ICON />
           </div>
-          <div>
+          <div className={isSmoking ? styles.smokingIconOpen : styles.smokingIcon} onClick={smokingToggle}>
             <SMOKING_ICON />
           </div>
-          <div className={styles.settingIcon} onClick={settingToggle}>
+          <div className={isSettingOpen ? styles.settingIconOpen : styles.settingIcon} onClick={settingToggle}>
             <SETTING_ICON />
           </div>
         </div>
@@ -79,6 +88,11 @@ export default function SideMenu() {
           </div>
         ) : null}
         {/* 추가 View */}
+        {isAddOpen ? (
+          <div className={styles.add}>
+            
+          </div>
+        ) : null}
         {isSettingOpen && <SettingArea />}  {/* SettingArea 컴포넌트 렌더링 */}
       </div>
     );
