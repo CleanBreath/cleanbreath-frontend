@@ -17,91 +17,102 @@ export default function SideMenu() {
       const [isSmokeOpen,setIsSmokeOpen] = useState(false);
       const [isNonSmokeOpen,setIsNonSmokeOpen] = useState(false);
 
+      const resetStates = () => {
+        setIsListOpen(false);
+        setIsAddOpen(false);
+        setIsSettingOpen(false);
+        setIsSmokeOpen(false);
+        setIsNonSmokeOpen(false);
+      };
 
       const listToggle = () => {
+        resetStates();
         setIsListOpen(!isListOpen);
         setIsOpen(!isOpen);
-        setIsAddOpen(false);
-        setIsSettingOpen(false);
-        setIsSmokeOpen(false);
-        setIsNonSmokeOpen(false);
       };
       const addToggle = () => {
-        setIsListOpen(false);
-        setIsOpen(!isOpen);
+        resetStates();
         setIsAddOpen(!isAddOpen);
-        setIsSettingOpen(false);
-        setIsSmokeOpen(false);
-        setIsNonSmokeOpen(false);
+        setIsOpen(!isOpen);
       };
       const settingToggle = () => {
-        setIsListOpen(false);
-        setIsOpen(!isOpen);
-        setIsAddOpen(false);
+        resetStates();
         setIsSettingOpen(!isSettingOpen);
-        setIsSmokeOpen(false);
-        setIsNonSmokeOpen(false);
+        setIsOpen(!isOpen);
       };
       const smokeToggle = () => {
-        setIsListOpen(false);
-        setIsOpen(!isOpen);
-        setIsAddOpen(false);
-        setIsSettingOpen(false);
+        resetStates();
         setIsSmokeOpen(!isSmokeOpen);
-        setIsNonSmokeOpen(false);
+        setIsOpen(false);
       };
       const nonsmokeToggle = () => {
-        setIsListOpen(false);
-        setIsOpen(!isOpen);
-        setIsAddOpen(false);
-        setIsSettingOpen(false);
-        setIsSmokeOpen(false);
-        setIsNonSmokeOpen(isNonSmokeOpen);
+        resetStates();
+        setIsNonSmokeOpen(!isNonSmokeOpen);
+        setIsOpen(false);
       };
-    return (
-      <div className={isOpen ? styles.sidebarOpen : styles.sidebar}>
-        <div className={styles.sidebarHeader}>
-          <a href="#">
-            <LOGO_ICON />
-          </a>
-          {isOpen ? <p>CleanBreath</p> : null}
+
+      return (
+        <div className={isOpen ? styles.sidebarOpen : styles.sidebar}>
+          <div className={styles.sidebarHeader}>
+            <a href="#">
+              <LOGO_ICON />
+            </a>
+            {isOpen ? <p>CleanBreath</p> : null}
+          </div>
+          <div className={styles.menu}>
+            <div
+              className={styles.listIcon}
+              onClick={listToggle}>
+              <LIST_ICON />
+            </div>
+            <div
+              className={styles.addIcon}
+              onClick={addToggle}>
+              <ADD_ICON />
+            </div>
+            <div
+              className={styles.nonsmokingIcon}
+              onClick={nonsmokeToggle}
+              style={{
+                backgroundColor: isNonSmokeOpen ? '#000' : 'transparent'
+              }}
+            >
+              <NON_SMOKING_ICON />
+            </div>
+            <div
+              className={styles.smokingIcon}
+              onClick={smokeToggle}
+              style={{
+                backgroundColor: isSmokeOpen ? '#000' : 'transparent'
+              }}
+            >
+              <SMOKING_ICON />
+            </div>
+            <div
+              className={styles.settingIcon}
+              onClick={settingToggle}>
+              <SETTING_ICON />
+            </div>
+          </div>
+          {/* 리스트 View */}
+          {isListOpen ? (
+            <div className={styles.list}>
+              {testData.map((item) => (
+                <div key={item.address_idx} className={styles.listdata}>
+                  <div>
+                    <p>{item.address_idx}</p>
+                  </div>
+                  <div>
+                    <p>{item.address_name}</p>
+                  </div>
+                  <div>
+                    <p>{item.smoking}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {/* 추가 View */}
         </div>
-        <div className={styles.menu}>
-          <div className={styles.listIcon} onClick={listToggle}>
-            <LIST_ICON />
-          </div>
-          <div className={styles.addIcon} onClick={addToggle}>
-            <ADD_ICON />
-          </div>
-          <div className={styles.nonsmokingIcon} onClick={nonsmokeToggle}>
-            <NON_SMOKING_ICON />
-          </div>
-          <div className={styles.smokingIcon} onClick={smokeToggle}>
-            <SMOKING_ICON />
-          </div>
-          <div className={styles.settingIcon} onClick={settingToggle}>
-            <SETTING_ICON />
-          </div>
-        </div>
-        {/* 리스트 View */}
-        {isListOpen ? (
-          <div className={styles.list}>
-            {testData.map((item) => (
-              <div key={item.address_idx} className={styles.listdata}>
-                <div>
-                  <p>{item.address_idx}</p>
-                </div>
-                <div>
-                  <p>{item.address_name}</p>
-                </div>
-                <div>
-                  <p>{item.smoking}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : null}
-        {/* 추가 View */}
-      </div>
-    );
+      );
 }
