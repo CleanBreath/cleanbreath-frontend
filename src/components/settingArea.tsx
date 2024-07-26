@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from "../../styles/settingArea.module.css";
-import InfoModal from "@/components/infoModal"; // 변경된 import 경로
+import InfoModal from "@/components/infoModal";
 
 export default function SettingArea() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,8 +23,6 @@ export default function SettingArea() {
 
             {/* InfoModal 컴포넌트 */}
             <InfoModal isOpen={isModalOpen} onClose={closeModal}>
-                <h2>기타 금연구역 안내</h2>
-                <p>여기에 금연구역 안내 정보를 표시합니다.</p>
             </InfoModal>
         </div>
     );
