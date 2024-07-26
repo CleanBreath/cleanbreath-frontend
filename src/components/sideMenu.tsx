@@ -14,26 +14,50 @@ export default function SideMenu() {
       const [isListOpen, setIsListOpen] = useState(false);
       const [isAddOpen, setIsAddOpen] = useState(false);
       const [isSettingOpen, setIsSettingOpen] = useState(false);
+      const [isSmokeOpen,setIsSmokeOpen] = useState(false);
+      const [isNonSmokeOpen,setIsNonSmokeOpen] = useState(false);
+
 
       const listToggle = () => {
         setIsListOpen(!isListOpen);
         setIsOpen(!isOpen);
         setIsAddOpen(false);
         setIsSettingOpen(false);
+        setIsSmokeOpen(false);
+        setIsNonSmokeOpen(false);
       };
       const addToggle = () => {
         setIsListOpen(false);
         setIsOpen(!isOpen);
         setIsAddOpen(!isAddOpen);
         setIsSettingOpen(false);
+        setIsSmokeOpen(false);
+        setIsNonSmokeOpen(false);
       };
       const settingToggle = () => {
         setIsListOpen(false);
         setIsOpen(!isOpen);
         setIsAddOpen(false);
         setIsSettingOpen(!isSettingOpen);
+        setIsSmokeOpen(false);
+        setIsNonSmokeOpen(false);
       };
-
+      const smokeToggle = () => {
+        setIsListOpen(false);
+        setIsOpen(!isOpen);
+        setIsAddOpen(false);
+        setIsSettingOpen(false);
+        setIsSmokeOpen(!isSmokeOpen);
+        setIsNonSmokeOpen(false);
+      };
+      const nonsmokeToggle = () => {
+        setIsListOpen(false);
+        setIsOpen(!isOpen);
+        setIsAddOpen(false);
+        setIsSettingOpen(false);
+        setIsSmokeOpen(false);
+        setIsNonSmokeOpen(isNonSmokeOpen);
+      };
     return (
       <div className={isOpen ? styles.sidebarOpen : styles.sidebar}>
         <div className={styles.sidebarHeader}>
@@ -49,10 +73,10 @@ export default function SideMenu() {
           <div className={styles.addIcon} onClick={addToggle}>
             <ADD_ICON />
           </div>
-          <div>
+          <div className={styles.nonsmokingIcon} onClick={nonsmokeToggle}>
             <NON_SMOKING_ICON />
           </div>
-          <div>
+          <div className={styles.smokingIcon} onClick={smokeToggle}>
             <SMOKING_ICON />
           </div>
           <div className={styles.settingIcon} onClick={settingToggle}>
