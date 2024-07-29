@@ -12,7 +12,7 @@
 }
 
 .modalContent {
-    width: 600px;
+    width: 700px;
     background: white;
     border-radius: 10px;
     overflow: hidden;
@@ -33,7 +33,8 @@
 .logoIcon {
     grid-column: 2; /* 가운데 */
     justify-self: center;
-    width: 50px; /* 로고 크기 */
+    width: 90px; /* 로고 크기 */
+    padding: 15px;
     height: auto;
 }
 
@@ -74,15 +75,24 @@
 }
 
 .modalBody {
-    padding: 20px;
+    padding: 10px;
     background: white; /* 하단 배경을 흰색으로 설정 */
     color: black;
-    height: 200px; /* 전체 모달 높이의 2/3 */
+    height: 150px; /* 전체 모달 높이의 2/3 */
 }
 
 .modalTitle {
-    padding: 20px;
-    font-size: 20px;
+    padding: 30px;
+    font-size: 40px;
+    font-weight: bold;
     margin-bottom: 10px;
     text-align: center;
+}
+
+.highlightRed {
+    color: red;
+}
+
+.highlightGreen {
+    color: #007E8F;
 }

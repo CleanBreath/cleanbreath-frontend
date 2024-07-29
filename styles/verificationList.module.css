@@ -1,0 +1,49 @@
+.sidebar {
+    width: 100px;
+    height: 100vh; /* 화면 높이에 맞춤 */
+    flex-shrink: 0;
+    background-color: #007E8F;
+    box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
+    z-index: 10;
+    transition: width 1s;
+    position: fixed; /* 고정된 위치에 사이드바 배치 */
+}
+
+.sidebarOpen {
+    width: 500px;
+    transition: width 1s;
+}
+
+.verificationList {
+    width: 300px;
+    height: calc(100vh - 100px); /* 상단 여백을 제외한 전체 높이 */
+    font-size: 20px;
+    color: #000;
+    background-color: #fff;
+    position: absolute;
+    top: 100px;
+    right: 0; /* 오른쪽에 배치 */
+    border: none;
+    overflow-y: auto; /* 스크롤 가능하게 설정 */
+    box-shadow: -6px 0px 5px rgba(0, 0, 0, 0.25);
+    z-index: 20;
+}
+
+.verificationList .listdata {
+    display: grid;
+    grid-template-columns: 0.2fr 2fr 0.6fr;
+    column-gap: 25px;
+    width: 300px;
+    height: 50px;
+    align-items: center;
+    padding-left: 13px;
+    cursor: pointer;
+}
+
+.verificationList .listdata svg {
+    fill: #000;
+}
+
+.verificationList .listdata:hover {
+    background-color: #d9d9d9;
+}
