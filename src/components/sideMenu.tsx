@@ -1,19 +1,13 @@
 import styles from "../../styles/sidebar.module.css";
-
 import LOGO_ICON from "../../public/logo.svg";
-
 import LIST_ICON from "../../public/list.svg";
-
 import ADD_ICON from "../../public/add.svg";
-
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
-
 import SMOKING_ICON from "../../public/smok.svg";
-
 import SETTING_ICON from "../../public/setting.svg";
-
 import { testData } from "@/components/testData";
-
+import SettingArea from "@/components/settingArea";
+import AddArea from "@/components/addArea";
 import { useState } from "react";
 
 export default function SideMenu() {
@@ -127,6 +121,9 @@ export default function SideMenu() {
             ) : null}
 
             {/* 추가 View */}
+            {isAddOpen &&<AddArea />}
+            {isSettingOpen && <SettingArea />}  {/* SettingArea 컴포넌트 렌더링 */}
+            
         </div>
     );
 }
