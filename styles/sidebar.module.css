@@ -1,3 +1,4 @@
+/* sidebar.module.css */
 .sidebar {
     width: 100px;
     height: 1080px;
@@ -11,6 +12,7 @@
 .sidebarHeader {
     padding: 24.5px 18px 23px;
 }
+
 .sidebarHeader a {
     text-decoration: none;
 }
@@ -27,15 +29,22 @@
 .menu div {
     display: flex;
     align-items: center;
+    justify-content: center;
     width: 60px;
     height: 55px;
     margin-bottom: 22px;
     background-color: transparent; /* 기본 배경색을 투명으로 설정 */
     border-radius: 15px;
+    transition: background-color 1s, opacity 0.4s; /* 애니메이션 시간 증가 */
 }
 
 .menu div:hover {
-    background-color: rgba(0, 0, 0, 40%);
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.menu .inactive {
+    background-color: rgba(0, 0, 0, 1); /* 어두운 배경색과 투명도 증가 */
+    opacity: 0.3; /* 비활성화된 아이콘의 투명도 증가 */
 }
 
 .sidebarOpen {
@@ -78,7 +87,7 @@
     align-items: center;
     padding-left: 13px;
     cursor: pointer;
-}   
+}
 
 .sidebarOpen .list .listdata:hover {
     background-color: #d9d9d9;
