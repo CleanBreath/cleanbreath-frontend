@@ -1,15 +1,19 @@
-// testData.tsx
 import axios from 'axios';
 
-const API_URL = "http://localhost:8080/api/allData"; // 올바른 URL로 수정
+const API_URL = "http://localhost:8080/api/allData";
 
 export interface AddressData {
   address_idx: string;
   address_name: string;
   address_division: string;
   address_latitude: number;
-  address_longitude: number; 
+  address_longitude: number;
   smoking: "금연" | "흡연" | "정보 없음";
+  paths: Array<{
+    divisionArea: "NON_SMOKING_ZONE" | "SMOKING_ZONE";
+    pathsLatitude: string;
+    pathsLongitude: string;
+  }>;
 }
 
 interface ApiResponse {
@@ -26,21 +30,20 @@ interface ApiResponse {
   }>;
 }
 
-// 지연 함수
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function fetchTestData(): Promise<AddressData[]> {
+export async function listData(): Promise<AddressData[]> {
   try {
     console.log("3초 대기 후 데이터를 가져옵니다...");
     await delay(3000); // 3초 대기
 
     console.log("API에서 데이터를 가져오는 중...");
-    const response = await axios.get<ApiResponse[]>(API_URL);
+    const response = await axios.get<ApiResponse[]>(API_URL); // API로부터 데이터 요청
     console.log("API 응답 원본:", response.data);
-
-
+    
+    //반환
     const filteredData: AddressData[] = response.data
-      .filter(item => item.id <= 185) 
+      .filter(item => item.id <= 185)
       .map(item => ({
         address_idx: item.id.toString(),
         address_name: item.buildingName,
@@ -50,6 +53,11 @@ export async function fetchTestData(): Promise<AddressData[]> {
         smoking: item.path && item.path.length > 0
           ? (item.path[0].divisionArea === "NON_SMOKING_ZONE" ? "금연" : "흡연")
           : "정보 없음",
+        paths: item.path.map(path => ({
+          divisionArea: path.divisionArea,
+          pathsLatitude: path.pathsLatitude,
+          pathsLongitude: path.pathsLongitude
+        }))
       }));
 
     console.log("형식화된 데이터:", filteredData);
@@ -63,6 +71,6 @@ export async function fetchTestData(): Promise<AddressData[]> {
       console.error("예상치 못한 오류:", error);
     }
 
-    throw error;
+    throw error; // 오류를 호출자에게 다시 던지기
   }
 }
