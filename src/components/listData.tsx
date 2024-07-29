@@ -37,9 +37,8 @@ export async function listData(): Promise<AddressData[]> {
     console.log("3초 대기 후 데이터를 가져옵니다...");
     await delay(3000); // 3초 대기
 
-    console.log("API에서 데이터를 가져오는 중...");
     const response = await axios.get<ApiResponse[]>(API_URL); // API로부터 데이터 요청
-    console.log("API 응답 원본:", response.data);
+    console.log("원본:", response.data);
     
     //반환
     const filteredData: AddressData[] = response.data
@@ -59,8 +58,6 @@ export async function listData(): Promise<AddressData[]> {
           pathsLongitude: path.pathsLongitude
         }))
       }));
-
-    console.log("형식화된 데이터:", filteredData);
     return filteredData;
   } catch (error) {
     console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);

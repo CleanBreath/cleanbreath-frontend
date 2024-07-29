@@ -109,10 +109,11 @@
 /* 사이드바가 오픈할 경우 */
 
 .sidebarOpen {
-    min-width: 400px;
+    width: 400px;
     display: block;
     animation-name: Open;
     animation-duration: 1s;
+    animation-fill-mode: forwards;
     background-color: #007E8F;
 }
 
@@ -131,7 +132,7 @@
 /* 리스트 버튼 클릭할 경우 */
 .sidebarOpen .list {
     width: 300px;
-    height: 98.7%;
+    height: 90vh;
     font-size: 16px;
     color: #000;
     background-color: #fff;
@@ -235,11 +236,14 @@
 }
 
 @keyframes Open {
-    from {
+    0% {
         width: 100px;
     }
-    to {
+    90%{
         width: 400px;
+    }
+    100% {
+        min-width: 400px;
     }
 }
 

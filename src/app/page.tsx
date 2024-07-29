@@ -5,6 +5,8 @@ import SideMenu from '@/components/sideMenu';
 import { Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
 import { AddressData } from '@/components/listData';
 import { listData } from '@/components/listData';
+import Time from '@/components/time';
+import CurrentLocation from '@/components/currentLocation';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 
@@ -25,6 +27,8 @@ export default function Home() {
   const [isData, setData] = useState<AddressData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,6 +46,12 @@ export default function Home() {
     };
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (userLocation) {
+      setCenter(userLocation);
+    }
+  }, [userLocation]);
 
   const handleListClick = (item: AddressData) => {
     setMarkerPosition({
@@ -128,6 +138,7 @@ export default function Home() {
         nonSmokingToggle={nonSmokingToggle}
         smokingToggle={smokingToggle}
       />
+      <Time />
       <Map
         center={center}
         isPanto={true}
@@ -135,6 +146,13 @@ export default function Home() {
         level={3}
       >
         {markerPosition && <MapMarker position={markerPosition} />}
+        {userLocation && (
+          <MapMarker position={userLocation}>
+            <div style={{ padding: '5px', color: '#000' }}>
+              여기에 계신가요?! {/* 메시지 */}
+            </div>
+          </MapMarker>
+        )}
         {isNonSmoking && isData.length > 0 && (
           <>
             {isData
@@ -146,7 +164,7 @@ export default function Home() {
                     <Polygon
                       key={`${index}-${pathIndex}`} 
                       path={parsePathCoordinates(path)}
-                      strokeWeight={3}
+                      strokeWeight={0}
                       strokeColor="#ffffff"
                       strokeOpacity={0.8}
                       strokeStyle="longdash"
@@ -160,6 +178,7 @@ export default function Home() {
           </>
         )}
       </Map>
+      <CurrentLocation setUserLocation={setUserLocation} />
     </div>
   );
 }

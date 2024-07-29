@@ -1,0 +1,12 @@
+.time {
+    position: absolute;
+    margin-top: 25px;
+    margin-right: 25px;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 100px;
+    color: white;
+    background-color: rgba(0, 0, 0, 40%);
+    z-index: 1;
+}

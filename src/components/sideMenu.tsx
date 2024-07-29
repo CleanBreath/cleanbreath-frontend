@@ -91,7 +91,7 @@ const SideMenu = ({
         </div>
       )}
       {/* 추가 컴포넌트 */}
-      {isAddOpen && <AddComponent />}
+      {isAddOpen && <div className={styles.add}><AddComponent /></div>}
       {/* 설정 컴포넌트 */}
       {isSettingOpen && <SettingArea />}
     </div>
