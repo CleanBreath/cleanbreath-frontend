@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styles from "../../styles/settingArea.module.css";
-import listStyles from "../../styles/verificationList.module.css";
+import verificationListStyles from "../../styles/verificationList.module.css"; // 리스트 스타일
 import InfoModal from "@/components/infoModal";
 import RedPillModal from "@/components/redpillModal";
 import { testData } from "@/components/testData";
@@ -8,34 +8,22 @@ import { testData } from "@/components/testData";
 export default function SettingArea() {
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const [isRedPillModalOpen, setIsRedPillModalOpen] = useState(false);
-    const [isVerificationOpen, setIsVerificationOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    const openInfoModal = () => {
-        setIsInfoModalOpen(true);
-    };
+    const openInfoModal = () => setIsInfoModalOpen(true);
+    const closeInfoModal = () => setIsInfoModalOpen(false);
 
-    const closeInfoModal = () => {
-        setIsInfoModalOpen(false);
-    };
+    const openRedPillModal = () => setIsRedPillModalOpen(true);
+    const closeRedPillModal = () => setIsRedPillModalOpen(false);
 
-    const openRedPillModal = () => {
-        setIsRedPillModalOpen(true);
-    };
-
-    const closeRedPillModal = () => {
-        setIsRedPillModalOpen(false);
-    };
-
-    const toggleVerificationList = () => {
-        setIsVerificationOpen(!isVerificationOpen);
-    };
+    const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
     return (
         <div className={styles.settingArea}>
             <button className={styles.settingButton} onClick={openInfoModal}>
                 기타 금연구역 안내
             </button>
-            <button className={styles.settingButton} onClick={toggleVerificationList}>
+            <button className={styles.settingButton} onClick={toggleSidebar}>
                 흡연구역 검증기
             </button>
             <button className={styles.settingButton} onClick={openRedPillModal}>
@@ -45,17 +33,16 @@ export default function SettingArea() {
             <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
             <RedPillModal isOpen={isRedPillModalOpen} onClose={closeRedPillModal} />
 
-            {isVerificationOpen && (
-                <div className={listStyles.verificationList}>
-                    {testData.map((item) => (
-                        <div key={item.address_idx} className={listStyles.verificationItem}>
-                            <div className={listStyles.itemHeader}>
-                                <h3 className={listStyles.itemName}>{item.address_name}</h3>
-                                <div className={listStyles.itemIcon}>{item.smoking}</div>
+            {isSidebarOpen && (
+                <div className={verificationListStyles.listContainer}>
+                    <div className={verificationListStyles.verificationList}>
+                        {testData.map((item) => (
+                            <div key={item.address_idx} className={verificationListStyles.listdata}>
+                                <div>{item.address_division}</div>
+                                <div>{item.address_name}</div>
                             </div>
-                            <p className={listStyles.itemDivision}>{item.address_division}</p>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
