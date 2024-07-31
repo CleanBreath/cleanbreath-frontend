@@ -1,0 +1,57 @@
+.toggle {
+    position: absolute;
+    z-index: 1;
+    right: 0;
+    top: 0;
+    width: auto;
+    height: auto;
+    background-color: #007E8F;
+    margin: 20px;
+    border-radius: 15px;
+}
+
+.toggle svg {
+    width: 60px;
+    height: 45px;
+}
+
+.toggle div {
+    float: left;
+    display: flex;
+    align-items: center;
+    width: 60px;
+    height: 55px;
+    margin: 11px;
+}
+
+/*nonSmokingIcon css*/
+.nonSmokingIcon:hover {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.nonSmokingIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.nonSmokingIcon:active, .nonSmokingIconOpen:active {
+    transform: scale(0.9);
+}
+
+/*smokingIcon css*/
+.smokingIcon:hover{
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.smokingIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.smokingIcon:active, .smokingIconOpen:active {
+    transform: scale(0.9);
+}
