@@ -6,8 +6,11 @@ import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader } from 'react
 import { AddressData, listData } from '@/components/listData';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
+import ReactGA from 'react-ga4';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
+
+const TRACKING_ID = "G-YPYE7W46DT";
 
 export default function Home() {
   const [loading, error] = useKakaoLoader({
@@ -28,6 +31,12 @@ export default function Home() {
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
+  }, []);
 
   useEffect(() => {
     const loadData = async () => {
