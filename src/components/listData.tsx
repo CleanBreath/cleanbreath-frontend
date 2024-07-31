@@ -37,7 +37,6 @@ interface ApiResponse {
 export async function listData(): Promise<AddressData[]> {
   try {
     const response = await axios.get<ApiResponse>(API_URL);
-    console.log("원본 데이터:", response.data);
 
     const filteredData: AddressData[] = response.data.data.map(item => {
       return {
