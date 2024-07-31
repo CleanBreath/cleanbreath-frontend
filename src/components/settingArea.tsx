@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from "../../styles/settingArea.module.css";
 
+
 export default function SettingArea() {
     return (
         <div className={styles.settingArea}>

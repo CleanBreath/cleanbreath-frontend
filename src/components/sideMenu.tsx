@@ -8,7 +8,7 @@ import SETTING_ICON from "../../public/setting.svg";
 import { testData } from "@/components/testData";
 import SettingArea from "@/components/settingArea";
 import AddArea from "@/components/addArea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function SideMenu() {
     const [isOpen, setIsOpen] = useState(false);
@@ -57,6 +57,13 @@ export default function SideMenu() {
         setIsSmokeOpen(false); // 금연구역 활성화 시 흡연구역 비활성화
         setIsOpen(false);
     };
+
+    // 세 개의 토글이 모두 활성화되었을 때 AddArea 컴포넌트를 표시
+    useEffect(() => {
+        if (isSmokeOpen || isNonSmokeOpen) {
+            setIsAddOpen(false);
+        }
+    }, [isAddOpen, isSmokeOpen, isNonSmokeOpen]);
 
     return (
         <div className={isOpen ? styles.sidebarOpen : styles.sidebar}>
@@ -121,9 +128,8 @@ export default function SideMenu() {
             ) : null}
 
             {/* 추가 View */}
-            {isAddOpen &&<AddArea />}
-            {isSettingOpen && <SettingArea />}  {/* SettingArea 컴포넌트 렌더링 */}
-            
+            {isAddOpen && <AddArea />}
+            {isSettingOpen && <SettingArea />}
         </div>
     );
 }

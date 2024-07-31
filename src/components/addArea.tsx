@@ -23,6 +23,34 @@ export default function AddArea() {
                     <button className={`${styles.buttonCommon} ${styles.areaButton}`}>영역 지정</button>
                 </div>
             </div>
+            <div className={styles.divisionSection}>
+                <p className={styles.sctitle}>흡연구역 구분</p>
+                <div className={styles.radioGroup}>
+                    <label>
+                        <input type="radio" name="smokingArea" value="open" />
+                        개방형
+                    </label>
+                    <label>
+                        <input type="radio" name="smokingArea" value="closed" />
+                        폐쇠형
+                    </label>
+                    <label>
+                        <input type="radio" name="smokingArea" value="line" />
+                        라인형
+                    </label>
+                </div>
+                <p className={styles.sctitle}>암묵적인 흡연구역 여부</p>
+                <div className={styles.radioGroup}>
+                    <label>
+                        <input type="radio" name="implicitSmokingArea" value="yes" />
+                        맞다
+                    </label>
+                    <label>
+                        <input type="radio" name="implicitSmokingArea" value="no" />
+                        아니다
+                    </label>
+                </div>
+            </div>
             <button className={styles.addButton}>제출</button>
         </div>
     );
