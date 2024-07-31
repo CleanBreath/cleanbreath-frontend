@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
-import { Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
-import { AddressData } from '@/components/listData';
-import { listData } from '@/components/listData';
-import Time from '@/components/time';
+import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
+import { AddressData, listData } from '@/components/listData';
 import CurrentLocation from '@/components/currentLocation';
+import AreaToggleComponent from '@/components/areaToggleComponent';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 
@@ -28,7 +27,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-
+  const [isMarkerClicked, setIsMarkerClicked] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -94,25 +93,30 @@ export default function Home() {
     setIsSmoking(!isSmoking);
   };
 
-  const parsePathCoordinates = (path: { pathsLatitude: string, pathsLongitude: string }) => {
-    const latitudes = path.pathsLatitude.split(',').map(lat => parseFloat(lat.trim()));
-    const longitudes = path.pathsLongitude.split(',').map(lng => parseFloat(lng.trim()));
+  const parsePathCoordinates = (path: { pathsLatitude: string[], pathsLongitude: string[] }) => {
+    const latitudes = path.pathsLatitude.map(lat => parseFloat(lat.trim()));
+    const longitudes = path.pathsLongitude.map(lng => parseFloat(lng.trim()));
 
-    const coordinates = [];
-    for (let i = 0; i < latitudes.length; i++) {
-      if (i < longitudes.length) {
-        coordinates.push({
-          lat: latitudes[i],
-          lng: longitudes[i]
-        });
-      }
+    return latitudes.map((lat, i) => ({
+      lat,
+      lng: longitudes[i]
+    }));
+  };
+
+  const setSpecialCategoryColor = (addressDivision: string) => {
+    const specialCategories = [
+      '유치원', '초등학교', '중학교', '고등학교'
+    ];
+    
+    if (specialCategories.some(cat => addressDivision.includes(cat))) {
+      return '#FFD700';
     }
-
-    return coordinates;
+    
+    return null;
   };
 
   if (loading) {
-    return <div>Loading Kakao Map...</div>;
+    return <div>Loading Kakao Map</div>;
   }
 
   if (error) {
@@ -127,30 +131,38 @@ export default function Home() {
         isListOpen={isListOpen}
         isAddOpen={isAddOpen}
         isSettingOpen={isSettingOpen}
-        isNonSmoking={isNonSmoking}
-        isSmoking={isSmoking}
         isData={isData}
         isLoading={isLoading}
         error={errorMsg}
         listToggle={listToggle}
         addToggle={addToggle}
         settingToggle={settingToggle}
+      />
+      <AreaToggleComponent 
+        isNonSmoking={isNonSmoking}
+        isSmoking={isSmoking}
         nonSmokingToggle={nonSmokingToggle}
         smokingToggle={smokingToggle}
       />
-      <Time />
       <Map
         center={center}
         isPanto={true}
         style={{ width: '100%', height: '100%', zIndex: 0 }}
         level={3}
       >
-        {markerPosition && <MapMarker position={markerPosition} />}
+        {markerPosition &&
+          <MapMarker
+            position={markerPosition} 
+            /*onClick={() => { setIsMarkerClicked(!isMarkerClicked) }}*/
+          >
+            {isMarkerClicked && (
+              <CustomOverlayMap position={markerPosition} clickable={true}>
+              </CustomOverlayMap>
+            )}  
+          </MapMarker>
+        }
         {userLocation && (
           <MapMarker position={userLocation}>
-            <div style={{ padding: '5px', color: '#000' }}>
-              여기에 계신가요?! {/* 메시지 */}
-            </div>
           </MapMarker>
         )}
         {isNonSmoking && isData.length > 0 && (
@@ -162,17 +174,44 @@ export default function Home() {
                   .filter(path => path.divisionArea === 'NON_SMOKING_ZONE')
                   .map((path, pathIndex) => (
                     <Polygon
-                      key={`${index}-${pathIndex}`} 
+                      key={`nonSmoking-${index}-${pathIndex}`}
                       path={parsePathCoordinates(path)}
                       strokeWeight={0}
                       strokeColor="#ffffff"
                       strokeOpacity={0.8}
                       strokeStyle="longdash"
-                      fillColor="#7CFF89"
+                      fillColor={setSpecialCategoryColor(item.address_division) || '#7CFF89'}
                       fillOpacity={0.7}
                       zIndex={1}
                     />
                   ))
+              ))
+            }
+          </>
+        )}
+        {isSmoking && isData.length > 0 && (
+          <>
+            {isData
+              .filter(item => item.paths.some(path => path.divisionArea.startsWith('SMOKING_ZONE')))
+              .map((item, index) => (
+                item.paths
+                  .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
+                  .map((path, pathIndex) => {
+                    const coordinates = parsePathCoordinates(path);
+                    return (
+                      <Polygon
+                        key={`smoking-${index}-${pathIndex}`}
+                        path={coordinates}
+                        strokeWeight={0}
+                        strokeColor="#ffffff"
+                        strokeOpacity={0.8}
+                        strokeStyle="longdash"
+                        fillColor={'#FF7C7C'}
+                        fillOpacity={0.7}
+                        zIndex={1}
+                      />
+                    );
+                  })
               ))
             }
           </>

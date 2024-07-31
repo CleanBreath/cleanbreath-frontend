@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = "http://localhost:8080/api/allData";
+const API_URL = "http://localhost:7001/v1/allData";
 
 export interface AddressData {
   address_idx: string;
@@ -8,15 +8,15 @@ export interface AddressData {
   address_division: string;
   address_latitude: number;
   address_longitude: number;
-  smoking: "금연" | "흡연" | "정보 없음";
+  smoking: "금연" | "흡연";
   paths: Array<{
-    divisionArea: "NON_SMOKING_ZONE" | "SMOKING_ZONE";
-    pathsLatitude: string;
-    pathsLongitude: string;
+    divisionArea: "NON_SMOKING_ZONE" | "SMOKING_ZONE_OPEN_IMPLICIT" | "SMOKING_ZONE_OPEN" | "SMOKING_ZONE_CLOSE_IMPLICIT" | "SMOKING_ZONE_CLOSE" | "SMOKING_ZONE_LINE_IMPLICIT" | "SMOKING_ZONE_LINE";
+    pathsLatitude: string[];
+    pathsLongitude: string[];
   }>;
 }
 
-interface ApiResponse {
+interface ApiResponseItem {
   id: number;
   addressName: string;
   buildingName: string;
@@ -24,40 +24,37 @@ interface ApiResponse {
   longitude: number;
   category: string;
   path: Array<{
-    divisionArea: "NON_SMOKING_ZONE" | "SMOKING_ZONE";
+    divisionArea: "NON_SMOKING_ZONE" | "SMOKING_ZONE_OPEN_IMPLICIT" | "SMOKING_ZONE_OPEN" | "SMOKING_ZONE_CLOSE_IMPLICIT" | "SMOKING_ZONE_CLOSE" | "SMOKING_ZONE_LINE_IMPLICIT" | "SMOKING_ZONE_LINE";
     pathsLatitude: string;
     pathsLongitude: string;
   }>;
 }
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+interface ApiResponse {
+  data: ApiResponseItem[];
+}
 
 export async function listData(): Promise<AddressData[]> {
   try {
-    console.log("3초 대기 후 데이터를 가져옵니다...");
-    await delay(3000); // 3초 대기
+    const response = await axios.get<ApiResponse>(API_URL);
+    console.log("원본 데이터:", response.data);
 
-    const response = await axios.get<ApiResponse[]>(API_URL); // API로부터 데이터 요청
-    console.log("원본:", response.data);
-    
-    //반환
-    const filteredData: AddressData[] = response.data
-      .filter(item => item.id <= 185)
-      .map(item => ({
+    const filteredData: AddressData[] = response.data.data.map(item => {
+      return {
         address_idx: item.id.toString(),
         address_name: item.buildingName,
         address_latitude: item.latitude,
         address_longitude: item.longitude,
         address_division: item.category,
-        smoking: item.path && item.path.length > 0
-          ? (item.path[0].divisionArea === "NON_SMOKING_ZONE" ? "금연" : "흡연")
-          : "정보 없음",
+        smoking: item.path.some(path => path.divisionArea.startsWith("SMOKING_ZONE")) ? "흡연" : "금연",
         paths: item.path.map(path => ({
           divisionArea: path.divisionArea,
-          pathsLatitude: path.pathsLatitude,
-          pathsLongitude: path.pathsLongitude
+          pathsLatitude: path.pathsLatitude.split(',').map(coord => coord.trim()),
+          pathsLongitude: path.pathsLongitude.split(',').map(coord => coord.trim())
         }))
-      }));
+      };
+    });
+
     return filteredData;
   } catch (error) {
     console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
@@ -68,6 +65,6 @@ export async function listData(): Promise<AddressData[]> {
       console.error("예상치 못한 오류:", error);
     }
 
-    throw error; // 오류를 호출자에게 다시 던지기
+    throw error;
   }
 }
