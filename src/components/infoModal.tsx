@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from "../../styles/infoModal.module.css";
+import LOGO_ICON from "../../public/logo.svg";
 
 interface InfoModalProps {
     isOpen: boolean;
@@ -13,7 +14,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <div className={styles.modalHeader}>
-                    <img src="logo.svg" alt="logo" className={styles.logoIcon}/>
+                    <LOGO_ICON className={styles.logoIcon}/>
                     <h1 className={styles.cleanBreath}>CleanBreath</h1>
                     <p className={styles.modalHashTags}>#금연구역 #흡연구역 #클브</p>
                     <button className={styles.closeButton} onClick={onClose}>&times;</button>
