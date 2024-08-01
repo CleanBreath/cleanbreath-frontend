@@ -31,12 +31,13 @@ export default function SettingArea() {
             <button className={styles.settingButton} onClick={openWarningModal}> {/* 변경 */}
                 흡연구역 검증기
             </button>
-            <button className={styles.settingButton} onClick={openWarningModal}> {/* 변경 */}
+            <button className={styles.settingButton} onClick={openRedPillModal}> {/* 변경 */}
                 빨간약
             </button>
 
             <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
             <WarningModal isOpen={isWarningModalOpen} onClose={closeWarningModal} /> {/* 추가 */}
+            <RedPillModal isOpen={isRedPillModalOpen} onClose={closeRedPillModal} />
         </div>
     );
 }
