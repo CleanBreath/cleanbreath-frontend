@@ -1,55 +1,33 @@
-/* 사이드바 관련 스타일 */
-.sidebar {
-    width: 100px;
-    height: 100vh;
-    flex-shrink: 0;
-    background-color: #007E8F;
-    box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
-    z-index: 10;
-    transition: width 1s;
-    position: fixed;
-}
-
-.sidebarOpen {
-    width: 100px; /* 여전히 사이드바는 좁게 유지 */
-    transition: width 1s;
-}
-
-/* 흰색 공간을 만들기 위한 스타일 */
-.listContainer {
-    position: fixed;
-    right: 850px;
-    top: 0;
-    width: calc(25% - 100px); /* 사이드바를 제외한 공간 */
-    height: 100vh;
-    background-color: #fff;
-    z-index: 1;
-    overflow-y: auto;
-    padding: 10px;
-}
-
 .verificationList {
-    width: 100%;
-    font-size: 20px;
-    color: #000;
+    position: absolute;
+    top: -100px; /* 상단 메뉴로부터 50px 아래 */
+    left: 230px; /* 사이드 메뉴로부터 200px 오른쪽 */
+    width: 300px; /* 리스트의 너비 */
+    height: calc(100vh); /* 화면의 높이에 맞추기, 상단 여백 50px */
+    z-index: 5;
+    padding: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* 내용이 많을 때 스크롤 가능 */
 }
 
-.verificationList .listdata {
-    display: grid;
-    grid-template-columns: 0.2fr 2fr 0.6fr;
-    column-gap: 25px;
-    width: 100%;
-    height: 50px;
-    align-items: center;
-    padding-left: 13px;
+.verificationList button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
     cursor: pointer;
-    border-bottom: 1px solid #ddd;
+    margin-bottom: 10px;
 }
 
-.verificationList .listdata svg {
-    fill: #000;
+.verificationList ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.verificationList .listdata:hover {
-    background-color: #d9d9d9;
+.verificationList li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
 }
