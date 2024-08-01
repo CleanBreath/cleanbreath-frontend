@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from "../../styles/addArea.module.css";
 
+//새로추가
 export default function AddComponent() {
     return (
         <div className={styles.addArea}>
@@ -18,7 +19,7 @@ export default function AddComponent() {
                 <div className={styles.locationRow}>
                     <div className={styles.locationLabelInput}>
                         <p className={styles.sctitle}>상세장소</p>
-                        <input type="text" placeholder="상세 주소를 입력하세요." className={styles.addressInput} />
+                        <input type="text" placeholder="상세주소를 입력하세요." className={styles.addressInput} />
                     </div>
                     <button className={`${styles.buttonCommon} ${styles.areaButton}`}>영역 지정</button>
                 </div>
