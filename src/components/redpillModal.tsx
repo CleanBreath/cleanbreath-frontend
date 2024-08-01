@@ -24,10 +24,10 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.modal}>
             <div className={styles.header}>
                 <span className={styles.redpill}>REDPILL</span>
-                <img src="logo.svg" alt="Pill Icon" className={styles.pillIcon} />
+                {/* <img src="logo.svg" alt="Pill Icon" className={styles.pillIcon} /> */}
             </div>
             <div className={styles.content}>
-                <p className={styles.question}>"하루에 몇 개비를 피우시나요?"</p>
+                <p className={styles.question}>{`"하루에 몇 개비를 피우시나요?"`}</p>
                 <div className={styles.inputContainer}>
                     <input
                         type="number"

@@ -13,7 +13,7 @@ const InfoModal: React.FC<InfoModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <div className={styles.modalHeader}>
-                    <img src="logo.svg" alt="logo" className={styles.logoIcon}/>
+                    {/* <img src="logo.svg" alt="logo" className={styles.logoIcon}/> */}
                     <h1 className={styles.cleanBreath}>CleanBreath</h1>
                     <p className={styles.modalHashTags}>#금연구역 #흡연구역 #클브</p>
                     <button className={styles.closeButton} onClick={onClose}>&times;</button>

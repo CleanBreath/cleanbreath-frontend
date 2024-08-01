@@ -4,7 +4,7 @@ import verificationListStyles from "../../styles/verificationList.module.css"; /
 import InfoModal from "@/components/infoModal";
 import RedPillModal from "@/components/redpillModal";
 import WarningModal from "@/components/warningModal";
-import { testData } from "@/components/testData";
+// import { testData } from "@/components/testData";
 
 export default function SettingArea() {
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
