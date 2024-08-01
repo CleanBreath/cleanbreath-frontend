@@ -6,6 +6,7 @@ export interface AddressData {
   address_idx: string;
   address_name: string;
   address_division: string;
+  address_buildingName: string;
   address_latitude: number;
   address_longitude: number;
   smoking: "금연" | "흡연";
@@ -41,7 +42,8 @@ export async function listData(): Promise<AddressData[]> {
     const filteredData: AddressData[] = response.data.data.map(item => {
       return {
         address_idx: item.id.toString(),
-        address_name: item.buildingName,
+        address_name: item.addressName,
+        address_buildingName : item.buildingName,
         address_latitude: item.latitude,
         address_longitude: item.longitude,
         address_division: item.category,

@@ -43,7 +43,9 @@ const VerificationList: React.FC<VerificationListProps> = ({ onClose }) => {
             <ul>
                 {data.map((item) => (
                     <li key={item.address_idx}>
-                        <strong>{item.address_name}</strong> - {item.smoking}
+                        <strong><span className={styles.mainColor}>{item.address_name}</span><br/>
+                                {item.address_buildingName}
+                        </strong>
                     </li>
                 ))}
             </ul>
