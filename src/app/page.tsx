@@ -7,6 +7,7 @@ import { AddressData, listData } from '@/components/listData';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import ReactGA from 'react-ga4';
+import SMOK_ICON from "../../public/smokBlack.svg";
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
@@ -174,25 +175,26 @@ export default function Home() {
           </MapMarker>
         )}
         {isSmoking && isData.length > 0 && (
-          <>
-            <MarkerClusterer averageCenter={true} minLevel={3}>
-              {isData.flatMap((item) =>
-                item.paths
-                  .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
-                  .map((path, pathIndex) => (
-                    <MapMarker
-                      key={`${item.address_idx}-${pathIndex}`}
-                      position={{
-                        lat: item.address_latitude,
-                        lng: item.address_longitude
-                      }}
-                      
-                      zIndex={1}
-                    />
-                  ))
-              )}
-            </MarkerClusterer>
-          </>
+            <>
+              <MarkerClusterer averageCenter={true} minLevel={3}>
+                {isData.flatMap((item) =>
+                    item.paths
+                        .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
+                        .map((path, pathIndex) => (
+                            <CustomOverlayMap
+                                key={`${item.address_idx}-${pathIndex}`}
+                                position={{
+                                  lat: item.address_latitude,
+                                  lng: item.address_longitude
+                                }}
+                                yAnchor={1}
+                            >
+                              <SMOK_ICON style={{ width: '50px', height: '50px' }} />
+                            </CustomOverlayMap>
+                        ))
+                )}
+              </MarkerClusterer>
+            </>
         )}
 
         {isData.length > 0 && (
