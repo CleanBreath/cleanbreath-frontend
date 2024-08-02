@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import styles from "../../styles/redPillModal.module.css";
+import REDPILL_ICON from "../../public/redPill.svg";
 
 type RedPillModalProps = {
     isOpen: boolean;
@@ -36,10 +37,10 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
             <div className={styles.modal}>
                 <div className={styles.header}>
                     <span className={styles.redpill}>REDPILL</span>
-                    <img src="logo.svg" alt="Pill Icon" className={styles.pillIcon} />
+                    <REDPILL_ICON className={styles.pillIcon}/>
                 </div>
                 <div className={styles.content}>
-                    <p className={styles.question}>"하루에 몇 갑을 피우시나요?"</p>
+                    <p className={styles.question}> &quot;하루에 몇 갑을 피우시나요? &quot;</p>
                     <div className={styles.inputContainer}>
                         <input
                             type="number"
@@ -59,12 +60,12 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                 <div className={styles.modal}>
                     <div className={styles.header}>
                         <span className={styles.redpill}>REDPILL</span>
-                        <img src="logo.svg" alt="Pill Icon" className={styles.pillIcon}/>
+                        <REDPILL_ICON className={styles.pillIcon}/>
                     </div>
                     <div className={styles.content}>
-                        <p className={styles.money}>"만약 당신이 담배를 피우지 않았다면,<br/>
-                        1년에 약 {totalCost?.toLocaleString()}원 을 절약했을 것입니다."<br/>
-                        "당신은 할 수 있습니다! 오늘부터 한번 더 금연을 시도해 보세요!"</p>
+                        <p className={styles.money}> &quot;만약 당신이 담배를 피우지 않았다면,<br/>
+                        1년에 약 {totalCost?.toLocaleString()}원 을 절약했을 것입니다. &quot;<br/><br/>
+                            &quot;당신은 할 수 있습니다! 오늘부터 한번 더 금연을 시도해 보세요! &quot;</p>
                         <button className={styles.confirmButton} onClick={handleCloseResult}>
                             금연하기!
                         </button>
