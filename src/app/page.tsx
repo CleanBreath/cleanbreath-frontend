@@ -2,14 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
-import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
+import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
 import { AddressData, listData } from '@/components/listData';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import ReactGA from 'react-ga4';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
-
 const TRACKING_ID = "G-YPYE7W46DT";
 
 export default function Home() {
@@ -174,54 +173,52 @@ export default function Home() {
           <MapMarker position={userLocation}>
           </MapMarker>
         )}
-        {isNonSmoking && isData.length > 0 && (
+        {isSmoking && isData.length > 0 && (
           <>
-            {isData
-              .filter(item => item.paths.some(path => path.divisionArea === 'NON_SMOKING_ZONE'))
-              .map((item, index) => (
+            <MarkerClusterer averageCenter={true} minLevel={3}>
+              {isData.flatMap((item) =>
                 item.paths
-                  .filter(path => path.divisionArea === 'NON_SMOKING_ZONE')
+                  .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
                   .map((path, pathIndex) => (
-                    <Polygon
-                      key={`nonSmoking-${index}-${pathIndex}`}
-                      path={parsePathCoordinates(path)}
-                      strokeWeight={0}
-                      strokeColor="#ffffff"
-                      strokeOpacity={0.8}
-                      strokeStyle="longdash"
-                      fillColor={setSpecialCategoryColor(item.address_division) || '#7CFF89'}
-                      fillOpacity={0.7}
+                    <MapMarker
+                      key={`${item.address_idx}-${pathIndex}`}
+                      position={{
+                        lat: item.address_latitude,
+                        lng: item.address_longitude
+                      }}
+                      
                       zIndex={1}
                     />
                   ))
-              ))
-            }
+              )}
+            </MarkerClusterer>
           </>
         )}
-        {isSmoking && isData.length > 0 && (
+
+        {isData.length > 0 && (
           <>
             {isData
-              .filter(item => item.paths.some(path => path.divisionArea.startsWith('SMOKING_ZONE')))
-              .map((item, index) => (
+              .flatMap((item, index) =>
                 item.paths
-                  .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
+                  .filter(path => (isNonSmoking && path.divisionArea === 'NON_SMOKING_ZONE') || 
+                                  (isSmoking && path.divisionArea.startsWith('SMOKING_ZONE')))
                   .map((path, pathIndex) => {
-                    const coordinates = parsePathCoordinates(path);
+                    const isSmokingZone = path.divisionArea.startsWith('SMOKING_ZONE');
                     return (
                       <Polygon
-                        key={`smoking-${index}-${pathIndex}`}
-                        path={coordinates}
+                        key={`${isSmokingZone ? 'smoking' : 'nonSmoking'}-${index}-${pathIndex}`}
+                        path={parsePathCoordinates(path)}
                         strokeWeight={0}
                         strokeColor="#ffffff"
                         strokeOpacity={0.8}
                         strokeStyle="longdash"
-                        fillColor={'#FF7C7C'}
+                        fillColor={isSmokingZone ? '#FF7C7C' : (setSpecialCategoryColor(item.address_division) || '#7CFF89')}
                         fillOpacity={0.7}
                         zIndex={1}
                       />
                     );
                   })
-              ))
+              )
             }
           </>
         )}
