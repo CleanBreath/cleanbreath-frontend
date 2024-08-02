@@ -1,16 +1,17 @@
 .sidebar {
     width: 100px;
-    height: 1080px;
-    flex-shrink: 0;
+    height: 100vh;
+    animation-name: Close;
+    animation-duration: 0.5s;
     background-color: #007E8F;
     box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
     z-index: 1;
-    transition: width 1s;
 }
 
 .sidebarHeader {
     padding: 24.5px 18px 23px;
 }
+
 .sidebarHeader a {
     text-decoration: none;
 }
@@ -31,25 +32,59 @@
     height: 55px;
     margin-bottom: 22px;
 }
-
+/*리스트 메뉴 css*/
 .menu .listIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
+
+.menu .listIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .listIconOpen:active, .listIcon:active {
+    transform: scale(0.9);
+}
+/*추가버튼 css*/
 .menu .addIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
+
+.menu .addIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .addIcon:active, .addIconOpen:active {
+    transform: scale(0.9);
+}
+
+/*설정버튼 css*/
 .menu .settingIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
 
+.menu .settingIconOpen {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+}
+
+.menu .settingIcon:active, .settingIconOpen:active {
+    transform: scale(0.9);
+}
+
 /* 사이드바가 오픈할 경우 */
 
 .sidebarOpen {
-    transition: width 1s;
-    width: 500px;
+    width: 400px;
+    height: 100vh;
+    display: block;
+    animation-name: Open;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
     background-color: #007E8F;
 }
 
@@ -58,16 +93,15 @@
 }
 
 .sidebarOpen .sidebarHeader p {
-    margin-top: 20px;
-    margin-left: 15px;
+    margin-top: 15px;
+    margin-left: 15%;
     font-size: 40px;
     font-weight: bold;
     color: #fff;
 }
 
-
-/* 리스트 버튼 클릭할 경우 */
-.sidebarOpen .list {
+/*추가 버튼 눌렀을떄*/
+.sidebarOpen .add {
     width: 300px;
     height: 98.7%;
     font-size: 20px;
@@ -79,20 +113,75 @@
     border: none;
     overflow-y: scroll;
 }
-.sidebarOpen .list .listdata {
-    display: grid;
-    grid-template-columns: 0.2fr 2fr 0.6fr;
-    column-gap: 25px;
-    width: 300px;
-    height: 50px;
-    align-items: center;
-    padding-left: 13px;
-    cursor: pointer;
-}
-.sidebarOpen .list .listdata svg {
-    fill: #000;
-}
-.sidebarOpen .list .listdata:hover {
-    background-color: #d9d9d9;
+
+.sidebarOpen .add h1{
+    font-family: "Red Hat Display";
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 900;
+    line-height: normal;
+    float: left;
+    display: block;
+    margin-top: 13px;
+    margin-left: 32px;
 }
 
+.sidebarOpen .add p {
+    color: #000;
+    font-family: "Red Hat Display";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    float: left;
+    margin-left: 29px;
+    margin-top: 22px
+}
+
+.sidebarOpen .add button {
+    width: 65px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 25px;
+    background: #007E8F;
+    color: #fff;
+    float: right;
+    margin-right: 24px;
+    margin-top: 22px;
+}
+
+.sidebarOpen .add input {
+    display: block;
+    justify-content: center;
+    align-items: center;
+    width: 242px;
+    height: 35px;
+    border-radius: 10px;
+    border: 2px solid #007E8F;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+    float: left;
+    margin-top: 10px;
+    margin-left: 29px;
+}
+
+@keyframes Open {
+    0% {
+        width: 100px;
+    }
+    90%{
+        width: 400px;
+    }
+    100% {
+        min-width: 400px;
+    }
+}
+
+@keyframes Close {
+    from {
+        width: 400px;
+    }
+    to {
+        width: 100px;
+    }
+}
