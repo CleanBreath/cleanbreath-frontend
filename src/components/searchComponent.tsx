@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { AddressData } from "./listData";
+import { AddressData } from "../api/types";
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
 import SMOKING_ICON from "../../public/smok.svg";
 import styles from "../../styles/search.module.css";
@@ -21,7 +21,7 @@ export default function searchComponent({ onListClick, isData, isLoading, error 
 
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
         return isData.filter(item =>
-        item.adress_detail.toLowerCase().includes(lowerCaseSearchTerm) || item.address_name.toLowerCase().includes(lowerCaseSearchTerm)
+        item.address_buildingName.toLowerCase().includes(lowerCaseSearchTerm) || item.address_name.toLowerCase().includes(lowerCaseSearchTerm)
         || item.smoking.toLowerCase().includes(lowerCaseSearchTerm)
         );
 
@@ -51,8 +51,8 @@ export default function searchComponent({ onListClick, isData, isLoading, error 
                     filteredData.map((item) => (
                         <div key={item.address_idx} className={styles.listdata} onClick={() => onListClick(item)}>
                         <p>{item.address_idx}</p>
-                        <p>{item.address_name}</p>
-                        {item.smoking === "금연" ? <NON_SMOKING_ICON /> : <SMOKING_ICON />}
+                        <p>{item.address_buildingName}</p>
+                        {item.smoking === "금연구역" ? <NON_SMOKING_ICON /> : <SMOKING_ICON />}
                         </div>
                     ))
                     ) : (

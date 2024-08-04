@@ -1,26 +1,11 @@
 import axios from 'axios';
+import { AddressData } from './types';
+import { saveData, getData } from './indexedDB';
+import { saveCount, getCount } from './localStorage';
 
 const API_URL = "https://server.bluesky-cleanbreath.com/v1/allData";
 
-const POST_API_URL = "https://server.bluesky-cleanbreath.com/v1/updateDate";
-
-export interface AddressData {
-  count: number;
-  address_idx: string;
-  address_name: string;
-  adress_detail: string;
-  address_division: string;
-  address_latitude: number;
-  address_longitude: number;
-  smoking: "금연" | "흡연";
-  paths: Array<{
-    divisionArea: "NON_SMOKING_ZONE" | "SMOKING_ZONE_OPEN_IMPLICIT" | "SMOKING_ZONE_OPEN" | "SMOKING_ZONE_CLOSE_IMPLICIT" | "SMOKING_ZONE_CLOSE" | "SMOKING_ZONE_LINE_IMPLICIT" | "SMOKING_ZONE_LINE";
-    pathsLatitude: string[];
-    pathsLongitude: string[];
-  }>;
-}
-
-interface ApiResponseItem {
+export interface ApiResponseItem {
   id: number;
   addressName: string;
   buildingName: string;
@@ -42,30 +27,33 @@ interface ApiResponse {
 
 export async function listData(): Promise<AddressData[]> {
   try {
+    const [localCount, localData] = await Promise.all([getCount(), getData()]);
     const response = await axios.get<ApiResponse>(API_URL);
-    console.log(response.data.data);
+    const apiCount = response.data.count;
 
-    const filteredData: AddressData[] = response.data.data.map(item => {
-      return {
-        count: response.data.count,
+    if (localData.length === 0 || localCount === null || localCount < apiCount) {
+      const filteredData: AddressData[] = response.data.data.map(item => ({
         address_idx: item.id.toString(),
-        address_name: item.buildingName,
-        adress_detail: item.addressName,
+        address_name: item.addressName,
+        address_buildingName: item.buildingName,
         address_latitude: item.latitude,
         address_longitude: item.longitude,
-        address_division: item.category,
-        smoking: item.path.some(path => path.divisionArea.startsWith("SMOKING_ZONE")) ? "흡연" : "금연",
+        address_category: item.category,
+        smoking: item.path.some(path => path.divisionArea.startsWith("SMOKING_ZONE")) ? "흡연구역" : "금연구역",
         paths: item.path.map(path => ({
           divisionArea: path.divisionArea,
           pathsLatitude: path.pathsLatitude.split(',').map(coord => coord.trim()),
           pathsLongitude: path.pathsLongitude.split(',').map(coord => coord.trim())
         }))
-      };
-    });
+      }));
 
-    console.log(response.data.updateDate);
+      await saveData(filteredData);
+      saveCount(apiCount);
 
-    return filteredData;
+      return filteredData;
+    } else {
+      return localData;
+    }
   } catch (error) {
     console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
 

@@ -6,7 +6,7 @@ import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
-import { AddressData } from "./listData";
+import { AddressData } from "@/api/types";
 import SearchComponent from "./searchComponent";
 
 interface SideMenuProps {

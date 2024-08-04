@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
 import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
-import { AddressData, listData } from '@/components/listData';
+import { AddressData } from '../api/types';
+import { listData } from '../api/api';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import ReactGA from 'react-ga4';
@@ -30,6 +31,7 @@ export default function Home() {
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -111,13 +113,13 @@ export default function Home() {
     }));
   };
 
-  const setSpecialCategoryColor = (addressDivision: string) => {
+  const setSpecialCategoryColor = (addressCategory: string) => {
     const specialCategories = [
       '유치원', '초등학교', '중학교', '고등학교'
     ];
     
-    if (specialCategories.some(cat => addressDivision.includes(cat))) {
-      return '#FFD700';
+    if (specialCategories.some(cat => addressCategory.includes(cat))) {
+      return '#E83600';
     }
     
     return null;
@@ -156,6 +158,7 @@ export default function Home() {
         center={center}
         isPanto={true}
         style={{ width: '100%', height: '100%', zIndex: 0 }}
+        minLevel={6}
         level={3}
       >
         {markerPosition &&
@@ -175,11 +178,22 @@ export default function Home() {
         )}
         {isSmoking && isData.length > 0 && (
           <>
-            <MarkerClusterer averageCenter={true} minLevel={3}>
+            <MarkerClusterer averageCenter={true} minLevel={3} styles={[{
+              width: '40px',
+              height: '40px',
+              background: '#7CFF89',
+              color: '#000',
+              textAlign: 'center',
+              lineHeight: '40px',
+              borderRadius: '50%',
+              fontSize: '14px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.5)',
+            }]}>
               {isData.flatMap((item) =>
                 item.paths
                   .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
-                  .map((path, pathIndex) => (
+                  .map((pathIndex) => (
                     <MapMarker
                       key={`${item.address_idx}-${pathIndex}`}
                       position={{
@@ -194,7 +208,6 @@ export default function Home() {
             </MarkerClusterer>
           </>
         )}
-
         {isData.length > 0 && (
           <>
             {isData
@@ -205,25 +218,30 @@ export default function Home() {
                   .map((path, pathIndex) => {
                     const isSmokingZone = path.divisionArea.startsWith('SMOKING_ZONE');
                     return (
-                      <Polygon
+                      <div
                         key={`${isSmokingZone ? 'smoking' : 'nonSmoking'}-${index}-${pathIndex}`}
-                        path={parsePathCoordinates(path)}
-                        strokeWeight={0}
-                        strokeColor="#ffffff"
-                        strokeOpacity={0.8}
-                        strokeStyle="longdash"
-                        fillColor={isSmokingZone ? '#FF7C7C' : (setSpecialCategoryColor(item.address_division) || '#7CFF89')}
-                        fillOpacity={0.7}
-                        zIndex={1}
-                      />
+                        style={{ color: "black"}}
+                      >
+                        <Polygon
+                          path={parsePathCoordinates(path)}
+                          strokeWeight={0}
+                          strokeColor="#ffffff"
+                          strokeOpacity={0.8}
+                          strokeStyle="longdash"
+                          fillColor={isSmokingZone ? '#7CFF89' : (setSpecialCategoryColor(item.address_category) || '#FFBA5A')}
+                          fillOpacity={0.7}
+                          zIndex={1}
+                        />
+                      </div>
                     );
                   })
               )
             }
           </>
         )}
+
       </Map>
-      <CurrentLocation setUserLocation={setUserLocation} />
+      {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
     </div>
   );
 }
