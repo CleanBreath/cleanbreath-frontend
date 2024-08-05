@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import styles from "../../styles/redPillModal.module.css";
+import Image from "next/image";
 import REDPILL_ICON from "../../public/redpill.svg";
 
 type RedPillModalProps = {
@@ -53,7 +54,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                     <button className={styles.confirmButton} onClick={handleConfirm}>
                         확인
                     </button>
-
+                </div>
             </div>
 
             {showResult && (
@@ -64,7 +65,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                     </div>
                     <div className={styles.content}>
                         <p className={styles.money}> &quot;만약 당신이 담배를 피우지 않았다면,<br/>
-                        1년에 약 {totalCost?.toLocaleString()}원 을 절약했을 것입니다. &quot;<br/><br/>
+                            1년에 약 {totalCost?.toLocaleString()}원 을 절약했을 것입니다. &quot;<br/><br/>
                             &quot;당신은 할 수 있습니다! 오늘부터 한번 더 금연을 시도해 보세요! &quot;</p>
                         <button className={styles.confirmButton} onClick={handleCloseResult}>
                             금연하기!

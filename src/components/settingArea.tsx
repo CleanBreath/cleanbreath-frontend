@@ -28,7 +28,7 @@ export default function SettingArea() {
             <button className={styles.settingButton} onClick={openInfoModal}>
                 기타 금연구역 안내
             </button>
-            <button className={styles.settingButton} onClick={openVerificationList}>
+            <button className={styles.settingButton} onClick={openWarningModal}>
                 흡연구역 검증기
             </button>
             <button className={styles.settingButton} onClick={openRedPillModal}>
@@ -39,11 +39,11 @@ export default function SettingArea() {
             <WarningModal isOpen={isWarningModalOpen} onClose={closeWarningModal} />
             <RedPillModal isOpen={isRedPillModalOpen} onClose={closeRedPillModal} />
 
-            {isVerificationListOpen && (
-                <div className={styles.verificationListWrapper}>
-                    <VerificationList onClose={closeVerificationList} />
-                </div>
-            )}
+            {/*{isVerificationListOpen && (*/}
+            {/*    <div className={styles.verificationListWrapper}>*/}
+            {/*        <VerificationList onClose={closeVerificationList} />*/}
+            {/*    </div>*/}
+            {/*)}*/}
         </div>
     );
 }

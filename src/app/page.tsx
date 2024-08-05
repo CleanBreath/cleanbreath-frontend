@@ -77,6 +77,10 @@ export default function Home() {
     });
   };
 
+  const toggleMenu = (menu : string | null) => {
+    setActiveMenu(activeMenu === menu ? null : menu);
+  }
+
   const nonSmokingToggle = () => {
     setIsNonSmoking(!isNonSmoking);
   };
