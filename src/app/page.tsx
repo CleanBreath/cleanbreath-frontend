@@ -22,10 +22,8 @@ export default function Home() {
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [isNonSmoking, setIsNonSmoking] = useState(true);
   const [isSmoking, setIsSmoking] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isListOpen, setIsListOpen] = useState(false);
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
   const [isData, setData] = useState<AddressData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
@@ -73,26 +71,9 @@ export default function Home() {
     });
   };
 
-  const listToggle = () => {
-    setIsListOpen(!isListOpen);
-    setIsOpen(!isOpen);
-    setIsAddOpen(false);
-    setIsSettingOpen(false);
-  };
-
-  const addToggle = () => {
-    setIsListOpen(false);
-    setIsOpen(!isOpen);
-    setIsAddOpen(!isAddOpen);
-    setIsSettingOpen(false);
-  };
-
-  const settingToggle = () => {
-    setIsListOpen(false);
-    setIsOpen(!isOpen);
-    setIsAddOpen(false);
-    setIsSettingOpen(!isSettingOpen);
-  };
+  const toggleMenu = (menu : string | null) => {
+    setActiveMenu(activeMenu === menu ? null : menu);
+  }
 
   const nonSmokingToggle = () => {
     setIsNonSmoking(!isNonSmoking);
@@ -136,16 +117,11 @@ export default function Home() {
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <SideMenu
         onListClick={handleListClick}
-        isOpen={isOpen}
-        isListOpen={isListOpen}
-        isAddOpen={isAddOpen}
-        isSettingOpen={isSettingOpen}
+        activeMenu={activeMenu}
+        setActiveMenu={toggleMenu}
         isData={isData}
         isLoading={isLoading}
         error={errorMsg}
-        listToggle={listToggle}
-        addToggle={addToggle}
-        settingToggle={settingToggle}
       />
       <AreaToggleComponent 
         isNonSmoking={isNonSmoking}

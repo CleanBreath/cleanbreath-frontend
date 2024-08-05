@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import styles from "../../styles/redPillModal.module.css";
+import REDPILL_ICON from "../../public/redpill.svg";
 
 type RedPillModalProps = {
     isOpen: boolean;
@@ -25,6 +26,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
             <div className={styles.header}>
                 <span className={styles.redpill}>REDPILL</span>
                 {/* <img src="logo.svg" alt="Pill Icon" className={styles.pillIcon} /> */}
+                <REDPILL_ICON className={styles.pillIcon}/>
             </div>
             <div className={styles.content}>
                 <p className={styles.question}>{`"하루에 몇 개비를 피우시나요?"`}</p>
