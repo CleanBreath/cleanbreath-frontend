@@ -1,10 +1,13 @@
 import axios from 'axios';
 
 const API_URL = "https://server.bluesky-cleanbreath.com/v1/allData";
+const POST_API_URL = "https://server.bluesky-cleanbreath.com/v1/updateDate";
 
 export interface AddressData {
+  count: number;
   address_idx: string;
   address_name: string;
+  adress_detail: string;
   address_division: string;
   address_latitude: number;
   address_longitude: number;
@@ -32,16 +35,21 @@ interface ApiResponseItem {
 
 interface ApiResponse {
   data: ApiResponseItem[];
+  count: number;
+  updateDate: string;
 }
 
 export async function listData(): Promise<AddressData[]> {
   try {
     const response = await axios.get<ApiResponse>(API_URL);
+    console.log(response.data.data);
 
     const filteredData: AddressData[] = response.data.data.map(item => {
       return {
+        count: response.data.count,
         address_idx: item.id.toString(),
         address_name: item.buildingName,
+        adress_detail: item.addressName,
         address_latitude: item.latitude,
         address_longitude: item.longitude,
         address_division: item.category,
@@ -53,6 +61,8 @@ export async function listData(): Promise<AddressData[]> {
         }))
       };
     });
+
+    console.log(response.data.updateDate);
 
     return filteredData;
   } catch (error) {

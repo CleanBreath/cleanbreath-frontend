@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
-import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
+import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
 import { AddressData, listData } from '@/components/listData';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import ReactGA from 'react-ga4';
+import SMOK_ICON from "../../public/smokMarker.png";
+import NONSMOK_ICON from "../../public/nonSmokMarker.png"
+import SmokModal from '@/components/smokModal';
+import Image from "next/image";
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
-
 const TRACKING_ID = "G-YPYE7W46DT";
 
 export default function Home() {
@@ -29,6 +32,9 @@ export default function Home() {
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState<{ lat: number; lng: number } | null>(null);
+
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -105,6 +111,16 @@ export default function Home() {
     return null;
   };
 
+  const handleMarkerClick = (position: { lat: number; lng: number }) => {
+    setModalPosition(position);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalPosition(null);
+  };
+
   if (loading) {
     return <div>Loading Kakao Map</div>;
   }
@@ -150,54 +166,60 @@ export default function Home() {
           <MapMarker position={userLocation}>
           </MapMarker>
         )}
-        {isNonSmoking && isData.length > 0 && (
-          <>
-            {isData
-              .filter(item => item.paths.some(path => path.divisionArea === 'NON_SMOKING_ZONE'))
-              .map((item, index) => (
-                item.paths
-                  .filter(path => path.divisionArea === 'NON_SMOKING_ZONE')
-                  .map((path, pathIndex) => (
-                    <Polygon
-                      key={`nonSmoking-${index}-${pathIndex}`}
-                      path={parsePathCoordinates(path)}
-                      strokeWeight={0}
-                      strokeColor="#ffffff"
-                      strokeOpacity={0.8}
-                      strokeStyle="longdash"
-                      fillColor={setSpecialCategoryColor(item.address_division) || '#7CFF89'}
-                      fillOpacity={0.7}
-                      zIndex={1}
-                    />
-                  ))
-              ))
-            }
-          </>
-        )}
         {isSmoking && isData.length > 0 && (
+            <>
+              <MarkerClusterer averageCenter={true} minLevel={3}>
+                {isData.flatMap((item) =>
+                    item.paths
+                        .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
+                        .map((path, pathIndex) => (
+                            <CustomOverlayMap
+                                key={`${item.address_idx}-${pathIndex}`}
+                                position={{
+                                  lat: item.address_latitude,
+                                  lng: item.address_longitude
+                                }}
+                                yAnchor={1}
+                            >
+                              <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => handleMarkerClick({
+                                lat: item.address_latitude,
+                                lng: item.address_longitude,
+                              })}/>
+                            </CustomOverlayMap>
+                        ))
+                )}
+              </MarkerClusterer>
+            </>
+        )}
+
+        {isModalOpen && modalPosition && (
+            <SmokModal position={modalPosition} onClose={closeModal}/>
+        )}
+
+        {isData.length > 0 && (
           <>
             {isData
-              .filter(item => item.paths.some(path => path.divisionArea.startsWith('SMOKING_ZONE')))
-              .map((item, index) => (
+              .flatMap((item, index) =>
                 item.paths
-                  .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
+                  .filter(path => (isNonSmoking && path.divisionArea === 'NON_SMOKING_ZONE') || 
+                                  (isSmoking && path.divisionArea.startsWith('SMOKING_ZONE')))
                   .map((path, pathIndex) => {
-                    const coordinates = parsePathCoordinates(path);
+                    const isSmokingZone = path.divisionArea.startsWith('SMOKING_ZONE');
                     return (
                       <Polygon
-                        key={`smoking-${index}-${pathIndex}`}
-                        path={coordinates}
+                        key={`${isSmokingZone ? 'smoking' : 'nonSmoking'}-${index}-${pathIndex}`}
+                        path={parsePathCoordinates(path)}
                         strokeWeight={0}
                         strokeColor="#ffffff"
                         strokeOpacity={0.8}
                         strokeStyle="longdash"
-                        fillColor={'#FF7C7C'}
+                        fillColor={isSmokingZone ? '#FF7C7C' : (setSpecialCategoryColor(item.address_division) || '#7CFF89')}
                         fillOpacity={0.7}
                         zIndex={1}
                       />
                     );
                   })
-              ))
+              )
             }
           </>
         )}

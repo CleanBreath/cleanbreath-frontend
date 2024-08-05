@@ -33,7 +33,7 @@
 .logoIcon {
     grid-column: 2; /* 가운데 */
     justify-self: center;
-    width: 90px; /* 로고 크기 */
+    width: 70px; /* 로고 크기 */
     padding: 15px;
     height: auto;
 }
