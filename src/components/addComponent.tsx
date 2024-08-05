@@ -1,4 +1,7 @@
+"use client"
+
 import React from 'react';
+import axios from 'axios';
 import styles from "../../styles/addArea.module.css";
 
 //새로추가
@@ -33,7 +36,7 @@ export default function AddComponent() {
                     </label>
                     <label>
                         <input type="radio" name="smokingArea" value="closed" />
-                        폐쇠형
+                        폐쇄형
                     </label>
                     <label>
                         <input type="radio" name="smokingArea" value="line" />

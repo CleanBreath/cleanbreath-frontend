@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
 import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
 import { AddressData, listData } from '@/components/listData';
-import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import ReactGA from 'react-ga4';
 
@@ -226,7 +225,6 @@ export default function Home() {
           </>
         )}
       </Map>
-      <CurrentLocation setUserLocation={setUserLocation} />
     </div>
   );
 }

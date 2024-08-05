@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_URL = "http://localhost:7001/v1/allData";
+const API_URL = "https://server.bluesky-cleanbreath.com/v1/allData"
+//const API_URL = "http://localhost:7001/v1/allData";
 
 export interface AddressData {
   address_idx: string;
