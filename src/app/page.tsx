@@ -22,10 +22,6 @@ export default function Home() {
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [isNonSmoking, setIsNonSmoking] = useState(true);
   const [isSmoking, setIsSmoking] = useState(false);
-  // const [isOpen, setIsOpen] = useState(false);
-  // const [isListOpen, setIsListOpen] = useState(false);
-  // const [isAddOpen, setIsAddOpen] = useState(false);
-  // const [isSettingOpen, setIsSettingOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
   const [isData, setData] = useState<AddressData[]>([]);
