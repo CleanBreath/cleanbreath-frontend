@@ -9,6 +9,10 @@ import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import MarkerOverlay from '@/components/markerOverlay';
 import ReactGA from 'react-ga4';
+import SMOK_ICON from "../../public/smokMarker.png";
+import NONSMOK_ICON from "../../public/nonSmokMarker.png"
+import SmokModal from '@/components/smokModal';
+import Image from "next/image";
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
@@ -23,15 +27,15 @@ export default function Home() {
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [isNonSmoking, setIsNonSmoking] = useState(true);
   const [isSmoking, setIsSmoking] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isListOpen, setIsListOpen] = useState(false);
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isData, setData] = useState<AddressData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isOverlayClicked, setIsOverlayClicked] = useState(false);
+  const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalPosition, setModalPosition] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -73,26 +77,9 @@ export default function Home() {
     });
   };
 
-  const listToggle = () => {
-    setIsListOpen(!isListOpen);
-    setIsOpen(!isOpen);
-    setIsAddOpen(false);
-    setIsSettingOpen(false);
-  };
-
-  const addToggle = () => {
-    setIsListOpen(false);
-    setIsOpen(!isOpen);
-    setIsAddOpen(!isAddOpen);
-    setIsSettingOpen(false);
-  };
-
-  const settingToggle = () => {
-    setIsListOpen(false);
-    setIsOpen(!isOpen);
-    setIsAddOpen(false);
-    setIsSettingOpen(!isSettingOpen);
-  };
+  const toggleMenu = (menu : string | null) => {
+    setActiveMenu(activeMenu === menu ? null : menu);
+  }
 
   const nonSmokingToggle = () => {
     setIsNonSmoking(!isNonSmoking);
@@ -133,6 +120,16 @@ export default function Home() {
     setCenter({ lat, lng });
   };
 
+  const handleMarkerClick = (position: { lat: number; lng: number }) => {
+    setModalPosition(position);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setModalPosition(null);
+  };
+
   if (loading) {
     return <div>Loading Kakao Map</div>;
   }
@@ -145,16 +142,11 @@ export default function Home() {
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <SideMenu
         onListClick={handleListClick}
-        isOpen={isOpen}
-        isListOpen={isListOpen}
-        isAddOpen={isAddOpen}
-        isSettingOpen={isSettingOpen}
+        activeMenu={activeMenu}
+        setActiveMenu={toggleMenu}
         isData={isData}
         isLoading={isLoading}
         error={errorMsg}
-        listToggle={listToggle}
-        addToggle={addToggle}
-        settingToggle={settingToggle}
       />
       <AreaToggleComponent 
         isNonSmoking={isNonSmoking}
@@ -182,36 +174,31 @@ export default function Home() {
           </MapMarker>
         )}
         {isSmoking && isData.length > 0 && (
-          <>
-            <MarkerClusterer averageCenter={true} minLevel={3} styles={[{
-              width: '40px',
-              height: '40px',
-              background: '#7CFF89',
-              color: '#000',
-              textAlign: 'center',
-              lineHeight: '40px',
-              borderRadius: '50%',
-              fontSize: '14px',
-              fontWeight: 'bold',
-              boxShadow: '0 2px 5px rgba(0, 0, 0, 0.5)',
-            }]}>
+            <MarkerClusterer averageCenter={true} minLevel={3}>
               {isData.flatMap((item) =>
                 item.paths
                   .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
                   .map((pathIndex) => (
-                    <MapMarker
-                      key={`${item.address_idx}-${pathIndex}`}
+                    <CustomOverlayMap
+                      key={`${item.address_idx}-${pathIndex.divisionArea}`}
                       position={{
                         lat: item.address_latitude,
                         lng: item.address_longitude
                       }}
-                      
-                      zIndex={1}
-                    />
+                      yAnchor={1}
+                    >
+                      <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => handleMarkerClick({
+                        lat: item.address_latitude,
+                        lng: item.address_longitude,
+                      })}/>
+                    </CustomOverlayMap>
                   ))
               )}
             </MarkerClusterer>
-          </>
+        )}
+
+        {isModalOpen && modalPosition && (
+            <SmokModal position={modalPosition} onClose={closeModal}/>
         )}
         {isData.length > 0 && (
           <>
@@ -243,8 +230,7 @@ export default function Home() {
                       </div>
                     );
                   })
-              )
-            }
+              )}
           </>
         )}
       </Map>

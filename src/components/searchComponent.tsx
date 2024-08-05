@@ -11,7 +11,7 @@ interface searchProps {
     error: string | null;
 }
 
-export default function searchComponent({ onListClick, isData, isLoading, error }: searchProps) {
+export default function SearchComponent({ onListClick, isData, isLoading, error }: searchProps) {
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const filteredData = useMemo(() => {

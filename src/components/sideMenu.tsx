@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import styles from "../../styles/sidebar.module.css";
 import LOGO_ICON from "../../public/logo.svg";
-import SEARCH_ICON from "../../public/search.svg";
+import SEARCH_ICON from "../../public/search.svg"
 import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
 import SettingArea from "@/components/settingArea";
@@ -11,59 +11,68 @@ import SearchComponent from "./searchComponent";
 
 interface SideMenuProps {
   onListClick: (item: AddressData) => void;
-  isOpen: boolean;
-  isListOpen: boolean;
-  isAddOpen: boolean;
-  isSettingOpen: boolean;
+  activeMenu : string | null;
+  setActiveMenu : (menu : string | null) => void;
   isData: AddressData[];
   isLoading: boolean;
   error: string | null;
-  listToggle: () => void;
-  addToggle: () => void;
-  settingToggle: () => void;
 }
 
 const SideMenu = ({
   onListClick,
-  isOpen,
-  isListOpen,
-  isAddOpen,
-  isSettingOpen,
   isData,
   isLoading,
+  activeMenu,
+  setActiveMenu,
   error,
-  listToggle,
-  addToggle,
-  settingToggle
 }: SideMenuProps) => {
   return (
-    <div className={isOpen ? styles.sidebarOpen : styles.sidebar}>
+    <div className={activeMenu ? styles.sidebarOpen : styles.sidebar}>
       <div className={styles.sidebarHeader}>
         <a href="#">
           <LOGO_ICON />
         </a>
-        {isOpen ? <p>CleanBreath</p> : null}
+        {activeMenu ? <p>CleanBreath</p> : null}
       </div>
       <div className={styles.menu}>
-        <div className={isListOpen ? styles.listIconOpen : styles.listIcon} onClick={listToggle}>
+        <div
+          className={activeMenu === 'list' ? styles.listIconOpen : styles.listIcon}
+          onClick={() => setActiveMenu("list")}
+        >
           <SEARCH_ICON />
         </div>
-        <div className={isAddOpen ? styles.addIconOpen : styles.addIcon} onClick={addToggle}>
+        <div
+          className={activeMenu === 'add' ? styles.addIconOpen : styles.addIcon}
+          onClick={() => setActiveMenu("add")}
+        >
           <ADD_ICON />
         </div>
-        <div className={isSettingOpen ? styles.settingIconOpen : styles.settingIcon} onClick={settingToggle}>
+        <div
+          className={activeMenu === 'setting' ? styles.settingIconOpen : styles.settingIcon}
+          onClick={() => setActiveMenu("setting")}
+        >
           <SETTING_ICON />
         </div>
       </div>
-      
       {/* 리스트 View */}
-      {isListOpen && <SearchComponent onListClick={onListClick} isData={isData} isLoading={isLoading} error={error} />}
+      {activeMenu === 'list' && (
+        <SearchComponent 
+          onListClick={onListClick}
+          isData={isData}
+          isLoading={isLoading}
+          error={error}
+        />
+      )}
 
       {/* 추가 컴포넌트 */}
-      {isAddOpen && <div className={styles.add}><AddComponent /></div>}
+      {activeMenu === 'add' && (
+        <div className={styles.add}>
+          <AddComponent />
+        </div>
+      )}
 
       {/* 설정 컴포넌트 */}
-      {isSettingOpen && <SettingArea />}
+      {activeMenu === 'setting' && <SettingArea />}
     </div>
   );
 };
