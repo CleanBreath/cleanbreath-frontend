@@ -1,15 +1,18 @@
-const COUNT_KEY = 'dataCount';
+const DATE_KEY = 'Date';
 
-export const saveCount = (count: number): void => {
-  localStorage.setItem(COUNT_KEY, count.toString());
+export const saveDate = (dateString: string): void => {
+  try {
+    localStorage.setItem(DATE_KEY, dateString);
+  } catch (error) {
+    console.error("LocalStorage에 날짜 문자열 저장 중 오류 발생:", error);
+  }
 };
 
-export const getCount = (): number | null => {
+export const getDate = (): string | null => {
   try {
-    const count = localStorage.getItem(COUNT_KEY);
-    return count !== null ? parseInt(count, 10) : null;
+    return localStorage.getItem(DATE_KEY);
   } catch (error) {
-    console.error("LocalStorage 카운트 가져오기 오류:", error);
+    console.error("LocalStorage에서 날짜 문자열 가져오기 오류:", error);
     return null;
   }
 };

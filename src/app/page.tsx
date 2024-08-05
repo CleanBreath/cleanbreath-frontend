@@ -7,6 +7,7 @@ import { AddressData } from '../api/types';
 import { listData } from '../api/api';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
+import MarkerOverlay from '@/components/markerOverlay';
 import ReactGA from 'react-ga4';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
@@ -30,12 +31,10 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [isMarkerClicked, setIsMarkerClicked] = useState(false);
-
+  const [isOverlayClicked, setIsOverlayClicked] = useState(false);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
-
     ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
   }, []);
 
@@ -125,6 +124,15 @@ export default function Home() {
     return null;
   };
 
+  const handleOverlayClick = () => {
+    setIsOverlayClicked(!isOverlayClicked);
+  };
+
+  const handlePolygonClick = (lat: number, lng: number) => {
+    setMarkerPosition({ lat, lng });
+    setCenter({ lat, lng });
+  };
+
   if (loading) {
     return <div>Loading Kakao Map</div>;
   }
@@ -161,17 +169,14 @@ export default function Home() {
         minLevel={6}
         level={3}
       >
-        {markerPosition &&
-          <MapMarker
-            position={markerPosition} 
-            /*onClick={() => { setIsMarkerClicked(!isMarkerClicked) }}*/
-          >
-            {isMarkerClicked && (
-              <CustomOverlayMap position={markerPosition} clickable={true}>
-              </CustomOverlayMap>
-            )}  
-          </MapMarker>
-        }
+        {isOverlayClicked && markerPosition && (
+          <MarkerOverlay
+            markerPosition={markerPosition}
+            isData={isData}
+            handleOverlay={handleOverlayClick} 
+          />
+        )}
+
         {userLocation && (
           <MapMarker position={userLocation}>
           </MapMarker>
@@ -217,13 +222,15 @@ export default function Home() {
                                   (isSmoking && path.divisionArea.startsWith('SMOKING_ZONE')))
                   .map((path, pathIndex) => {
                     const isSmokingZone = path.divisionArea.startsWith('SMOKING_ZONE');
+                    const pathCoordinates = parsePathCoordinates(path);
+
                     return (
                       <div
                         key={`${isSmokingZone ? 'smoking' : 'nonSmoking'}-${index}-${pathIndex}`}
                         style={{ color: "black"}}
                       >
                         <Polygon
-                          path={parsePathCoordinates(path)}
+                          path={pathCoordinates}
                           strokeWeight={0}
                           strokeColor="#ffffff"
                           strokeOpacity={0.8}
@@ -231,6 +238,7 @@ export default function Home() {
                           fillColor={isSmokingZone ? '#7CFF89' : (setSpecialCategoryColor(item.address_category) || '#FFBA5A')}
                           fillOpacity={0.7}
                           zIndex={1}
+                          onClick={() => {handlePolygonClick(item.address_latitude, item.address_longitude); setIsOverlayClicked(true);}}
                         />
                       </div>
                     );
@@ -239,7 +247,6 @@ export default function Home() {
             }
           </>
         )}
-
       </Map>
       {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
     </div>
