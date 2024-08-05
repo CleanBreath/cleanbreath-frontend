@@ -1,6 +1,6 @@
 import React, { useState, ChangeEvent } from 'react';
 import styles from "../../styles/redPillModal.module.css";
-import REDPILL_ICON from "../../public/redPill.svg";
+import REDPILL_ICON from "../../public/redpill.svg";
 
 type RedPillModalProps = {
     isOpen: boolean;
@@ -53,7 +53,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                     <button className={styles.confirmButton} onClick={handleConfirm}>
                         확인
                     </button>
-                </div>
+
             </div>
 
             {showResult && (

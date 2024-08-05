@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = "https://server.bluesky-cleanbreath.com/v1/allData";
-
 const POST_API_URL = "https://server.bluesky-cleanbreath.com/v1/updateDate";
 
 export interface AddressData {
