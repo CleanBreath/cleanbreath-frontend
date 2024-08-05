@@ -1,0 +1,115 @@
+.container {
+    padding: 10px;
+    background: white;
+    border-radius: 15px;
+    border: 0px #860000;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    position: absolute;
+    min-width: 250px;
+    height: 150px;
+    white-space: normal;
+    transform: translate(-50%, -125%);
+}
+
+.markerWrapper {
+    position: relative;
+}
+
+.title {
+    z-index: 4;
+    left: 0;
+    top: 0;
+    width: 180px;
+    padding: 15px;
+    float: left;
+    position: relative; 
+}
+
+.title p {
+    display: inline;
+    color: #000;
+    font-family: "Red Hat Display";
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.title .nonSmok svg {
+    display: inline;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-top: 15px;
+    padding-left: 30px;
+    width: 30px;
+    height: 30px;
+    fill: #E83600;
+}
+
+.title .smok svg {
+    display: inline;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding-top: 15px;
+    padding-left: 30px;
+    width: 30px;
+    height: 30px;
+    fill: #000;
+}
+
+.subTitle {
+    z-index: 4;
+    left: 0;
+    top: 40px;
+    width: auto;
+    padding: 15px;
+    position: absolute;
+    color: #000;
+    font-family: "Red Hat Display";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    display: inline-block;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #555;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    bottom: 125%; 
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 4;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.title:hover .tooltip {
+    opacity: 1;
+}
+
+.close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 5;
+    cursor: pointer;
+}
+ 
+.close svg {
+    width: 24px;
+    height: 24px;
+    fill: #000;
+}
+
+.close svg:active {
+    transform: scale(0.9);
+}
+
