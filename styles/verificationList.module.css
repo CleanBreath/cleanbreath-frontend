@@ -1,7 +1,7 @@
 .verificationList {
     position: absolute;
     top: -100px; /* 상단 메뉴로부터 50px 아래 */
-    left: 230px; /* 사이드 메뉴로부터 200px 오른쪽 */
+    left: 300px; /* 사이드 메뉴로부터 200px 오른쪽 */
     width: 300px; /* 리스트의 너비 */
     height: calc(100vh); /* 화면의 높이에 맞추기, 상단 여백 50px */
     z-index: 5;

@@ -206,9 +206,9 @@ export default function Home() {
                                 }}
                                 yAnchor={1}
                             >
-                              <Image src={SMOK_ICON} alt={"Smok"} width={50} height={50} onClick={() => handleMarkerClick({
+                              <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => handleMarkerClick({
                                 lat: item.address_latitude,
-                                lng: item.address_longitude
+                                lng: item.address_longitude,
                               })}/>
                             </CustomOverlayMap>
                         ))
@@ -218,7 +218,7 @@ export default function Home() {
         )}
 
         {isModalOpen && modalPosition && (
-            <SmokModal position={modalPosition} onClose={closeModal} />
+            <SmokModal position={modalPosition} onClose={closeModal}/>
         )}
 
         {isData.length > 0 && (
