@@ -2,6 +2,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import styles from "../../styles/feedbackModal.module.css";
+import LOGO_ICON from "../../public/logo.svg";
 
 const POST_API_URL = "https://server.bluesky-cleanbreath.com/v1/feedback/add";
 
@@ -25,6 +26,11 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
     };
 
     const handleSubmit = async () => {
+        if (!title || !content) {
+            window.alert('제목과 내용을 모두 입력해 주세요.');
+            return;
+        }
+
         const feedbackData = {
             title: title,
             content: content,
@@ -50,22 +56,27 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose }) => {
         <div className={styles.modalOverlay} onClick={onClose}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.modalContent}>
-                    <h2>피드백하기</h2>
+                    <div className={styles.modalHeader}>
+                        <LOGO_ICON className={styles.logoIcon}/>
+                        <h1 className={styles.cleanBreath}>CleanBreath</h1>
+                        <p className={styles.modalHashTags}>#금연구역 #흡연구역 #클브</p>
+                        <button className={styles.closeButton} onClick={onClose}>&times;</button>
+                    </div>
+                    <h2 className={styles.modalTitle}><span className={styles.highlightGreen}>피드백</span> 하기</h2>
                     <input
                         type="text"
-                        placeholder="제목"
+                        placeholder="제목을 작성 해 주세요!"
                         value={title}
                         onChange={handleTitleChange}
                         className={styles.input}
                     />
                     <textarea
-                        placeholder="내용"
+                        placeholder="부족한 점,바라는 점이 있다면 자유롭게 작성 해 주세요!"
                         value={content}
                         onChange={handleContentChange}
                         className={styles.textarea}
                     />
                     <button onClick={handleSubmit} className={styles.submitButton}>제출</button>
-                    <button onClick={onClose} className={styles.closeButton}>닫기</button>
                 </div>
             </div>
         </div>
