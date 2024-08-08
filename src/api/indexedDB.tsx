@@ -30,10 +30,16 @@ export const saveData = (data: AddressData[]): Promise<void> => {
     openDb().then((db) => {
       const transaction = db.transaction(STORE_NAME, 'readwrite');
       const store = transaction.objectStore(STORE_NAME);
-      const request = store.put({ key: 'data', value: data });
 
-      request.onsuccess = () => resolve();
-      request.onerror = (event) => reject((event.target as IDBRequest).error);
+      // Clear existing data
+      const clearRequest = store.clear();
+      clearRequest.onsuccess = () => {
+        // Add new data after clearing
+        const putRequest = store.put({ key: 'data', value: data });
+        putRequest.onsuccess = () => resolve();
+        putRequest.onerror = (event) => reject((event.target as IDBRequest).error);
+      };
+      clearRequest.onerror = (event) => reject((event.target as IDBRequest).error);
     }).catch(reject);
   });
 };

@@ -12,4 +12,24 @@ export interface AddressData {
       pathsLongitude: string[];
     }>;
   }
-  
+
+export interface ApartmentData {
+    id: number;
+    region: string;
+    designationNumber: string;
+    apartmentName: string;
+    address: string;
+    numberOfBuilding: number;
+    numberOfHouseholds: number;
+    designationDate: string;
+    path: Array<{
+      hallway: string;
+      stairs: string;
+      elevator: string;
+      underground_parking_lot: string;
+      latitude: number;
+      longitude: number;
+      pathsLat: string;
+      pathsLng: string;
+    }>;
+}

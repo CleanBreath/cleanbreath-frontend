@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { AddressData } from '@/api/types';
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
