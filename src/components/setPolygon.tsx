@@ -1,4 +1,4 @@
-import { AddressData } from '../api/types';
+import { AddressData, ApartmentData } from '../api/types';
 import { Polygon } from 'react-kakao-maps-sdk';
 import { useState, useEffect } from 'react';
 

@@ -23,13 +23,13 @@ export interface ApartmentData {
     numberOfHouseholds: number;
     designationDate: string;
     path: Array<{
-      hallway: string;
-      stairs: string;
-      elevator: string;
-      underground_parking_lot: string;
+      hallway: boolean;
+      stairs: boolean;
+      elevator: boolean;
+      underground_parking_lot: boolean;
       latitude: number;
       longitude: number;
-      pathsLat: string;
-      pathsLng: string;
+      pathsLat: string[];
+      pathsLng: string[];
     }>;
 }

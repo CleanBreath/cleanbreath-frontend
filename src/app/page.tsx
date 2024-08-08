@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
 import { CustomOverlayMap, Map, MapMarker, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
-import { AddressData } from '../api/types';
-import { listData } from '../api/api';
+import { AddressData, ApartmentData } from '../api/types';
+import { listData, ApartmentsData } from '../api/api';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import MarkerOverlay from '@/components/markerOverlay';
@@ -30,13 +30,12 @@ export default function Home() {
   const [isSmoking, setIsSmoking] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isData, setData] = useState<AddressData[]>([]);
+  const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isOverlayClicked, setIsOverlayClicked] = useState(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -49,7 +48,9 @@ export default function Home() {
       setError(null);
       try {
         const data = await listData();
+        const apartmentsData = await ApartmentsData();
         setData(data);
+        setApartmentsData(apartmentsData);
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);
@@ -137,6 +138,7 @@ export default function Home() {
             markerPosition={markerPosition}
             isData={isData}
             handleOverlay={handleOverlayClick} 
+            setIsOverlayClicked={setIsOverlayClicked}
           />
         )}
 

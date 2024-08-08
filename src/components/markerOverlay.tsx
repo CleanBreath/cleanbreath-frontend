@@ -10,6 +10,7 @@ interface MarkerOverlayProps {
     markerPosition: { lat: number; lng: number };
     isData: AddressData[];
     handleOverlay: () => void;
+    setIsOverlayClicked: (isOverlayClicked: boolean) => void;
 }
 
 const changeText = (text: string, maxLength: number): string => {
@@ -18,7 +19,7 @@ const changeText = (text: string, maxLength: number): string => {
 
 const TITLE_CHAR_LIMIT = 7;
 
-export default function MarkerOverlay({ markerPosition, isData, handleOverlay }: MarkerOverlayProps) {
+export default function MarkerOverlay({ markerPosition, isData, handleOverlay, setIsOverlayClicked }: MarkerOverlayProps) {
   const [tooltip, setTooltip] = useState<string | null>(null);
 
   const showTooltip = (text: string) => setTooltip(text);
@@ -45,7 +46,7 @@ export default function MarkerOverlay({ markerPosition, isData, handleOverlay }:
                       </div>
                     )}
                   </div>
-                  <div className={styles.close} onClick={handleOverlay}>
+                  <div className={styles.close} onClick={() => {setIsOverlayClicked(false)}}>
                     <CLOSE_ICON />
                   </div>
                   <p className={styles.subTitle}>{item.address_name}</p>
