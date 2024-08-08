@@ -16,15 +16,22 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setCigaretteCount(e.target.value);
+        const value = e.target.value;
+        // 양의 정수만 허용하도록 정규식을 이용해 필터링
+        if (/^\d*$/.test(value)) {
+            setCigaretteCount(value);
+        }
     };
 
     const handleConfirm = () => {
         const count = parseInt(cigaretteCount, 10);
-        if (!isNaN(count)) {
+        if (!isNaN(count) && count > 0) {
             const cost = count * 4500 * 365;
             setTotalCost(cost);
             setShowResult(true);
+        } else {
+            // count가 양의 정수가 아니면 경고창을 표시하거나 처리할 수 있습니다.
+            window.alert("양의 정수를 입력해 주세요.");
         }
     };
 
@@ -48,6 +55,9 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                             value={cigaretteCount}
                             onChange={handleInputChange}
                             placeholder="0"
+                            min="1"  // 최소 1부터 입력 가능
+                            step="1" // 1씩 증가
+                            className={styles.input}
                         />
                         <label>갑</label>
                     </div>
