@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import styles from "../../styles/redPillModal.module.css";
 import Image from "next/image";
-import REDPILL_ICON from "../../public/redpill.svg";
+import REDPILL_ICON from "../../public/redPill.svg";
 
 type RedPillModalProps = {
     isOpen: boolean;

@@ -4,12 +4,14 @@ import InfoModal from "@/components/infoModal";
 import RedPillModal from "@/components/redpillModal";
 import WarningModal from "@/components/warningModal";
 import VerificationList from "@/components/verificationList";
+import FeedbackModal from '@/components/feedbackModal';
 
 export default function SettingArea() {
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
     const [isRedPillModalOpen, setIsRedPillModalOpen] = useState(false);
     const [isWarningModalOpen, setIsWarningModalOpen] = useState(false);
     const [isVerificationListOpen, setIsVerificationListOpen] = useState(false);
+    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
     const openInfoModal = () => setIsInfoModalOpen(true);
     const closeInfoModal = () => setIsInfoModalOpen(false);
@@ -23,6 +25,9 @@ export default function SettingArea() {
     const openVerificationList = () => setIsVerificationListOpen(true);
     const closeVerificationList = () => setIsVerificationListOpen(false);
 
+    const openFeedbackModal = () => {setIsFeedbackModalOpen(true);};
+    const closeFeedbackModal = () => {setIsFeedbackModalOpen(false);};
+
     return (
         <div className={styles.settingArea}>
             <button className={styles.settingButton} onClick={openInfoModal}>
@@ -34,10 +39,14 @@ export default function SettingArea() {
             <button className={styles.settingButton} onClick={openRedPillModal}>
                 빨간약
             </button>
+            <button className={styles.settingButton} onClick={openFeedbackModal}>
+                피드백하기
+            </button>
 
             <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal} />
             <WarningModal isOpen={isWarningModalOpen} onClose={closeWarningModal} />
             <RedPillModal isOpen={isRedPillModalOpen} onClose={closeRedPillModal} />
+            <FeedbackModal isOpen={isFeedbackModalOpen} onClose={closeFeedbackModal} />
 
             {/*{isVerificationListOpen && (*/}
             {/*    <div className={styles.verificationListWrapper}>*/}
