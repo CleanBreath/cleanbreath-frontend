@@ -101,6 +101,8 @@ export default function Home() {
       setIsSettingOpen(false); 
     }
   };
+  
+
   const settingToggle = () => {
     setIsListOpen(false);  
     setIsAddOpen(true);   
