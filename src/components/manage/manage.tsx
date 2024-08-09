@@ -4,6 +4,7 @@ import styles from "../../../styles/manageCss/manageDashBoard.module.css";
 import LOGO_ICON from "../../../public/logo.svg";
 import USER from "../.././../public/user_icon.svg";
 import axios from "axios";
+import FeedbackContent from "./feedbackContent";
 
 export default function Manage() {
     const MANAGE_API_URL = "https://server.bluesky-cleanbreath.com/v1/manage/logout";
@@ -18,7 +19,7 @@ export default function Manage() {
 
     const logout = async() => {
         try {
-            const response = await axios.get(
+            const response = await axios.post(
                 MANAGE_API_URL_DEV,
                 { withCredentials: true }
             );
@@ -75,7 +76,9 @@ export default function Manage() {
             </div>
           </div>
           <div className={styles.sections}>
-
+            {activeMenu === 'feedback' && (
+                <FeedbackContent />
+            )}
           </div>
         </div>
       </>

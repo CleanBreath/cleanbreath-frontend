@@ -110,3 +110,11 @@
     color: #fff;
 }
 
+.container .sections {
+    position: absolute;
+    left: 22%;
+    top: 12vh;
+    width: 75.5%;
+    height: 85vh;
+}
+
