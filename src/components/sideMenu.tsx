@@ -6,9 +6,11 @@ import ADD_ICON from "../../public/add.svg";
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
 import SMOKING_ICON from "../../public/smok.svg";
 import SETTING_ICON from "../../public/setting.svg";
+import NOTICE_ICON from "../../public/Notice.svg";
 import { AddressData } from "./listData";
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
+import NoticeList from "@/components/noticeList";
 
 interface SideMenuProps {
   onListClick: (item: AddressData) => void;
@@ -69,6 +71,12 @@ const SideMenu = ({
         >
           <SETTING_ICON />
         </div>
+        <div
+          className={activeMenu === 'notice' ? styles.settingIconOpen : styles.settingIcon}
+          onClick={() => setActiveMenu("notice")}
+        >
+          <NOTICE_ICON />
+        </div>
       </div>
       {/* 검색창 추가 
       {isListOpen && (
@@ -119,6 +127,9 @@ const SideMenu = ({
           <AddComponent />
         </div>
       )}
+
+      {/* 공지사항 컴포넌트 */}
+      {activeMenu === 'notice' && <NoticeList />}
 
       {/* 설정 컴포넌트 */}
       {activeMenu === 'setting' && <SettingArea />}
