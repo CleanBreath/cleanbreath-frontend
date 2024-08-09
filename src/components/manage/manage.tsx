@@ -5,10 +5,12 @@ import LOGO_ICON from "../../../public/logo.svg";
 import USER from "../.././../public/user_icon.svg";
 import axios from "axios";
 import FeedbackContent from "./feedbackContent";
+import { useRouter } from "next/router";
 
 export default function Manage() {
     const MANAGE_API_URL = "https://server.bluesky-cleanbreath.com/v1/manage/logout";
     const MANAGE_API_URL_DEV = "http://localhost:7001/v1/manage/logout";
+
 
     const [name, setName] = useState<string | null>('');
     const [activeMenu, setActiveMenu] = useState<string | null>('feedback');
@@ -17,19 +19,21 @@ export default function Manage() {
         setActiveMenu(activeMenu === menu ? null : menu);
     }
 
-    const logout = async() => {
+    const logout = () => {
         try {
-            const response = await axios.post(
+            const response = axios.post(
                 MANAGE_API_URL_DEV,
+                {},
                 { withCredentials: true }
             );
+
             sessionStorage.removeItem("ManageName");
 
             console.log(response);
             alert("로그아웃 성공");
         } catch (err) {
             console.error(err);
-        } finally{
+        } finally {
             window.location.href = "/login";
         }
     }

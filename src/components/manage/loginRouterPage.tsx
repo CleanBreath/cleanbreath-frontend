@@ -15,6 +15,7 @@ export default function LoginRouterPage({token} : LoginRouterPageProps) {
             router.push("/dashboard")
         }
     }, [token])
+
     return (
         <ManageLoginForm />
     )
