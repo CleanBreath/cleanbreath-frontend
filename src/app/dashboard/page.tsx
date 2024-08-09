@@ -6,7 +6,7 @@ export default function DashBoard() {
 
     return (
         <>
-            <ManageRouterPage token={session} />
+            <ManageRouterPage token={session}/>
         </>
     )
 }
