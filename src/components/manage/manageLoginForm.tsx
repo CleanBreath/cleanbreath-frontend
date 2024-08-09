@@ -6,7 +6,7 @@ import BackIcon from "../../../public/back.svg";
 import styles from "../../../styles/manageCss/manageLoginForm.module.css";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { createContext, useState } from "react";
+import { useState } from "react";
 
 
 export default function ManageLoginForm() {
@@ -35,7 +35,7 @@ export default function ManageLoginForm() {
       alert("로그인 실패");
     } finally {
       alert("로그인 성공");
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     }
   };
 

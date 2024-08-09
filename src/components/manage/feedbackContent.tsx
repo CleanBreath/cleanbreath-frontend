@@ -36,17 +36,13 @@ export default function FeedbackContent() {
         setShowDetail(false);
     }
 
-    console.log(details);
-
-
     useEffect(() => {
         async function axiosApi() {
             const data = await getAPI("feedback-list");
             setFeedback(data);
         }
         axiosApi();
-    }, []);
-
+    }, [feedback]);
 
     return (
         <div className={styles.container}>
@@ -84,19 +80,6 @@ export default function FeedbackContent() {
                     })
                 }
             </div>
-            {/* <div>
-                {
-                    showDetail && 
-                    <FeedbackDetail
-                        className={styles.detail}
-                        feedback_id={details.id}
-                        title={details.title}
-                        content={details.content}
-                        createAt={details.createAt}
-                        closeFeedbackDetail={closeFeedbackDetail}
-                    />
-                }
-            </div> */}
         </div>
     )
 }

@@ -5,7 +5,8 @@ import LOGO_ICON from "../../../public/logo.svg";
 import USER from "../.././../public/user_icon.svg";
 import axios from "axios";
 import FeedbackContent from "./feedbackContent";
-import { useRouter } from "next/router";
+import SmokingAreaContent from "./smokingAreaContent";
+import NoticeContent from "./noticeContent";
 
 export default function Manage() {
     const MANAGE_API_URL = "https://server.bluesky-cleanbreath.com/v1/manage/logout";
@@ -80,9 +81,21 @@ export default function Manage() {
             </div>
           </div>
           <div className={styles.sections}>
-            {activeMenu === 'feedback' && (
-                <FeedbackContent />
-            )}
+            {
+                activeMenu === 'feedback' && (
+                    <FeedbackContent />
+                )
+            }
+            {
+                activeMenu === 'smokingArea' && (
+                    <SmokingAreaContent />
+                )
+            }
+            {
+                activeMenu === 'notice' && (
+                    <NoticeContent />
+                )
+            }
           </div>
         </div>
       </>
