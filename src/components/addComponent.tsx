@@ -3,6 +3,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import styles from "../../styles/addArea.module.css";
 
+//addComponent.tsx,addArea.module.css,page.tsx만 병합하면될듯
 interface AddComponentProps {
     address: string;
     buildingName: string;

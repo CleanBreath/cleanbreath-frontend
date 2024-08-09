@@ -1,3 +1,4 @@
+//병합 page.tsx 지도에 클릭한 위치에 마커표시/현재위치는 x
 'use client';
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
