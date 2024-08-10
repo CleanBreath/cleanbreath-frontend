@@ -1,6 +1,6 @@
 .container {
     width: 100%;
-    height: 100%;
+    height: 97%;
 }
 
 .title {
@@ -22,7 +22,7 @@
 .contentContainer .addNoticeBtn {
     position: absolute;
     top: 17vh;
-    right: 26.7vh;
+    right: 27.4vh;
 }
 .contentContainer .addNoticeBtn > button {
     width: 88px;
@@ -50,6 +50,10 @@
     font-size: 15px;
     font-weight: bold;
 }
+.tableRow {
+    overflow-y: scroll;
+}
+
 
 .tableRow > tr {
     width: 100vh;
@@ -92,3 +96,88 @@
 .deleteNoticeBtn > button:hover {
     background-color: #B33A3A;
 }
+
+.noticeDetail {
+    background-color: white;
+    border-radius: 15px;
+    position: absolute;
+    top: 11.5vh;
+    left: 23vh;
+    width: 110vh;
+    height: 71vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.5);
+}
+
+.noticeDetail > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.noticeDetail > div:nth-child(1) {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    padding-top: 1.5vh;
+    padding-right: 3vh;
+    gap: 1.5vh;
+}
+.noticeDetail > div:nth-child(1) > div > button {
+    background-color: #35A5B5;
+    border: none;
+    width: 60px;
+    height: 35px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+}
+.noticeDetail > div:nth-child(1) > div > button:hover {
+    background-color: #26778D;
+}
+.noticeDetail > div > div:first-child > input {
+    border: 2px solid #26778D;
+    border-radius: 15px;
+    width: 85vh;
+    margin-top: 2.5vh;
+    height: 5vh;
+    font-size: 20px;
+}
+.noticeDetail > div:nth-child(2) > div:last-child {
+    position: relative;
+    right: 35vh;
+    display: flex;
+    margin-top: 2vh;
+    width: 15vh;
+    border: 1px solid gray;
+    padding-left: 20px;
+    height: 3.5vh;
+    align-items: center;
+    border-radius: 15px;
+}
+
+.noticeDetail > div > div:first-child > input[type=text] {
+    padding-left: 20px;
+}
+
+.noticeDetail > div:nth-child(3) > textarea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2vh;
+    width: 85.5vh;
+    height: 45vh;
+    border: 2px solid #26778D;
+    border-radius: 15px;
+    resize: none;
+    padding-left: 1.5vh;
+    padding-top: 1.5vh;
+}
+
+
+
+

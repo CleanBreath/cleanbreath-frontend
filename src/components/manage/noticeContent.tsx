@@ -2,22 +2,38 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import TableRow from "./TableRowProps";
 import styles from "../../../styles/manageCss/smokingAreaContent.module.css";
+import NoticeDetail from "./noticeDetail";
 
-
-const NOTICE_API_URL_DEV = "http://localhost:7001/v1/findAllNotice";
+const NOTICE_API_URL_DEV = "http://localhost:7001/v1";
 
 export default function NoticeContent() {
     const [noticeList, setNoticeList] = useState<any[]>([]);
     const [selected, setSelected] = useState<number[]>();
+    const [detail, setDetail] = useState<any>();
+    const [openDetail, setOpenDetail] = useState<boolean>(false);
+
     const handleCheckChange = (id : number) => {
         setSelected((prev) => 
             prev?.includes(id) ? prev.filter((item) => item !== id) : [...(prev || []), id]
         )
     }
 
+    const handleClickDetail = async(id: number) => {
+        const response = await axios.get(`${NOTICE_API_URL_DEV}/notice/${id}`, { withCredentials: true })
+        if (response.status !== 200) {
+            return new Error("API Error");
+        }
+        setDetail(response.data);
+        setOpenDetail(true);
+    }
+
+    const hendleCloseDetail = () => {
+        setOpenDetail(false);
+    }
+
     useEffect(() => {
         async function getNoticeList() {
-            const response = await axios.get(NOTICE_API_URL_DEV, { withCredentials: true });
+            const response = await axios.get(`${NOTICE_API_URL_DEV}/findAllNotice`, { withCredentials: true });
             if (response.status !== 200) {
                 return new Error("API Error");
             }
@@ -25,6 +41,7 @@ export default function NoticeContent() {
         }
         getNoticeList();
     }, [noticeList]);
+    
 
     return (
         <>
@@ -57,7 +74,8 @@ export default function NoticeContent() {
                                         title={notice.title}
                                         date={notice.updateAt}
                                         checked={selected?.includes(notice.id) || false}
-                                        onCkeckChange={handleCheckChange}
+                                        onCheckChange={handleCheckChange}
+                                        onClickDetails={handleClickDetail}
                                     />
                                 ))
                             }
@@ -67,9 +85,21 @@ export default function NoticeContent() {
                         <button>
                             삭제
                         </button>
-                        {selected?.length}개 선택됨
+                        {selected?.length === undefined ? 0 : selected?.length}개 선택됨
                     </div>
                 </div>
+                {
+                    openDetail && detail ? (
+                        <NoticeDetail
+                            className={styles.noticeDetail}
+                            id={detail.id}
+                            title={detail.title}
+                            date={detail.updateAt}
+                            content={detail.content}
+                            closeDetail={hendleCloseDetail}
+                        />
+                    ) : null
+                }
             </div>
         </>
     )
