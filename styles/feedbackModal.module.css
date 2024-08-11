@@ -112,3 +112,28 @@
 .highlightGreen {
     color: #007E8F;
 }
+
+@media (max-width: 768px) {
+    .modalContent {
+        width: 100%;
+        height: 100%;
+        border-radius: 0px;
+    }
+
+    .modalHeader {
+        height: 20%;
+    }
+
+    .logoIcon {
+        margin-top: 20px;
+    }
+
+    .input {
+        margin-left: 8px;
+    }
+
+    .textarea {
+        margin-left: 8px;
+        height: 40%;
+    }
+}
