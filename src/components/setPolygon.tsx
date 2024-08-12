@@ -115,6 +115,7 @@ export default function SetPolygon({
                                         handlePolygonClick(item.address_latitude, item.address_longitude);
                                         handleOverlayClick();
                                         setPolygonState("address");
+                                        setApartClickedPolygon(null);
                                         console.log(isOverlayClicked);
                                     }}
                                     onMouseover={() => setHoveredPolygon(index)}
@@ -124,8 +125,11 @@ export default function SetPolygon({
                         );
                     })
             )}
-            {isApartmentsData.flatMap((apartment, index) =>
-                apartment.path.map((path, pathIndex) => {
+
+            {isNonSmoking &&
+            isApartmentsData.flatMap((apartment, index) =>
+                apartment.path
+                    .map((path, pathIndex) => {
                     const pathCoordinates = parsePathCoordinates(path);
 
                     const strokeWeight = apartHoveredPolygon === index || apartClickedPolygon === index ? 3 : 0;
