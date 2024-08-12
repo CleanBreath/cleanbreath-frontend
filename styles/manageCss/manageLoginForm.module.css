@@ -1,0 +1,104 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container div:first-child {
+    margin-bottom: 8vh;
+    border-bottom: 4px solid #0093A7;
+}
+.container div:first-child>h1 {
+    font-size: 72px;
+    font-weight: bold;
+    color: #0093A7;
+}
+
+.container .userEmail {
+    border-bottom: 2px solid #0093A7;
+    width: 48vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .userEmail>input {
+    width: 100%;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #0093A7;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+}
+
+.container .userEmail>svg {
+    width: 3vh;
+    margin-bottom: 1vh;
+    margin-left: 1vh;
+}
+
+.container .userPassword {
+    border-bottom: 2px solid #0093A7;
+    width: 48vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vh;
+}
+
+.container .userPassword>input {
+    width: 100%;
+    font-size: 16px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #0093A7;
+    padding-bottom: 1vh;
+    padding-left: 1vh;
+}
+
+.container .userPassword>svg {
+    width: 3vh;
+    margin-bottom: 1vh;
+    margin-left: 1vh;
+}
+
+.container .LoginBtn>button {
+    width: 40vh;
+    height: 6vh;
+    background-color: #0093A7;
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 6.5vh;
+    cursor: pointer;
+}
+
+.container .LoginBtn>button:hover {
+    filter: drop-shadow(0 0 0.55rem #0093A7);
+}
+
+.back {
+    width: 80px;
+    height: 80px;
+    border: 1px solid #0093A7;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 2.5vh;
+    left: 2.5vh;
+    background-color: #0093A7;
+}
+
+.back:hover {
+    filter: drop-shadow(0 0 0.55rem #0093A7);
+}
