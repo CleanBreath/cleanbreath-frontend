@@ -12,7 +12,6 @@ import Polygon from '@/components/setPolygon';
 import ReactGA from 'react-ga4';
 import SMOK_ICON from "../../public/smokMarker.png";
 import NONSMOK_ICON from "../../public/nonSmokMarker.png"
-import SmokModal from '@/components/smokModal';
 import Image from "next/image";
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
@@ -36,6 +35,7 @@ export default function Home() {
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isOverlayClicked, setIsOverlayClicked] = useState(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+  const [PolygonState, setPolygonState] = useState<string | null>(null);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -137,7 +137,8 @@ export default function Home() {
           <MarkerOverlay
             markerPosition={markerPosition}
             isData={isData}
-            handleOverlay={handleOverlayClick} 
+            isApartmentsData={isApartmentsData}
+            PolygonState={PolygonState}
             setIsOverlayClicked={setIsOverlayClicked}
           />
         )}
@@ -173,11 +174,13 @@ export default function Home() {
         {isData.length > 0 && (
           <Polygon 
             isData={isData}
+            isApartmentsData={isApartmentsData}
             isNonSmoking={isNonSmoking}
             isSmoking={isSmoking}
             handlePolygonClick={handlePolygonClick}
             handleOverlayClick={handleOverlayClick}
             isOverlayClicked={isOverlayClicked}
+            setPolygonState={setPolygonState}
           />
         )}
       </Map>
