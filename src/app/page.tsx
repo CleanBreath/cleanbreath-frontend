@@ -36,6 +36,8 @@ export default function Home() {
   const [isOverlayClicked, setIsOverlayClicked] = useState(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
   const [PolygonState, setPolygonState] = useState<string | null>(null);
+  const [statute, setStatute] = useState<string | null>(null);
+  const [zoomalbe, setZoomable] = useState(true);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -132,6 +134,7 @@ export default function Home() {
         style={{ width: '100%', height: '100%', zIndex: 0 }}
         minLevel={6}
         level={3}
+        zoomable={zoomalbe}
       >
         {isOverlayClicked && markerPosition && (
           <MarkerOverlay
@@ -140,6 +143,8 @@ export default function Home() {
             isApartmentsData={isApartmentsData}
             PolygonState={PolygonState}
             setIsOverlayClicked={setIsOverlayClicked}
+            statute={statute}
+            setStatute={setStatute}
           />
         )}
 
@@ -181,6 +186,7 @@ export default function Home() {
             handleOverlayClick={handleOverlayClick}
             isOverlayClicked={isOverlayClicked}
             setPolygonState={setPolygonState}
+            setStatute={setStatute}
           />
         )}
       </Map>

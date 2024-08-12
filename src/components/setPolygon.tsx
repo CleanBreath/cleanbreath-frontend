@@ -11,6 +11,7 @@ interface PolygonProps {
     handlePolygonClick: (lat: number, lng: number) => void;
     handleOverlayClick: () => void;
     setPolygonState: (state: string) => void;
+    setStatute: (statute: string | null) => void;
 }
 
 export default function SetPolygon({
@@ -21,7 +22,8 @@ export default function SetPolygon({
     isOverlayClicked,
     handlePolygonClick,
     handleOverlayClick,
-    setPolygonState
+    setPolygonState,
+    setStatute
 }: PolygonProps) {
     const [apartStrokeStyle, setApartStrokeStyle] = useState<'shortdash' | 'dash'>('shortdash');
     const [hoveredPolygon, setHoveredPolygon] = useState<number | null>(null);
@@ -116,7 +118,7 @@ export default function SetPolygon({
                                         handleOverlayClick();
                                         setPolygonState("address");
                                         setApartClickedPolygon(null);
-                                        console.log(isOverlayClicked);
+                                        setStatute(null);
                                     }}
                                     onMouseover={() => setHoveredPolygon(index)}
                                     onMouseout={() => setHoveredPolygon(null)}
@@ -152,7 +154,7 @@ export default function SetPolygon({
                                     handleOverlayClick();
                                     setPolygonState("apartment");
                                     setApartClickedPolygon(index);
-                                    console.log(`apartment-${index}-${pathIndex}`);
+                                    setStatute(null);
                                 }}
                                 onMouseover={() => setApartHoveredPolygon(index)}
                                 onMouseout={() => setApartHoveredPolygon(null)}
