@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
-import styles from "../../styles/redPillModal.module.css";
+import styles from "../../styles/redpillModal.module.css";
 import Image from "next/image";
 import REDPILL_ICON from "../../public/redPill.svg";
 

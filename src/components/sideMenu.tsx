@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import styles from "../../styles/sidebar.module.css";
+
 import LOGO_ICON from "../../public/logo.svg";
-import MOBILELOGO_ICON from  "../../public/mobilelogo.svg";
+import MOBILELOGO_ICON from "../../public/mobilelogo.svg";
 import LIST_ICON from "../../public/list.svg";
 import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
 import NOTICE_ICON from "../../public/Notice.svg";
+import SEARCH_ICON from "../../public/search.svg";
+
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
 import NoticeList from "@/components/noticeList";
+import SearchComponent from "./searchComponent";
+import { AddressData } from "@/api/types";
 
 interface SideMenuProps {
     onListClick: (item: any) => void;
@@ -20,13 +25,13 @@ interface SideMenuProps {
 }
 
 const SideMenu = ({
-                      onListClick,
-                      isData,
-                      isLoading,
-                      activeMenu,
-                      setActiveMenu,
-                      error,
-                  }: SideMenuProps) => {
+    onListClick,
+    isData,
+    isLoading,
+    activeMenu,
+    setActiveMenu,
+    error,
+}: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -73,25 +78,25 @@ const SideMenu = ({
                 </div>
                 <div className={styles.menu}>
                     <div
-                        className={activeMenu === "list" ? styles.listIconOpen : styles.listIcon}
+                        className={activeMenu === 'list' ? styles.listIconOpen : styles.listIcon}
                         onClick={() => setActiveMenu("list")}
                     >
-                        <LIST_ICON />
+                        <SEARCH_ICON />
                     </div>
                     <div
-                        className={activeMenu === "add" ? styles.addIconOpen : styles.addIcon}
+                        className={activeMenu === 'add' ? styles.addIconOpen : styles.addIcon}
                         onClick={() => setActiveMenu("add")}
                     >
                         <ADD_ICON />
                     </div>
                     <div
-                        className={activeMenu === "setting" ? styles.settingIconOpen : styles.settingIcon}
+                        className={activeMenu === 'setting' ? styles.settingIconOpen : styles.settingIcon}
                         onClick={() => setActiveMenu("setting")}
                     >
                         <SETTING_ICON />
                     </div>
                     <div
-                        className={activeMenu === "notice" ? styles.settingIconOpen : styles.settingIcon}
+                        className={activeMenu === 'notice' ? styles.settingIconOpen : styles.settingIcon}
                         onClick={() => setActiveMenu("notice")}
                     >
                         <NOTICE_ICON />
@@ -99,27 +104,13 @@ const SideMenu = ({
                 </div>
 
                 {/* 리스트 View */}
-                {activeMenu === "list" && (
-                    <div className={styles.list}>
-                        {isLoading ? (
-                            <p>데이터 로딩 중...</p>
-                        ) : error ? (
-                            <p>{error}</p>
-                        ) : isData.length > 0 ? (
-                            isData.map((item) => (
-                                <div
-                                    key={item.address_idx}
-                                    className={styles.listdata}
-                                    onClick={() => onListClick(item)}
-                                >
-                                    <p>{item.address_idx}</p>
-                                    <p>{item.address_name}</p>
-                                </div>
-                            ))
-                        ) : (
-                            <p>리스트가 비어 있습니다.</p>
-                        )}
-                    </div>
+                {activeMenu === 'list' && (
+                    <SearchComponent 
+                        onListClick={onListClick}
+                        isData={isData}
+                        isLoading={isLoading}
+                        error={error}
+                    />
                 )}
 
                 {/* 추가 컴포넌트 */}

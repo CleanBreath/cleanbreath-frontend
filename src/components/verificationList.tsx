@@ -1,6 +1,7 @@
 // VerificationList.tsx
 import React, { useEffect, useState } from 'react';
-import { listData, AddressData } from '@/components/listData';
+import { AddressData } from "@/api/types";
+import { listData } from '../api/api';
 import styles from "../../styles/verificationList.module.css";
 
 type VerificationListProps = {
@@ -43,7 +44,7 @@ const VerificationList: React.FC<VerificationListProps> = ({ onClose }) => {
             <ul>
                 {data.map((item) => (
                     <li key={item.address_idx}>
-                        <strong><span className={styles.mainColor}>{item.adress_detail}</span><br/>
+                        <strong><span className={styles.mainColor}>{item.address_name}</span><br/>
                                 {item.address_name}
                         </strong>
                     </li>
