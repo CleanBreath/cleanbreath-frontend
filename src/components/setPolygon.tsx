@@ -11,6 +11,7 @@ interface PolygonProps {
     handlePolygonClick: (lat: number, lng: number) => void;
     handleOverlayClick: () => void;
     setPolygonState: (state: string) => void;
+    setStatute: (statute: string | null) => void;
 }
 
 export default function SetPolygon({
@@ -21,7 +22,8 @@ export default function SetPolygon({
     isOverlayClicked,
     handlePolygonClick,
     handleOverlayClick,
-    setPolygonState
+    setPolygonState,
+    setStatute
 }: PolygonProps) {
     const [apartStrokeStyle, setApartStrokeStyle] = useState<'shortdash' | 'dash'>('shortdash');
     const [hoveredPolygon, setHoveredPolygon] = useState<number | null>(null);
@@ -115,7 +117,8 @@ export default function SetPolygon({
                                         handlePolygonClick(item.address_latitude, item.address_longitude);
                                         handleOverlayClick();
                                         setPolygonState("address");
-                                        console.log(isOverlayClicked);
+                                        setApartClickedPolygon(null);
+                                        setStatute(null);
                                     }}
                                     onMouseover={() => setHoveredPolygon(index)}
                                     onMouseout={() => setHoveredPolygon(null)}
@@ -124,8 +127,11 @@ export default function SetPolygon({
                         );
                     })
             )}
-            {isApartmentsData.flatMap((apartment, index) =>
-                apartment.path.map((path, pathIndex) => {
+
+            {isNonSmoking &&
+            isApartmentsData.flatMap((apartment, index) =>
+                apartment.path
+                    .map((path, pathIndex) => {
                     const pathCoordinates = parsePathCoordinates(path);
 
                     const strokeWeight = apartHoveredPolygon === index || apartClickedPolygon === index ? 3 : 0;
@@ -148,7 +154,7 @@ export default function SetPolygon({
                                     handleOverlayClick();
                                     setPolygonState("apartment");
                                     setApartClickedPolygon(index);
-                                    console.log(`apartment-${index}-${pathIndex}`);
+                                    setStatute(null);
                                 }}
                                 onMouseover={() => setApartHoveredPolygon(index)}
                                 onMouseout={() => setApartHoveredPolygon(null)}

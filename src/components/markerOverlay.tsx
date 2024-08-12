@@ -23,6 +23,8 @@ interface MarkerOverlayProps {
     isApartmentsData: ApartmentData[];
     PolygonState: string | null;
     setIsOverlayClicked: (isOverlayClicked: boolean) => void;
+    statute: string | null;
+    setStatute: (statute: string | null) => void; 
 }
 
 const changeText = (text: string, maxLength: number): string => {
@@ -31,9 +33,11 @@ const changeText = (text: string, maxLength: number): string => {
 
 const TITLE_CHAR_LIMIT = 9;
 
-export default function MarkerOverlay({ markerPosition, isData, isApartmentsData, PolygonState, setIsOverlayClicked }: MarkerOverlayProps) {
+export default function MarkerOverlay({ markerPosition, isData, isApartmentsData, PolygonState, setIsOverlayClicked, statute, setStatute }: MarkerOverlayProps) {
     const [tooltip, setTooltip] = useState<string | null>(null);
-    const [statute, setStatute] = useState<string | null>(null);
+    const filteredData = isData.filter(
+      (item) => item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng
+    );
 
     const showTooltip = (text: string) => setTooltip(text);
     const hideTooltip = () => setTooltip(null);
@@ -41,91 +45,72 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
     const handleStatute = (category: string) => {
       setStatute(
         category.includes('학교') || category.includes('유치원') ? '학교' :
-        category.includes('공원') ? '기타' :
+        category.includes('공원') ? '공원' :
         category.includes('지방청사') ? '지방청사' :
         category.includes('금융기관') ? '기타' :
         (category.includes('복합상가건물') || category.includes('회사')) ? '기타' :
         category.includes('아파트') ? '기타' :
         category.includes('의료기관') ? '의료기관' :
-        category.includes('주유소') ? '기타' :
+        category.includes('주유소') ? '주유소' :
         category.includes('주택') ? '기타' :
         category.includes('지하철') ? '기타' : null
       );
     };
 
     const renderAddressOverlay = () => (
-        <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
-            <div className={styles.container}>
-                {isData.map((item) => {
-                    const cat = item.address_category;
-                    if (item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng) {
-                        return (
-                            <div key={item.address_idx} className={styles.markerWrapper}>
-                                <div
-                                    className={styles.title}
-                                    onMouseEnter={() => showTooltip(item.address_buildingName)}
-                                    onMouseLeave={hideTooltip}
-                                >
-                                    <p>{changeText(item.address_buildingName, TITLE_CHAR_LIMIT)}</p>
-                                    <div className={styles.icon} onClick={() => {
-                                      
-                                    }}>
-                                      {(cat.includes('학교') || cat.includes('유치원'))? (
-                                          <Image src={SCHOOL_ICON} alt="학교" />
-                                      ) :  cat.includes('공원') ? (
-                                          <Image src={PARK_ICON} alt="공원" />
-                                      ) : cat.includes('지방청사') ? (
-                                          <Image src={GOVERNMENT_ICON} alt="지방청사" />
-                                      ) : cat.includes('금융기관') ? (
-                                          <Image src={BANK_ICON} alt="금융기관" />
-                                      ) : (cat.includes('복합상가건물') || cat.includes('회사')) ? (
-                                          <Image src={BUILDING_ICON} alt="건물" />
-                                      ) : cat.includes('아파트') ? (
-                                          <Image src={APART_ICON} alt="아파트" />
-                                      ) : cat.includes('의료기관') ? (
-                                          <Image src={MEDICAL_ICON} alt="의료기관" />
-                                      ) : cat.includes('주유소') ? (
-                                          <Image src={GAS_ICON} alt="주유소" />
-                                      ) : cat.includes('주택') ? (
-                                          <Image src={HOUSE_ICON} alt="주택" />
-                                      ) : cat.includes('지하철') ? (
-                                        <Image src={SUBWAY_ICON} alt="지하철" />
-                                      ) : null
-                                      }
-                                    </div>
-                                    
-                                    {tooltip && (
-                                        <div className={styles.tooltip}>
-                                            {tooltip}
-                                        </div>
-                                    )}
-                                </div>
-                                <p className={styles.subTitle}>{item.address_name}</p>
-                            </div>
-                        );
-                    }
-                    return null;
-                })}
-                <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
-                    <CLOSE_ICON />
+      <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
+        <div className={styles.container}>
+          {filteredData.map((item) => {
+            const cat = item.address_category;
+            return (
+              <div key={item.address_idx} className={styles.markerWrapper}>
+                <div
+                  className={styles.title}
+                  onMouseEnter={() => showTooltip(item.address_buildingName)}
+                  onMouseLeave={hideTooltip}
+                >
+                  <p>{changeText(item.address_buildingName, TITLE_CHAR_LIMIT)}</p>
+                  <div className={styles.icon} onClick={() => {}}>
+                    {(cat.includes('학교') || cat.includes('유치원')) && (<Image src={SCHOOL_ICON} alt="학교" />)}
+                    {cat.includes('공원') && <Image src={PARK_ICON} alt="공원" />}
+                    {cat.includes('지방청사') && <Image src={GOVERNMENT_ICON} alt="지방청사" />}
+                    {cat.includes('금융기관') && <Image src={BANK_ICON} alt="금융기관" />}
+                    {(cat.includes('복합상가건물') || cat.includes('회사')) && (<Image src={BUILDING_ICON} alt="건물" />)}
+                    {cat.includes('아파트') && <Image src={APART_ICON} alt="아파트" />}
+                    {cat.includes('의료기관') && <Image src={MEDICAL_ICON} alt="의료기관" />}
+                    {cat.includes('주유소') && <Image src={GAS_ICON} alt="주유소" />}
+                    {cat.includes('주택') && <Image src={HOUSE_ICON} alt="주택" />}
+                    {cat.includes('지하철') && <Image src={SUBWAY_ICON} alt="지하철" />}
+                  </div>
+                  {tooltip && <div className={styles.tooltip}>{tooltip}</div>}
                 </div>
-                <div className={styles.help} onClick={() => {
-                  isData.map((item) => {
-                    if (item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng) {
-                      handleStatute(item.address_category);
-                    }
-                  });
-                }}>
-                    <HELP_ICON />
-                </div>
-                {/*statute !== null && <div className={styles.statute}>
-                  <Statute 
-                    statute={statute}
-                    setStatute={setStatute}
-                  />
-               </div>*/}
+                <p className={styles.subTitle}>{item.address_name}</p>
+              </div>
+            );
+          })}
+          
+          <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
+            <CLOSE_ICON />
+          </div>
+
+          {filteredData.some((item) => item.smoking === '금연구역') && (
+            <>
+              <p className={styles.AUStatute}>
+                국민건강증진법 제9조제6항, 시행 : 2024.7.10
+              </p>
+              {/* <div className={styles.help} onClick={() => handleStatute(filteredData[0].address_category)}>
+                <HELP_ICON />
+              </div> */}
+            </>
+          )}
+          
+          {statute !== null && (
+            <div className={styles.statute}>
+              <Statute statute={statute} setStatute={setStatute} />
             </div>
-        </CustomOverlayMap>
+          )}
+        </div>
+      </CustomOverlayMap>
     );
 
     const renderApartmentOverlay = () => (
@@ -166,7 +151,7 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                     return null;
                 })}
                 <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
-                    <CLOSE_ICON />
+                  <CLOSE_ICON />  
                 </div>
             </div>
         </CustomOverlayMap>

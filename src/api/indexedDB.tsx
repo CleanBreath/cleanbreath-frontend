@@ -1,7 +1,7 @@
 import { AddressData, ApartmentData } from './types';
 
 const DB_NAME = 'myDatabase';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const ADDRESS_STORE = 'addressStore';
 const APARTMENTS_STORE = 'apartmentsStore';
 
@@ -11,6 +11,10 @@ export const openDb = (): Promise<IDBDatabase> => {
 
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
+
+      Array.from(db.objectStoreNames).forEach((storeName) => {
+        db.deleteObjectStore(storeName);
+      });
 
       if (!db.objectStoreNames.contains(ADDRESS_STORE)) {
         db.createObjectStore(ADDRESS_STORE, { keyPath: 'key' });
