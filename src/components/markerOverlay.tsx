@@ -15,7 +15,7 @@ import SUBWAY_ICON from "../../public/subway.png"
 import HELP_ICON from "../../public/help.svg";
 import styles from "../../styles/markerOverlay.module.css";
 import Statute from './statuteComponent';
-import Image from "next/image";
+import Image from 'next/image';
 
 interface MarkerOverlayProps {
     markerPosition: { lat: number; lng: number };
