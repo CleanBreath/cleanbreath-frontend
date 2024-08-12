@@ -4,7 +4,7 @@ import TableRow from "./TableRowProps";
 import styles from "../../../styles/manageCss/smokingAreaContent.module.css";
 import NoticeDetail from "./noticeDetail";
 
-const NOTICE_API_URL_DEV = "http://localhost:7001/v1";
+const NOTICE_API_URL_DEV = "https://server.bluesky-cleanbreath.com/v1";
 
 export default function NoticeContent() {
     const [noticeList, setNoticeList] = useState<any[]>([]);

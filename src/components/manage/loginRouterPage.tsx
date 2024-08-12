@@ -15,6 +15,8 @@ export default function LoginRouterPage({token} : LoginRouterPageProps) {
         }
     }, [token])
 
+    console.log(token);
+
     return (
         <ManageLoginForm />
     )

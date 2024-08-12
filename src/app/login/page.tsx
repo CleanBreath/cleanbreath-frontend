@@ -9,6 +9,7 @@ import { useState } from "react";
 
 export default function ManageLoginPage() {
     const session = cookies().get("JSESSIONID")?.name;
+
     return (
         <>
             <LoginRouterPage token={session}/>

@@ -7,6 +7,7 @@ import axios from "axios";
 import FeedbackContent from "./feedbackContent";
 import SmokingAreaContent from "./smokingAreaContent";
 import NoticeContent from "./noticeContent";
+import { redirect } from "next/navigation";
 
 export default function Manage() {
     const MANAGE_API_URL = "https://server.bluesky-cleanbreath.com/v1/manage/logout";
@@ -23,14 +24,12 @@ export default function Manage() {
     const logout = () => {
         try {
             const response = axios.post(
-                MANAGE_API_URL_DEV,
+                MANAGE_API_URL,
                 {},
                 { withCredentials: true }
             );
 
             sessionStorage.removeItem("ManageName");
-
-            console.log(response);
             alert("로그아웃 성공");
         } catch (err) {
             console.error(err);
