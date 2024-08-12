@@ -46,6 +46,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                 <div className={styles.header}>
                     <span className={styles.redpill}>REDPILL</span>
                     <REDPILL_ICON className={styles.pillIcon}/>
+                    <button className={styles.closeButton} onClick={onClose}>&times;</button>
                 </div>
                 <div className={styles.content}>
                     <p className={styles.question}> &quot;하루에 몇 갑을 피우시나요? &quot;</p>

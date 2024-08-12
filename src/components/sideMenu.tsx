@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "../../styles/sidebar.module.css";
 import LOGO_ICON from "../../public/logo.svg";
+import MOBILELOGO_ICON from  "../../public/mobilelogo.svg";
 import LIST_ICON from "../../public/list.svg";
 import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
@@ -36,7 +37,7 @@ const SideMenu = ({
         <div>
             {/* 모바일 화면에서 플로팅 버튼 */}
             <div className={styles.sidebarButton} onClick={toggleMenu}>
-                <LOGO_ICON className={styles.sidebarButtonIcon} />
+                <MOBILELOGO_ICON className={styles.sidebarButtonIcon} />
             </div>
 
             {/* 모바일 화면에서 플로팅 버튼 클릭 시 나타나는 메뉴 */}
