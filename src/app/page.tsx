@@ -2,11 +2,18 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
-import { Map, MapMarker, Polygon, useKakaoLoader } from 'react-kakao-maps-sdk';
-import { AddressData, listData } from '@/components/listData';
+import { CustomOverlayMap, Map, MapMarker, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
+import { AddressData, ApartmentData } from '../api/types';
+import { listData, ApartmentsData } from '../api/api';
+import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
+import MarkerOverlay from '@/components/markerOverlay';
+import Polygon from '@/components/setPolygon';
 import ReactGA from 'react-ga4';
 import AddComponent from '@/components/addComponent';
+import SMOK_ICON from "../../public/smokMarker.png";
+import NONSMOK_ICON from "../../public/nonSmokMarker.png"
+import Image from "next/image";
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
@@ -21,11 +28,9 @@ export default function Home() {
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [isNonSmoking, setIsNonSmoking] = useState(true);
   const [isSmoking, setIsSmoking] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isListOpen, setIsListOpen] = useState(false);
-  const [isAddOpen, setIsAddOpen] = useState(true);
-  const [isSettingOpen, setIsSettingOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isData, setData] = useState<AddressData[]>([]);
+  const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -46,6 +51,13 @@ export default function Home() {
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
     ReactGA.send({ hitType: 'pageview', page: window.location.pathname + window.location.search });
+  const [isOverlayClicked, setIsOverlayClicked] = useState(false);
+  const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+  const [PolygonState, setPolygonState] = useState<string | null>(null);
+
+  useEffect(() => {
+    ReactGA.initialize(TRACKING_ID);
+    ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
   }, []);
 
   useEffect(() => {
@@ -54,7 +66,9 @@ export default function Home() {
       setError(null);
       try {
         const data = await listData();
+        const apartmentsData = await ApartmentsData();
         setData(data);
+        setApartmentsData(apartmentsData);
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);
@@ -81,34 +95,10 @@ export default function Home() {
     setCenter({ lat: item.address_latitude, lng: item.address_longitude });
   };
 
-  const listToggle = () => {
-    setIsListOpen(true);  
-    setIsAddOpen(false);    
-    setIsSettingOpen(false); 
-  };
 
-  const addToggle = () => {
-    if (isAddOpen) {
-      // 현재 AddComponent가 열려 있으면 닫기
-      setIsListOpen(false);  
-      setIsAddOpen(false);    
-      setIsOpen(false); 
-      setIsSettingOpen(false);
-    } else {
-      // 현재 AddComponent가 닫혀 있으면 열기
-      setIsListOpen(false);  
-      setIsAddOpen(true);    
-      setIsOpen(true); 
-      setIsSettingOpen(false); 
-    }
-  };
-  
-
-  const settingToggle = () => {
-    setIsListOpen(false);  
-    setIsAddOpen(true);   
-    setIsSettingOpen(true); 
-  };
+  const toggleMenu = (menu : string | null) => {
+    setActiveMenu(activeMenu === menu ? null : menu);
+  }
 
   const nonSmokingToggle = () => {
     setIsNonSmoking(!isNonSmoking);
@@ -191,6 +181,14 @@ export default function Home() {
     } else {
       alert('폴리곤을 완성하기 위해 최소 3개의 점이 필요합니다.');
     }
+  const handleOverlayClick = () => {
+    setIsOverlayClicked(false);
+    setIsOverlayClicked(true);
+  };
+
+  const handlePolygonClick = (lat: number, lng: number) => {
+    setMarkerPosition({ lat, lng });
+    setCenter({ lat, lng });
   };
 
   if (loading) {
@@ -205,16 +203,11 @@ export default function Home() {
     <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
       <SideMenu
         onListClick={handleListClick}
-        isOpen={isOpen}
-        isListOpen={isListOpen}
-        isAddOpen={isAddOpen}
-        isSettingOpen={isSettingOpen}
+        activeMenu={activeMenu}
+        setActiveMenu={toggleMenu}
         isData={isData}
         isLoading={isLoading}
         error={errorMsg}
-        listToggle={listToggle}
-        addToggle={addToggle}
-        settingToggle={settingToggle}
       />
       <AreaToggleComponent 
         isNonSmoking={isNonSmoking}
@@ -256,7 +249,62 @@ export default function Home() {
             fillOpacity={0.5}
           />
         )}
+        style={{ width: '100%', height: '100%', zIndex: 0 }}
+        minLevel={6}
+        level={3}
+      >
+        {isOverlayClicked && markerPosition && (
+          <MarkerOverlay
+            markerPosition={markerPosition}
+            isData={isData}
+            isApartmentsData={isApartmentsData}
+            PolygonState={PolygonState}
+            setIsOverlayClicked={setIsOverlayClicked}
+          />
+        )}
+
+        {userLocation && (
+          <MapMarker position={userLocation}>
+          </MapMarker>
+        )}
+        {isSmoking && isData.length > 0 && (
+            <MarkerClusterer averageCenter={true} minLevel={3}>
+              {isData.flatMap((item) =>
+                item.paths
+                  .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
+                  .map((pathIndex) => (
+                    <CustomOverlayMap
+                      key={`${item.address_idx}-${pathIndex.divisionArea}`}
+                      position={{
+                        lat: item.address_latitude,
+                        lng: item.address_longitude
+                      }}
+                      yAnchor={1}
+                    >
+                      <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => {
+                        setIsOverlayClicked(true);
+                        handlePolygonClick(item.address_latitude, item.address_longitude);
+                      }}/>
+                    </CustomOverlayMap>
+                  ))
+              )}
+            </MarkerClusterer>
+        )}
+
+        {isData.length > 0 && (
+          <Polygon 
+            isData={isData}
+            isApartmentsData={isApartmentsData}
+            isNonSmoking={isNonSmoking}
+            isSmoking={isSmoking}
+            handlePolygonClick={handlePolygonClick}
+            handleOverlayClick={handleOverlayClick}
+            isOverlayClicked={isOverlayClicked}
+            setPolygonState={setPolygonState}
+          />
+        )}
       </Map>
+      {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
     </div>
   );
 }
