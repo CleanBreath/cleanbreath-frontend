@@ -9,10 +9,9 @@ interface LoginRouterPageProps {
 }
 
 export default function LoginRouterPage({token} : LoginRouterPageProps) {
-    const router = useRouter();
     useEffect(() => {
         if(token) {
-            router.push("/dashboard")
+            window.location.href = "/dashboard";
         }
     }, [token])
 
