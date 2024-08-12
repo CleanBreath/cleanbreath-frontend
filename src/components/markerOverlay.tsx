@@ -15,6 +15,7 @@ import SUBWAY_ICON from "../../public/subway.png"
 import HELP_ICON from "../../public/help.svg";
 import styles from "../../styles/markerOverlay.module.css";
 import Statute from './statuteComponent';
+import Image from "next/image";
 
 interface MarkerOverlayProps {
     markerPosition: { lat: number; lng: number };
@@ -69,26 +70,26 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                                     <div className={styles.icon} onClick={() => {
                                       
                                     }}>
-                                      {(cat.includes('학교') || cat.includes('유치원'))? (
-                                          <img src={SCHOOL_ICON.src} alt="학교" />
-                                      ) :  cat.includes('공원') ? (
-                                          <img src={PARK_ICON.src} alt="공원" />
+                                      {(cat.includes('학교') || cat.includes('유치원')) ? (
+                                          <Image src={SCHOOL_ICON} alt="학교" />
+                                      ) : cat.includes('공원') ? (
+                                          <Image src={PARK_ICON} alt="공원" />
                                       ) : cat.includes('지방청사') ? (
-                                          <img src={GOVERNMENT_ICON.src} alt="지방청사" />
+                                          <Image src={GOVERNMENT_ICON} alt="지방청사" />
                                       ) : cat.includes('금융기관') ? (
-                                          <img src={BANK_ICON.src} alt="금융기관" />
+                                          <Image src={BANK_ICON} alt="금융기관" />
                                       ) : (cat.includes('복합상가건물') || cat.includes('회사')) ? (
-                                          <img src={BUILDING_ICON.src} alt="건물" />
+                                          <Image src={BUILDING_ICON} alt="건물" />
                                       ) : cat.includes('아파트') ? (
-                                          <img src={APART_ICON.src} alt="아파트" />
+                                          <Image src={APART_ICON} alt="아파트" />
                                       ) : cat.includes('의료기관') ? (
-                                          <img src={MEDICAL_ICON.src} alt="의료기관" />
+                                          <Image src={MEDICAL_ICON} alt="의료기관" />
                                       ) : cat.includes('주유소') ? (
-                                          <img src={GAS_ICON.src} alt="주유소" />
+                                          <Image src={GAS_ICON} alt="주유소" />
                                       ) : cat.includes('주택') ? (
-                                          <img src={HOUSE_ICON.src} alt="주택" />
+                                          <Image src={HOUSE_ICON} alt="주택" />
                                       ) : cat.includes('지하철') ? (
-                                        <img src={SUBWAY_ICON.src} alt="지하철" />
+                                          <Image src={SUBWAY_ICON} alt="지하철" />
                                       ) : null
                                       }
                                     </div>
@@ -115,7 +116,7 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                     }
                   });
                 }}>
-                    <HELP_ICON />
+                  <HELP_ICON />
                 </div>
                 {/*statute !== null && <div className={styles.statute}>
                   <Statute 
@@ -147,7 +148,7 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                                         </div>
                                     )}
                                   <div className={styles.icon}>
-                                    <img src={APART_ICON.src} alt="아파트" />
+                                    <Image src={APART_ICON} alt="아파트" />
                                   </div>
                                 </div>
                                 <p className={styles.subTitle}>{item.address}</p>
@@ -165,7 +166,7 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                     return null;
                 })}
                 <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
-                    <CLOSE_ICON />
+                  <CLOSE_ICON />  
                 </div>
             </div>
         </CustomOverlayMap>
