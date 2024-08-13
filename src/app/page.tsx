@@ -169,6 +169,7 @@ export default function Home() {
                       <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => {
                         setIsOverlayClicked(true);
                         handlePolygonClick(item.address_latitude, item.address_longitude);
+                        setPolygonState("address");
                       }}/>
                     </CustomOverlayMap>
                   ))

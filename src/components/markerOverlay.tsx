@@ -36,26 +36,11 @@ const TITLE_CHAR_LIMIT = 9;
 export default function MarkerOverlay({ markerPosition, isData, isApartmentsData, PolygonState, setIsOverlayClicked, statute, setStatute }: MarkerOverlayProps) {
     const [tooltip, setTooltip] = useState<string | null>(null);
     const filteredData = isData.filter(
-      (item) => item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng
+      (item : AddressData) => item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng
     );
 
     const showTooltip = (text: string) => setTooltip(text);
     const hideTooltip = () => setTooltip(null);
-
-    const handleStatute = (category: string) => {
-      setStatute(
-        category.includes('학교') || category.includes('유치원') ? '학교' :
-        category.includes('공원') ? '공원' :
-        category.includes('지방청사') ? '지방청사' :
-        category.includes('금융기관') ? '기타' :
-        (category.includes('복합상가건물') || category.includes('회사')) ? '기타' :
-        category.includes('아파트') ? '기타' :
-        category.includes('의료기관') ? '의료기관' :
-        category.includes('주유소') ? '주유소' :
-        category.includes('주택') ? '기타' :
-        category.includes('지하철') ? '기타' : null
-      );
-    };
 
     const renderAddressOverlay = () => (
       <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
@@ -98,9 +83,9 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
               <p className={styles.AUStatute}>
                 국민건강증진법 제9조제6항, 시행 : 2024.7.10
               </p>
-              {/* <div className={styles.help} onClick={() => handleStatute(filteredData[0].address_category)}>
-                <HELP_ICON />
-              </div> */}
+              <div className={styles.help}>
+                <a href="https://www.anyang.go.kr/health/contents.do?key=1329"><HELP_ICON /></a>
+              </div> 
             </>
           )}
           
@@ -116,7 +101,7 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
     const renderApartmentOverlay = () => (
         <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
             <div className={styles.container}>
-                {isApartmentsData.map((item) => {
+                {isApartmentsData.map((item : ApartmentData) => {
                   const path = item.path.some((path) => path.latitude === markerPosition.lat && path.longitude === markerPosition.lng);
                     if (path) {
                         return (
@@ -161,7 +146,6 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
         <div>
             {PolygonState === 'address' && renderAddressOverlay()}
             {PolygonState === 'apartment' && renderApartmentOverlay()}
-            
         </div>
     );
 }
