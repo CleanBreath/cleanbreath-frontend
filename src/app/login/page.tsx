@@ -11,13 +11,13 @@ import { useState } from "react";
 
 
 export default async function ManageLoginPage() {
-    const session = document.cookie;
+    // const session = document.cookie;
 
-    console.log(session);
 
     return (
         <>
-            <LoginRouterPage token={session}/>
+            {/* <LoginRouterPage token={session}/> */}
+            개발중
         </>
     )
 
