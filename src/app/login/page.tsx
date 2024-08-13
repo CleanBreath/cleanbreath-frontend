@@ -1,14 +1,19 @@
-
+"use server";
 import LoginRouterPage from "@/components/manage/loginRouterPage";
 import ManageLoginForm from "@/components/manage/manageLoginForm";
 import axios from "axios";
 import { on } from "events";
+import { GetServerSideProps } from "next";
 import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function ManageLoginPage() {
-    const session = cookies().get("JSESSIONID")?.name;
+
+
+export default async function ManageLoginPage() {
+    const session = document.cookie;
+
+    console.log(session);
 
     return (
         <>

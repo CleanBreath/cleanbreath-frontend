@@ -15,7 +15,7 @@ export default function ManageRouterPage({token} : ManageRouterPageProps) {
         if(!token) {
             router.push("/login")
         }
-    }, [token])
+    }, [token, router])
 
 
     return (
