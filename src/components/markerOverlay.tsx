@@ -25,6 +25,7 @@ interface MarkerOverlayProps {
     setIsOverlayClicked: (isOverlayClicked: boolean) => void;
     statute: string | null;
     setStatute: (statute: string | null) => void; 
+    
 }
 
 const changeText = (text: string, maxLength: number): string => {

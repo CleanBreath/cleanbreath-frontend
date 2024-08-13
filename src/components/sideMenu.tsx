@@ -10,7 +10,7 @@ import NOTICE_ICON from "../../public/Notice.svg";
 import SEARCH_ICON from "../../public/search.svg";
 
 import SettingArea from "@/components/settingArea";
-import AddComponent from "./addComponent";
+import AddComponent from "@/components/addComponent";
 import NoticeList from "@/components/noticeList";
 import SearchComponent from "./searchComponent";
 import { AddressData } from "@/api/types";
@@ -38,6 +38,7 @@ const SideMenu = ({
         setIsOpen(!isOpen);
     };
 
+    
     return (
         <div>
             {/* 모바일 화면에서 플로팅 버튼 */}
@@ -113,11 +114,10 @@ const SideMenu = ({
                     />
                 )}
 
-                {/* 추가 컴포넌트 */}
                 {activeMenu === "add" && (
-                    <div className={styles.add}>
-                        <AddComponent />
-                    </div>
+
+                        <AddComponent
+                        />
                 )}
 
                 {/* 공지사항 컴포넌트 */}

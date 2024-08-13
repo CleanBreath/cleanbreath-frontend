@@ -3,7 +3,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import styles from "../../styles/addArea.module.css";
 
-//addComponent.tsx,addArea.module.css,page.tsx만 병합하면될듯
+// AddComponentProps interface
 interface AddComponentProps {
     address: string;
     buildingName: string;
@@ -33,12 +33,27 @@ export default function AddComponent({
     onSmokingAreaTypeChange,
     onImplicitSmokingChange
 }: AddComponentProps) {
+    // New states
     const [smokingAreaType, setSmokingAreaType] = useState<string>(category.divisionArea || '');
     const [implicitSmoking, setImplicitSmoking] = useState<string>(category.implicitSmokingArea || '');
     const [categoryInput, setCategoryInput] = useState<string>(category.customCategory || '');
     const [pathLat, setPathLat] = useState<string>(category.pathLat || '');
     const [pathLng, setPathLng] = useState<string>(category.pathLng || '');
 
+    const [addressState, setAddressState] = useState(address);
+    const [buildingNameState, setBuildingNameState] = useState(buildingName);
+    const [categoryState, setCategoryState] = useState({
+        divisionArea: smokingAreaType,
+        pathLat: pathLat,
+        pathLng: pathLng,
+        implicitSmokingArea: implicitSmoking
+    });
+    const [isDrawing, setIsDrawing] = useState(false);
+    const [polygonPaths, setPolygonPaths] = useState<{ lat: number; lng: number }[]>([]);
+    const [clickCount, setClickCount] = useState(0);
+    
+
+    
     useEffect(() => {
         setSmokingAreaType(category.divisionArea || '');
         setImplicitSmoking(category.implicitSmokingArea || '');
@@ -65,8 +80,8 @@ export default function AddComponent({
 
     const data = {
         updateAt: currentDateTime,
-        addressName: address,
-        buildingName: buildingName,
+        addressName: addressState,
+        buildingName: buildingNameState,
         latitude: 37.3825740647496,
         longitude: 126.959932808289,
         category: categoryInput, 
@@ -95,7 +110,7 @@ export default function AddComponent({
         <div className={styles.addArea}>
             <section className={styles.headerSection}>
                 <p className={styles.title}>
-                    <span className={styles.highlight}>흡연구역</span> 추가하기
+                    <span className={styles.highlight}>흡연구역</span> 추가 요청
                 </p>
             </section>
 
@@ -107,7 +122,7 @@ export default function AddComponent({
                             type="text"
                             placeholder="주소를 입력하세요."
                             className={styles.addressInput}
-                            value={address}
+                            value={addressState}
                             readOnly
                         />
                     </div>
@@ -134,7 +149,7 @@ export default function AddComponent({
                             type="text"
                             placeholder="상세주소를 입력하세요."
                             className={styles.addressInput}
-                            value={buildingName}
+                            value={buildingNameState}
                             readOnly
                         />
                     </div>
