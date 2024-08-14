@@ -15,6 +15,10 @@ import NONSMOK_ICON from "../../public/nonSmokMarker.png";
 import SmokModal from '@/components/smokModal';
 import Image from "next/image";
 
+// Import the Feedback components
+import FeedbackButton from '@/components/feedbackButton';
+import FeedbackModal from '@/components/feedbackModal';
+
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
 
@@ -39,6 +43,9 @@ export default function Home() {
   const [PolygonState, setPolygonState] = useState<string | null>(null);
   const [statute, setStatute] = useState<string | null>(null);
   const [zoomalbe, setZoomable] = useState(true);
+
+  // State for Feedback Modal
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
@@ -103,6 +110,9 @@ export default function Home() {
     setMarkerPosition({ lat, lng });
     setCenter({ lat, lng });
   };
+
+  const openFeedbackModal = () => setIsFeedbackModalOpen(true);
+  const closeFeedbackModal = () => setIsFeedbackModalOpen(false);
 
   if (loading) {
     return <div>Loading Kakao Map</div>;
@@ -190,7 +200,15 @@ export default function Home() {
               />
           )}
         </Map>
-        {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
+
+        {/* Feedback Button */}
+        <FeedbackButton onClick={openFeedbackModal} />
+
+        {/* Feedback Modal */}
+        {isFeedbackModalOpen && (
+            <FeedbackModal onClose={closeFeedbackModal}  isOpen/>
+        )}
+
       </div>
   );
 }

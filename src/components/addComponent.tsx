@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../../styles/addComponent.module.css"
 
 export default function AddComponent() {
 return (

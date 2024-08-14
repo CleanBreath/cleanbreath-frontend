@@ -1,0 +1,32 @@
+.feedbackButtonContainer {
+    display: block;
+    padding: 10px 20px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    bottom: 20px;  /* 화면 하단에서 20px 위에 위치 */
+    right: 20px;   /* 화면 오른쪽에서 20px 떨어진 위치 */
+    cursor: pointer;
+    z-index: 1000;
+    transform: none; /* 중앙 위치 조정을 없앰 */
+}
+
+.text {
+    font-size: 15px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.icon {
+    z-index: 5;
+    width: 24px;
+    height: 24px;
+    background-color: #007E8F;
+}
+
+@media (max-width: 768px) {
+    .feedbackButtonContainer {
+        display: none; /* 모바일에서는 숨기기 */
+    }
+}
