@@ -23,18 +23,20 @@ interface SideMenuProps {
     activeMenu: string | null;
     setActiveMenu: (menu: string | null) => void;
     isData: any[];
+    isApartmentsData: any[];
     isLoading: boolean;
     error: string | null;
 }
 
 const SideMenu = ({
-                      onListClick,
-                      isData,
-                      isLoading,
-                      activeMenu,
-                      setActiveMenu,
-                      error,
-                  }: SideMenuProps) => {
+    onListClick,
+    isData,
+    isLoading,
+    activeMenu,
+    setActiveMenu,
+    error,
+    isApartmentsData
+}: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -94,10 +96,11 @@ const SideMenu = ({
                     {activeMenu === "search" && (
                         <SearchComponent
                             onListClick={onListClick}
+                            isApartmentsData={isApartmentsData}
                             isData={isData}
                             isLoading={isLoading}
                             error={error}
-                            onClose={handleClose} // onClose 추가
+                            setActiveMenu={setActiveMenu}
                         />
                     )}
                 </div>
@@ -158,9 +161,10 @@ const SideMenu = ({
                     <SearchComponent
                         onListClick={onListClick}
                         isData={isData}
+                        isApartmentsData={isApartmentsData}
                         isLoading={isLoading}
                         error={error}
-                        onClose={handleClose} // onClose 추가
+                        setActiveMenu={setActiveMenu}
                     />
                 )}
 

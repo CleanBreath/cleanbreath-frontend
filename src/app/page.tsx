@@ -28,20 +28,21 @@ export default function Home() {
         libraries: ['services', 'clusterer', 'drawing'],
     });
 
-    const [center, setCenter] = useState({ lat: 37.394329, lng: 126.956939 });
-    const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
-    const [isNonSmoking, setIsNonSmoking] = useState(true);
-    const [isSmoking, setIsSmoking] = useState(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>('open');
-    const [isData, setData] = useState<AddressData[]>([]);
-    const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [errorMsg, setError] = useState<string | null>(null);
-    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-    const [isOverlayClicked, setIsOverlayClicked] = useState(false);
-    const [PolygonState, setPolygonState] = useState<string | null>(null);
-    const [statute, setStatute] = useState<string | null>(null);
-    const [zoomable, setZoomable] = useState(true);
+  const [center, setCenter] = useState({ lat: 37.394329, lng: 126.956939 });
+  const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
+  const [isNonSmoking, setIsNonSmoking] = useState(true);
+  const [isSmoking, setIsSmoking] = useState(false);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const [isData, setData] = useState<AddressData[]>([]);
+  const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMsg, setError] = useState<string | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [isOverlayClicked, setIsOverlayClicked] = useState(false);
+  const [isMarkerClicked, setIsMarkerClicked] = useState(false);
+  const [PolygonState, setPolygonState] = useState<string | null>(null);
+  const [statute, setStatute] = useState<string | null>(null);
+  const [zoomalbe, setZoomable] = useState(true);
 
     // State for Feedback Modal
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
@@ -127,6 +128,7 @@ export default function Home() {
                 onListClick={handleListClick}
                 activeMenu={activeMenu}
                 setActiveMenu={toggleMenu}
+                isApartmentsData={isApartmentsData}
                 isData={isData}
                 isLoading={isLoading}
                 error={errorMsg}
@@ -143,7 +145,7 @@ export default function Home() {
                 style={{ width: '100%', height: '100%', zIndex: 0 }}
                 minLevel={6}
                 level={3}
-                zoomable={zoomable}
+                zoomable={zoomalbe}
             >
                 {isOverlayClicked && markerPosition && (
                     <MarkerOverlay
