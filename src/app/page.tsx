@@ -2,12 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import SideMenu from '@/components/sideMenu';
-import { CustomOverlayMap, Map, MapMarker, Polygon, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
-import { AddressData, listData } from '@/components/listData';
+import { CustomOverlayMap, Map, MapMarker, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
+import { AddressData, ApartmentData } from '../api/types';
+import { listData, ApartmentsData } from '../api/api';
 import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
+import MarkerOverlay from '@/components/markerOverlay';
+import Polygon from '@/components/setPolygon';
 import ReactGA from 'react-ga4';
 import SMOK_ICON from "../../public/smokMarker.png";
+import NONSMOK_ICON from "../../public/nonSmokMarker.png";
 import SmokModal from '@/components/smokModal';
 import Image from "next/image";
 
@@ -25,19 +29,19 @@ export default function Home() {
   const [isNonSmoking, setIsNonSmoking] = useState(true);
   const [isSmoking, setIsSmoking] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
-
   const [isData, setData] = useState<AddressData[]>([]);
+  const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [isOverlayClicked, setIsOverlayClicked] = useState(false);
   const [isMarkerClicked, setIsMarkerClicked] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalPosition, setModalPosition] = useState<{ lat: number; lng: number } | null>(null);
-
+  const [PolygonState, setPolygonState] = useState<string | null>(null);
+  const [statute, setStatute] = useState<string | null>(null);
+  const [zoomalbe, setZoomable] = useState(true);
 
   useEffect(() => {
     ReactGA.initialize(TRACKING_ID);
-
     ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
   }, []);
 
@@ -47,7 +51,9 @@ export default function Home() {
       setError(null);
       try {
         const data = await listData();
+        const apartmentsData = await ApartmentsData();
         setData(data);
+        setApartmentsData(apartmentsData);
       } catch (err) {
         setError('데이터를 불러오는 중 오류가 발생했습니다.');
         console.error(err);
@@ -88,36 +94,14 @@ export default function Home() {
     setIsSmoking(!isSmoking);
   };
 
-  const parsePathCoordinates = (path: { pathsLatitude: string[], pathsLongitude: string[] }) => {
-    const latitudes = path.pathsLatitude.map(lat => parseFloat(lat.trim()));
-    const longitudes = path.pathsLongitude.map(lng => parseFloat(lng.trim()));
-
-    return latitudes.map((lat, i) => ({
-      lat,
-      lng: longitudes[i]
-    }));
+  const handleOverlayClick = () => {
+    setIsOverlayClicked(false);
+    setIsOverlayClicked(true);
   };
 
-  const setSpecialCategoryColor = (addressDivision: string) => {
-    const specialCategories = [
-      '유치원', '초등학교', '중학교', '고등학교'
-    ];
-    
-    if (specialCategories.some(cat => addressDivision.includes(cat))) {
-      return '#FFD700';
-    }
-    
-    return null;
-  };
-
-  const handleMarkerClick = (position: { lat: number; lng: number }) => {
-    setModalPosition(position);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalPosition(null);
+  const handlePolygonClick = (lat: number, lng: number) => {
+    setMarkerPosition({ lat, lng });
+    setCenter({ lat, lng });
   };
 
   if (loading) {
@@ -129,101 +113,84 @@ export default function Home() {
   }
 
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
-      <SideMenu
-        onListClick={handleListClick}
-        activeMenu={activeMenu}
-        setActiveMenu={toggleMenu}
-        isData={isData}
-        isLoading={isLoading}
-        error={errorMsg}
-      />
-      <AreaToggleComponent 
-        isNonSmoking={isNonSmoking}
-        isSmoking={isSmoking}
-        nonSmokingToggle={nonSmokingToggle}
-        smokingToggle={smokingToggle}
-      />
-      <Map
-        center={center}
-        isPanto={true}
-        style={{ width: '100%', height: '100%', zIndex: 0 }}
-        level={3}
-      >
-        {markerPosition &&
-          <MapMarker
-            position={markerPosition} 
-            /*onClick={() => { setIsMarkerClicked(!isMarkerClicked) }}*/
-          >
-            {isMarkerClicked && (
-              <CustomOverlayMap position={markerPosition} clickable={true}>
-              </CustomOverlayMap>
-            )}  
-          </MapMarker>
-        }
-        {userLocation && (
-          <MapMarker position={userLocation}>
-          </MapMarker>
-        )}
-        {isSmoking && isData.length > 0 && (
-            <>
+      <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
+        <SideMenu
+            onListClick={handleListClick}
+            activeMenu={activeMenu}
+            setActiveMenu={toggleMenu}
+            isData={isData}
+            isLoading={isLoading}
+            error={errorMsg}
+        />
+        <AreaToggleComponent
+            isNonSmoking={isNonSmoking}
+            isSmoking={isSmoking}
+            nonSmokingToggle={nonSmokingToggle}
+            smokingToggle={smokingToggle}
+        />
+        <Map
+            center={center}
+            isPanto={true}
+            style={{ width: '100%', height: '100%', zIndex: 0 }}
+            minLevel={6}
+            level={3}
+            zoomable={zoomalbe}
+        >
+          {isOverlayClicked && markerPosition && (
+              <MarkerOverlay
+                  markerPosition={markerPosition}
+                  isData={isData}
+                  isApartmentsData={isApartmentsData}
+                  PolygonState={PolygonState}
+                  setIsOverlayClicked={setIsOverlayClicked}
+                  statute={statute}
+                  setStatute={setStatute}
+              />
+          )}
+
+          {userLocation && (
+              <MapMarker position={userLocation}>
+              </MapMarker>
+          )}
+          {isSmoking && isData.length > 0 && (
               <MarkerClusterer averageCenter={true} minLevel={3}>
                 {isData.flatMap((item) =>
                     item.paths
                         .filter(path => path.divisionArea.startsWith('SMOKING_ZONE'))
-                        .map((path, pathIndex) => (
+                        .map((pathIndex) => (
                             <CustomOverlayMap
-                                key={`${item.address_idx}-${pathIndex}`}
+                                key={`${item.address_idx}-${pathIndex.divisionArea}`}
                                 position={{
                                   lat: item.address_latitude,
                                   lng: item.address_longitude
                                 }}
                                 yAnchor={1}
                             >
-                              <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => handleMarkerClick({
-                                lat: item.address_latitude,
-                                lng: item.address_longitude,
-                              })}/>
+                              <Image src={SMOK_ICON} alt={"Smok"} width={40} height={60} onClick={() => {
+                                setIsOverlayClicked(true);
+                                handlePolygonClick(item.address_latitude, item.address_longitude);
+                              }}/>
                             </CustomOverlayMap>
                         ))
                 )}
               </MarkerClusterer>
-            </>
-        )}
+          )}
 
-        {isModalOpen && modalPosition && (
-            <SmokModal position={modalPosition} onClose={closeModal}/>
-        )}
-
-        {isData.length > 0 && (
-          <>
-            {isData
-              .flatMap((item, index) =>
-                item.paths
-                  .filter(path => (isNonSmoking && path.divisionArea === 'NON_SMOKING_ZONE') || 
-                                  (isSmoking && path.divisionArea.startsWith('SMOKING_ZONE')))
-                  .map((path, pathIndex) => {
-                    const isSmokingZone = path.divisionArea.startsWith('SMOKING_ZONE');
-                    return (
-                      <Polygon
-                        key={`${isSmokingZone ? 'smoking' : 'nonSmoking'}-${index}-${pathIndex}`}
-                        path={parsePathCoordinates(path)}
-                        strokeWeight={0}
-                        strokeColor="#ffffff"
-                        strokeOpacity={0.8}
-                        strokeStyle="longdash"
-                        fillColor={isSmokingZone ? '#FF7C7C' : (setSpecialCategoryColor(item.address_division) || '#7CFF89')}
-                        fillOpacity={0.7}
-                        zIndex={1}
-                      />
-                    );
-                  })
-              )
-            }
-          </>
-        )}
-      </Map>
-      <CurrentLocation setUserLocation={setUserLocation} />
-    </div>
+          {isData.length > 0 && (
+              <Polygon
+                  isData={isData}
+                  isApartmentsData={isApartmentsData}
+                  isNonSmoking={isNonSmoking}
+                  isSmoking={isSmoking}
+                  handlePolygonClick={handlePolygonClick}
+                  handleOverlayClick={handleOverlayClick}
+                  isOverlayClicked={isOverlayClicked}
+                  setPolygonState={setPolygonState}
+                  setStatute={setStatute}
+              />
+          )}
+        </Map>
+        {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
+      </div>
   );
 }
