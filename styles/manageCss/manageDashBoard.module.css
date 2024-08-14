@@ -1,0 +1,120 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.container .header {
+    width: initial;
+    height: 10vh;
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.container .header > div > svg > path {
+    fill: #35A5B5;
+}
+.container .header > div:first-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.container .header > div:first-child > h1 {
+    font-size: 48px;
+    font-weight: bold;
+    color: #35A5B5;
+    margin-left: 20px;
+    padding-top: 20px;
+}
+
+.container .header > div:last-child {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 27px;
+}
+.container .header > div:last-child > h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #000;
+    line-height: normal;
+}
+.container .header > div:last-child > svg {
+    margin-right: 2vh;
+}
+.container .header > div:last-child > button {
+    background-color: #fff;
+    border: 1px solid #35A5B5;
+    color: #35A5B5;
+    width: 8.5vh;
+    height: 3.5vh;
+    border-radius: 25px;
+    margin-left: 2vh;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.container .header > div:last-child > button:hover {
+    background-color: #35A5B5;
+    color: #fff;
+    border: 1px solid #35A5B5;
+}
+
+.container .sidebar {
+    width: 19.5%;
+    height: 100vh;
+    background-color: #fff;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4vh 0;
+    margin-top: 0.3vh;
+}
+
+.container .sidebar > .menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container .sidebar > .menu > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30vh;
+    height: 50px;
+    cursor: pointer;
+    background-color: #D9D9d9;
+    margin-bottom: 2.5vh;
+    border-radius: 15px;
+    font-size: 18px;
+}
+
+.container .sidebar > .menu > div:hover {
+    background-color: #35A5B5;
+    color: #fff;
+    filter: drop-shadow(0 0 0.75rem #35A5B5);
+}
+
+.container .sidebar > .menu > .selected {
+    background-color: #35A5B5;
+    color: #fff;
+}
+
+.container .sections {
+    position: absolute;
+    left: 22%;
+    top: 12vh;
+    width: 75.5%;
+    height: 85vh;
+}
+
