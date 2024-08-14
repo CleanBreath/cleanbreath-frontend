@@ -1,0 +1,199 @@
+.container {
+    background-color: white;
+    position: absolute;
+    width: 40.5vh;
+    height: 72vh;
+    bottom: 15vh;
+    right: 2.5vh;
+    z-index: 1;
+    border-radius: 10px;
+    border: 2px #007E8F;
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.25);
+}
+
+.title {
+    border-bottom: 1px solid #007E8F;
+    width: 85%;
+    margin-left: 2.5vh;
+    margin-top: 3.5vh;
+    margin-bottom: 3.5vh;
+}
+
+.title > h1 {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    line-height: normal;
+}
+
+.address {
+    margin-left: 2.5vh;
+}
+.address input {
+    width: 85%;
+    height: 3vh;
+    margin-top: 1vh;
+    padding-left: 1vh;
+    border-radius: 10px;
+    border: 2px solid #007E8F;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+
+}
+
+.address > div {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.address > div > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+.address > div > button {
+    width: 8.5vh;
+    height: 3vh;
+    border-radius: 10px;
+    border: none;
+    background-color: #007E8F;
+    color: white;
+}
+
+.address > div > button:hover {
+    background-color: #005F6B;
+}
+
+.buildingName {
+    margin-left: 2.5vh;
+    margin-top: 2.5vh;
+}
+.buildingName > div > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+.buildingName > input {
+    width: 85%;
+    height: 3vh;
+    margin-top: 1vh;
+    padding-left: 1vh;
+    border-radius: 10px;
+    border: 2px solid #007E8F;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.category {
+    margin-left: 2.5vh;
+    margin-top: 2.5vh;
+}
+.category > div {
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.category > div > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.category > div > sub {
+    font-size: 14px;
+}
+
+.category > input {
+    width: 85%;
+    height: 3vh;
+    margin-top: 1vh;
+    padding-left: 1vh;
+    border-radius: 10px;
+    border: 2px solid #007E8F;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.setAreaPath {
+    margin-left: 2.5vh;
+    margin-top: 2.5vh;
+}
+
+.setAreaPath > div > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+.setAreaPath > div > sub {
+    font-size: 14px;
+}
+
+.setAreaPath > div > button {
+    width: 8.5vh;
+    height: 3vh;
+    border-radius: 10px;
+    border: none;
+    background-color: #007E8F;
+    color: white;
+    margin-top: 1vh;
+}
+
+
+.setAreaPath > div > button:hover {
+    background-color: #005F6B;
+}
+
+.divisionArea {
+    margin-left: 2.5vh;
+    margin-top: 2.5vh;
+}
+
+.divisionArea > div > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+.divisionArea > div:last-child {
+    display: flex;
+    margin-top: 0.5vh;
+    gap: 2.5vh;
+}
+
+.implicit {
+    margin-left: 2.5vh;
+    margin-top: 2.5vh;
+}
+.implicit > div > h3 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.implicit > div:last-child {
+    display: flex;
+    margin-top: 0.5vh;
+    gap: 2.5vh;
+}
+
+.submitBtn {
+    margin-top: 2.5vh;
+    display: flex;
+    justify-content: center;
+}
+
+.submitBtn > button {
+    width: 75%;
+    height: 3.5vh;
+    border-radius: 10px;
+    border: none;
+    background-color: #007E8F;
+    color: white;
+    font-size: 18px;
+}
+
+.submitBtn > button:hover {
+    background-color: #005F6B;
+}
