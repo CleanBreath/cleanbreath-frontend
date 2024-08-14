@@ -55,3 +55,72 @@
 .smokingIcon:active, .smokingIconOpen:active {
     transform: scale(0.9);
 }
+
+.state {
+    width: 125px;
+    height: 70px;
+    position: absolute;
+    background: white;
+    border-radius: 15px;
+    border: 2px #007E8F solid;
+    z-index: 1;
+    right: 200px;
+    top: 0;
+    margin-top: 22px;
+}
+
+.box1, .box2, .box3 {
+    position: absolute;
+    display: flex;
+    align-items: center;
+}
+  
+.box1 {
+    width: 70px;
+    height: 15px;
+    left: 15px;
+    top: 5px;
+}
+  
+.box2 {
+    width: 68px;
+    height: 17px;
+    left: 15px;
+    top: 26px;
+}
+  
+.box3 {
+    width: 95px;
+    height: 17px;
+    left: 15px;
+    top: 49px;
+}   
+
+.circle {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+}
+
+.green {
+    background: #7CFF89;
+}
+
+.orange {
+    background: #FFBA5A;
+}
+
+.red {
+    background: #E83600;
+}
+  
+.labelText {
+    margin-left: 20px;
+    text-align: center;
+    color: black;
+    font-size: 13px;
+    font-family: 'Red Hat Display', sans-serif;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+  

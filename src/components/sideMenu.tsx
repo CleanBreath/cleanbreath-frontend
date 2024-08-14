@@ -8,7 +8,8 @@ import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
 import NOTICE_ICON from "../../public/Notice.svg";
 import SEARCH_ICON from "../../public/search.svg";
-
+import INFO_ICON from "../../public/info.svg";
+import RIGHT_ICON from "../../public/right.svg";
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
 import NoticeList from "@/components/noticeList";
@@ -33,11 +34,21 @@ const SideMenu = ({
     error,
 }: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
 
+    const handleIconClick = () => {
+        setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    const handleMenuClick = (menu: string | null) => {
+        setActiveMenu(activeMenu === menu ? null : menu);
+    };
+    
+    
     return (
         <div>
             {/* 모바일 화면에서 플로팅 버튼 */}
@@ -68,38 +79,53 @@ const SideMenu = ({
                 </div>
             )}
 
-            {/* 데스크탑 화면에서의 기존 사이드바 */}
-            <div className={activeMenu ? styles.sidebarOpen : styles.sidebar}>
+            {/* 데스크탑 화면에서의 사이드바 */}
+            <div className={isSidebarOpen ? styles.sidebarOpen : styles.sidebar}>
                 <div className={styles.sidebarHeader}>
-                    <a href="#">
-                        <LOGO_ICON />
-                    </a>
-                    {activeMenu ? <p>CleanBreath</p> : null}
+                    {isSidebarOpen ? (
+                        <>
+                            <a href="#">
+                                <LOGO_ICON />
+                            </a>
+                            <p>CleanBreath</p>
+                        </>
+                    ) : null}
+                    <RIGHT_ICON
+                        className={styles.activeIcon}
+                        onClick={handleIconClick}
+                    />
                 </div>
                 <div className={styles.menu}>
                     <div
-                        className={activeMenu === 'list' ? styles.listIconOpen : styles.listIcon}
-                        onClick={() => setActiveMenu("list")}
+                        className={isSidebarOpen ? styles.IconOpen : styles.Icon} 
+                        onClick={() => handleMenuClick('info')}
+                    >
+                        <INFO_ICON />
+                        {isSidebarOpen && (<h1>서비스 소개</h1>)}
+                    </div>
+                    <div
+                        className={isSidebarOpen ? styles.IconOpen : styles.Icon}
+                        onClick={() => handleMenuClick('list')}
                     >
                         <SEARCH_ICON />
+                        {isSidebarOpen && (<h1>검색하기</h1>)}
                     </div>
                     <div
-                        className={activeMenu === 'add' ? styles.addIconOpen : styles.addIcon}
-                        onClick={() => setActiveMenu("add")}
+                        className={isSidebarOpen ? styles.IconOpen : styles.Icon}
+                        onClick={() => handleMenuClick('add')}
                     >
                         <ADD_ICON />
+                        {isSidebarOpen && (<h1>흡연구역 추가 요청하기</h1>)}
                     </div>
                     <div
-                        className={activeMenu === 'setting' ? styles.settingIconOpen : styles.settingIcon}
-                        onClick={() => setActiveMenu("setting")}
+                        className={isSidebarOpen ? styles.IconOpen : styles.Icon}
+                        onClick={() => isSidebarOpen ? handleMenuClick('setting') : setIsSidebarOpen(true)}
                     >
                         <SETTING_ICON />
-                    </div>
-                    <div
-                        className={activeMenu === 'notice' ? styles.settingIconOpen : styles.settingIcon}
-                        onClick={() => setActiveMenu("notice")}
-                    >
-                        <NOTICE_ICON />
+                        {isSidebarOpen && (<h1>설정</h1>)}
+                        {isSidebarOpen && <RIGHT_ICON
+                            className={activeMenu === 'setting' ? styles.down : styles.up}
+                        />}
                     </div>
                 </div>
 
@@ -124,7 +150,7 @@ const SideMenu = ({
                 {activeMenu === "notice" && <NoticeList />}
 
                 {/* 설정 컴포넌트 */}
-                {activeMenu === "setting" && (
+                {activeMenu === "setting" && isSidebarOpen && (
                     <SettingArea onClose={() => setActiveMenu(null)} />
                 )}
             </div>

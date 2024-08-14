@@ -7,6 +7,10 @@
     background-color: #007E8F;
     box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
     z-index: 1;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .sidebarHeader {
@@ -15,6 +19,17 @@
 
 .sidebarHeader a {
     text-decoration: none;
+}
+
+.sidebarHeader .activeIcon {
+    width: 60px;
+    height: 45px;
+    margin-left: 2%;
+}
+
+.sidebarHeader .activeIcon:hover {
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
 }
 
 .menu {
@@ -34,53 +49,47 @@
     margin-bottom: 22px;
 }
 
-/* 리스트 메뉴 CSS */
-.menu .listIcon:hover {
+.menu .Icon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
 }
 
-.menu .listIconOpen {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
+.menu h1{
+    color: white;
 }
 
-.menu .listIconOpen:active,
-.listIcon:active {
+.menu .IconOpen {
+    width: 90%;
+    position: relative;
+}
+
+.menu .IconOpen:hover{
+    background-color: rgba(0, 0, 0, 40%);
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.menu .Icon:active,
+.menu .IconOpen:active {
     transform: scale(0.9);
 }
 
-/* 추가 버튼 CSS */
-.menu .addIcon:hover {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
+.menu .IconOpen .down,
+.menu .IconOpen .up {
+    transition: transform 0.3s ease;
+    position: absolute;
+    right: 0;
+    z-index: 4;
 }
 
-.menu .addIconOpen {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
+.menu .IconOpen .down {
+    transform: rotate(-90deg);
 }
 
-.menu .addIcon:active,
-.addIconOpen:active {
-    transform: scale(0.9);
+.menu .IconOpen .up {
+    transform: rotate(90deg);
 }
 
-/* 설정 버튼 CSS */
-.menu .settingIcon:hover {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
-}
-
-.menu .settingIconOpen {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
-}
-
-.menu .settingIcon:active,
-.settingIconOpen:active {
-    transform: scale(0.9);
-}
 
 /* 사이드바가 오픈할 경우 */
 .sidebarOpen {
@@ -91,6 +100,10 @@
     animation-duration: 1s;
     animation-fill-mode: forwards;
     background-color: #007E8F;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .sidebarOpen .sidebarHeader {
@@ -99,114 +112,21 @@
 
 .sidebarOpen .sidebarHeader p {
     margin-top: 15px;
-    margin-left: 15%;
+    margin-left: 8%;
     font-size: 40px;
     font-weight: bold;
     color: #fff;
 }
 
-/* 추가 버튼 눌렀을 때 */
-.sidebarOpen .add {
-    width: 300px;
-    height: 98.7%;
-    font-size: 20px;
-    color: #000;
-    background-color: #fff;
-    position: absolute;
-    top: 100px;
-    left: 100px;
-    border: none;
-    overflow-y: scroll;
+.sidebarOpen .sidebarHeader .activeIcon {
+    width: 60px;
+    height: 45px;
+    margin-left: 3%;
+    margin-top: 1%;
+    transform: rotate(180deg);
 }
 
-.sidebarOpen .add h1 {
-    font-family: "Red Hat Display";
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 900;
-    line-height: normal;
-    float: left;
-    display: block;
-    margin-top: 13px;
-    margin-left: 32px;
-}
 
-.sidebarOpen .add p {
-    color: #000;
-    font-family: "Red Hat Display";
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    float: left;
-    display: block;
-    margin-left: 33px;
-}
-
-.sidebarOpen .add hr {
-    border: 2px solid rgba(0, 0, 0, 0.25);
-    margin-top: 15px;
-    float: left;
-    display: block;
-    width: 249px;
-    margin-left: 31px;
-}
-
-/* 리스트 CSS */
-.sidebarOpen .list {
-    width: 400px;
-    height: 100%;
-    color: #000;
-    background-color: #fff;
-    position: absolute;
-    top: 100px;
-    left: 100px;
-    border: none;
-    overflow-y: scroll;
-}
-
-.sidebarOpen .list h1 {
-    font-family: "Red Hat Display";
-    font-size: 32px;
-    font-style: normal;
-    font-weight: 900;
-    line-height: normal;
-    float: left;
-    display: block;
-    margin-top: 13px;
-    margin-left: 32px;
-}
-
-.sidebarOpen .list p {
-    color: #000;
-    font-family: "Red Hat Display";
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    float: left;
-    display: block;
-    margin-left: 33px;
-}
-
-.sidebarOpen .list hr {
-    border: 2px solid rgba(0, 0, 0, 0.25);
-    margin-top: 15px;
-    float: left;
-    display: block;
-    width: 249px;
-    margin-left: 31px;
-}
-
-.sidebarOpen .list svg {
-    width: 25px;
-    height: 30px;
-    display: block;
-    margin-top: 16px;
-    margin-left: 80%;
-}
-
-/* 사이드바 애니메이션 */
 @keyframes Open {
     0% {
         width: 100px;
