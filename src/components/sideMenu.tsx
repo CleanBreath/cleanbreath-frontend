@@ -13,7 +13,7 @@ import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
 import NoticeList from "@/components/noticeList";
 import SearchComponent from "./searchComponent";
-import { AddressData } from "@/api/types";
+import { Address } from "@/interface/AddressInterface";
 
 interface SideMenuProps {
     onListClick: (item: any) => void;
@@ -22,6 +22,11 @@ interface SideMenuProps {
     isData: any[];
     isLoading: boolean;
     error: string | null;
+
+    toggleAddFunc : (funcName : string | null) => void;
+    addressData : Address[];
+    position : { lat: number, lng: number };
+    path : { lat: number, lng: number }[];
 }
 
 const SideMenu = ({
@@ -31,6 +36,11 @@ const SideMenu = ({
     activeMenu,
     setActiveMenu,
     error,
+
+    toggleAddFunc,
+    addressData,
+    position,
+    path,
 }: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -116,7 +126,12 @@ const SideMenu = ({
                 {/* 추가 컴포넌트 */}
                 {activeMenu === "add" && (
                     <div className={styles.add}>
-                        <AddComponent />
+                        <AddComponent
+                            toggleAddFunc={toggleAddFunc}
+                            addressData={addressData}
+                            position={position}
+                            path={path}
+                        />
                     </div>
                 )}
 
