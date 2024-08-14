@@ -8,7 +8,6 @@ import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import ReactGA from 'react-ga4';
 import SMOK_ICON from "../../public/smokMarker.png";
-import NONSMOK_ICON from "../../public/nonSmokMarker.png"
 import SmokModal from '@/components/smokModal';
 import Image from "next/image";
 

@@ -6,9 +6,13 @@ import LIST_ICON from "../../public/list.svg";
 import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
 import NOTICE_ICON from "../../public/Notice.svg";
+import FEEDBACK_ICON from "../../public/feedback.svg"
+import INFO_ICON from "../../public/info.svg"
+import MOBILEINFO_ICON from "../../public/mobileinfo.svg"
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
 import NoticeList from "@/components/noticeList";
+import FeedbackModal from '@/components/feedbackModal';
 
 interface SideMenuProps {
     onListClick: (item: any) => void;
@@ -43,8 +47,8 @@ const SideMenu = ({
             {/* 모바일 화면에서 플로팅 버튼 클릭 시 나타나는 메뉴 */}
             {isOpen && (
                 <div className={styles.menuItems}>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("list")}>
-                        <LIST_ICON className={styles.sidebarButtonIcon} />
+                    <div className={styles.menuItem} onClick={() => setActiveMenu("info")}>
+                        <MOBILEINFO_ICON className={styles.sidebarButtonIcon} />
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("add")}>
                         <ADD_ICON className={styles.sidebarButtonIcon} />
@@ -52,13 +56,18 @@ const SideMenu = ({
                     <div className={styles.menuItem} onClick={() => setActiveMenu("setting")}>
                         <SETTING_ICON className={styles.sidebarButtonIcon} />
                     </div>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("notice")}>
-                        <NOTICE_ICON className={styles.sidebarButtonIcon} />
+                    <div className={styles.menuItem} onClick={() => setActiveMenu("feedback")}>
+                        <FEEDBACK_ICON className={styles.sidebarButtonIcon} />
                     </div>
 
                     {/* 설정 컴포넌트 */}
                     {activeMenu === "setting" && (
                         <SettingArea onClose={() => setActiveMenu(null)} />
+                    )}
+
+                    {/* 피드백 컴포넌트 */}
+                    {activeMenu === "feedback" && (
+                        <FeedbackModal onClose={() => setActiveMenu(null)}  isOpen/>
                     )}
                 </div>
             )}
@@ -90,12 +99,12 @@ const SideMenu = ({
                     >
                         <SETTING_ICON />
                     </div>
-                    <div
-                        className={activeMenu === "notice" ? styles.settingIconOpen : styles.settingIcon}
-                        onClick={() => setActiveMenu("notice")}
-                    >
-                        <NOTICE_ICON />
-                    </div>
+                    {/*<div*/}
+                    {/*    className={activeMenu === "notice" ? styles.settingIconOpen : styles.settingIcon}*/}
+                    {/*    onClick={() => setActiveMenu("notice")}*/}
+                    {/*>*/}
+                    {/*    <NOTICE_ICON />*/}
+                    {/*</div>*/}
                 </div>
 
                 {/* 리스트 View */}
@@ -129,8 +138,8 @@ const SideMenu = ({
                     </div>
                 )}
 
-                {/* 공지사항 컴포넌트 */}
-                {activeMenu === "notice" && <NoticeList />}
+                {/*/!* 공지사항 컴포넌트 *!/*/}
+                {/*{activeMenu === "notice" && <NoticeList />}*/}
 
                 {/* 설정 컴포넌트 */}
                 {activeMenu === "setting" && (
