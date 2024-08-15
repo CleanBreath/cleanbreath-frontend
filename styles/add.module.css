@@ -9,13 +9,26 @@
     border-radius: 10px;
     border: 2px #007E8F;
     box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.25);
+    overflow:auto;
+}
+
+.container > svg {
+    fill: #007E8F;
+    width: 3.5vh;
+    height: 3.5vh;
+    position: relative;
+    top: 1vh;
+    left: 1vh;
+}
+.container > svg:hover {
+    transition: 500ms;
+    scale: 1.2;
 }
 
 .title {
     border-bottom: 1px solid #007E8F;
     width: 85%;
     margin-left: 2.5vh;
-    margin-top: 3.5vh;
     margin-bottom: 3.5vh;
 }
 
