@@ -1,19 +1,22 @@
 import React, { useState, useMemo } from "react";
-import { AddressData } from "../api/types";
+import { AddressData, ApartmentData } from "../api/types";
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
 import SMOKING_ICON from "../../public/smok.svg";
+import CLOSE_ICON from "../../public/close.svg";
 import styles from "../../styles/search.module.css";
 import LOGO_ICON from "../../public/logo.svg";
 
 interface searchProps {
     onListClick: (item: AddressData) => void;
     isData: AddressData[];
+    isApartmentsData: ApartmentData[];
     isLoading: boolean;
     error: string | null;
-    onClose: () => void;
+    setActiveMenu: (menu: string | null) => void;
 }
 
-export default function SearchComponent({ onListClick, isData, isLoading, error, onClose }: searchProps) {
+
+export default function SearchComponent({ onListClick, isData, isApartmentsData, isLoading, error, setActiveMenu }: searchProps) {
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const filteredData = useMemo(() => {
@@ -29,15 +32,13 @@ export default function SearchComponent({ onListClick, isData, isLoading, error,
         );
     }, [searchTerm, isData]);
 
-    // 리스트에서 검색내용 클릭 시 onClose 호출
     const handleListItemClick = (item: AddressData) => {
         onListClick(item);
-        onClose();
     };
 
     return (
         <div>
-            <button className={styles.closeButton} onClick={onClose}>&times;</button>
+            <button className={styles.closeButton} onClick={() => setActiveMenu(null)}>&times;</button>
 
             {/* 모바일에서만 보이는 헤더 */}
             <div className={styles.modalHeader}>
@@ -54,6 +55,9 @@ export default function SearchComponent({ onListClick, isData, isLoading, error,
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                </div>
+                <div className={styles.close}>
+                    <CLOSE_ICON onClick={() => setActiveMenu(null)} />
                 </div>
             </div>
             <div className={styles.list}>
