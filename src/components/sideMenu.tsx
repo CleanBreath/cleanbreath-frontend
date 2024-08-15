@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import styles from "../../styles/sidebar.module.css";
-
 import LOGO_ICON from "../../public/logo.svg";
 import MOBILELOGO_ICON from "../../public/mobilelogo.svg";
-import LIST_ICON from "../../public/list.svg";
 import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
-import NOTICE_ICON from "../../public/Notice.svg";
 import FEEDBACK_ICON from "../../public/feedback.svg";
 import INFO_ICON from "../../public/info.svg";
 import MOBILEINFO_ICON from "../../public/mobileinfo.svg";
@@ -14,9 +11,9 @@ import SEARCH_ICON from "../../public/search.svg";
 import RIGHT_ICON from "../../public/right.svg";
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
-import NoticeList from "@/components/noticeList";
 import FeedbackModal from '@/components/feedbackModal';
 import SearchComponent from "./searchComponent";
+import { Address } from "@/interface/AddressInterface";
 
 interface SideMenuProps {
     onListClick: (item: any) => void;
@@ -26,6 +23,10 @@ interface SideMenuProps {
     isApartmentsData: any[];
     isLoading: boolean;
     error: string | null;
+    toggleAddFunc : (funcName : string | null) => void;
+    addressData : Address[];
+    position : { lat: number, lng: number };
+    path : { lat: number, lng: number }[];
 }
 
 const SideMenu = ({
@@ -35,17 +36,17 @@ const SideMenu = ({
     activeMenu,
     setActiveMenu,
     error,
-    isApartmentsData
+    isApartmentsData,
+    toggleAddFunc,
+    addressData,
+    position,
+    path,
 }: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
-    };
-
-    const handleClose = () => {
-        setActiveMenu(null);
     };
 
     const handleIconClick = () => {
@@ -149,7 +150,7 @@ const SideMenu = ({
                         onClick={() => isSidebarOpen ? handleMenuClick('setting') : setIsSidebarOpen(true)}
                     >
                         <SETTING_ICON />
-                        {isSidebarOpen && (<h1>설정</h1>)}
+                        {isSidebarOpen && (<h1>실험실</h1>)}
                         {isSidebarOpen && <RIGHT_ICON
                             className={activeMenu === 'setting' ? styles.down : styles.up}
                         />}
@@ -171,7 +172,12 @@ const SideMenu = ({
                 {/* 추가 컴포넌트 */}
                 {activeMenu === "add" && (
                     <div className={styles.add}>
-                        <AddComponent />
+                        <AddComponent
+                            toggleAddFunc={toggleAddFunc}
+                            addressData={addressData}
+                            position={position}
+                            path={path}
+                        />
                     </div>
                 )}
 

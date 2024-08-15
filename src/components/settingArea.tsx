@@ -40,9 +40,9 @@ export default function SettingArea({ onClose }: SettingAreaProps) {
             </div>
 
             <div className={styles.mobileMargin}>
-                <button className={styles.settingButton} onClick={openInfoModal}>
+                {/* <button className={styles.settingButton} onClick={openInfoModal}>
                     기타 금연구역 안내
-                </button>
+                </button> */}
                 {/*<button className={styles.settingButton} onClick={openWarningModal}>*/}
                 {/*    흡연구역 검증기*/}
                 {/*</button>*/}
@@ -53,7 +53,7 @@ export default function SettingArea({ onClose }: SettingAreaProps) {
                 {/*    피드백하기*/}
                 {/*</button>*/}
 
-                <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal}/>
+                {/* <InfoModal isOpen={isInfoModalOpen} onClose={closeInfoModal}/> */}
                 {/*<WarningModal isOpen={isWarningModalOpen} onClose={closeWarningModal}/>*/}
                 <RedPillModal isOpen={isRedPillModalOpen} onClose={closeRedPillModal}/>
                 {/*<FeedbackModal isOpen={isFeedbackModalOpen} onClose={closeFeedbackModal}/>*/}

@@ -126,7 +126,6 @@
     transform: rotate(180deg);
 }
 
-
 @keyframes Open {
     0% {
         width: 100px;
