@@ -56,16 +56,21 @@ export default function AddComponent({ setActiveMenu ,toggleAddFunc, addressData
                 },
               ],
             };
+
+
             if (valuidation()) {
               await axios.post(API_URL, requestData);
             }
-            
+          
+
             alert("제출 완료");
             window.location.reload();
         } catch (error) {
             console.error(error);
+            alert("주소 지정해주세요")
         } 
     }
+
 
     const valuidation = () => {
       if (category.length <= 0) {
@@ -83,10 +88,6 @@ export default function AddComponent({ setActiveMenu ,toggleAddFunc, addressData
       if (path.length <= 0) {
         alert("흡연구역 영역을 지정해주세요.");
       }
-      if (position.lat === 0 && position.lng === 0) {
-        alert("흡연구역 위치를 지정해주세요.");
-      }
-
       return true;
     }
 
