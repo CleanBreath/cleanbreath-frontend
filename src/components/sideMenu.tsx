@@ -78,7 +78,7 @@ const SideMenu = ({
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("setting")}>
                         <SETTING_ICON className={styles.sidebarButtonIcon} />
-                        {isSidebarOpen && <span>설정</span>}
+                        {isSidebarOpen && <span>실험실</span>}
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("feedback")}>
                         <FEEDBACK_ICON className={styles.sidebarButtonIcon} />
@@ -151,7 +151,7 @@ const SideMenu = ({
                         onClick={() => isSidebarOpen ? handleMenuClick('setting') : setIsSidebarOpen(true)}
                     >
                         <SETTING_ICON />
-                        {isSidebarOpen && (<h1>설정</h1>)}
+                        {isSidebarOpen && (<h1>실험실</h1>)}
                         {isSidebarOpen && <RIGHT_ICON
                             className={activeMenu === 'setting' ? styles.down : styles.up}
                         />}
