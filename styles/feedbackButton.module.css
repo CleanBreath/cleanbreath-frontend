@@ -1,7 +1,7 @@
 .feedbackButtonContainer {
     display: flex;
     align-items: center; /* 아이콘과 텍스트를 수직으로 정렬 */
-    padding: 10px 15px; /* 버튼 내부 패딩 조정 */
+    padding: 0px 15px; /* 버튼 내부 패딩 조정 */
     background-color: #007E8F;
     border-radius: 25px;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -20,8 +20,8 @@
 }
 
 .icon {
-    width: 30px; /* 아이콘의 크기를 텍스트와 균형 있게 조정 */
-    height: 30px;
+    width: 50px; /* 아이콘의 크기를 텍스트와 균형 있게 조정 */
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
