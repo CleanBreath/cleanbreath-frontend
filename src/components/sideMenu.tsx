@@ -127,6 +127,7 @@ const SideMenu = ({
                 {activeMenu === "add" && (
                     <div className={styles.add}>
                         <AddComponent
+                            setActiveMenu={setActiveMenu}
                             toggleAddFunc={toggleAddFunc}
                             addressData={addressData}
                             position={position}
