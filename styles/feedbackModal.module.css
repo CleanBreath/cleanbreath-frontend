@@ -50,6 +50,7 @@
 .modalHashTags {
     grid-column: 3; /* 우측 */
     align-self: end; /* 하단 정렬 */
+    width: 17vh;
     justify-self: end;
     color: white;
     font-size: 12px;

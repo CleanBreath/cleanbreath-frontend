@@ -21,7 +21,7 @@ const API_URL_DEV = "http://localhost:7001/v1/smokingArea/add";
 export default function AddComponent({ setActiveMenu ,toggleAddFunc, addressData, position, path }: AddComponentProps) {
     const [category, setCategory] = useState<string>("");
     const [areaType, setAreaType] = useState<string>("");
-    const [implicit, setImplicit] = useState<string | undefined>("");
+    const [implicit, setImplicit] = useState<string | undefined>(undefined);
     const [buildingName, setBuildingName] = useState<string>("");
 
     const [address, setAddress] = useState<Address[]>([]);
@@ -56,15 +56,38 @@ export default function AddComponent({ setActiveMenu ,toggleAddFunc, addressData
                 },
               ],
             };
-            const response = await axios.post(API_URL, requestData);
+            if (valuidation()) {
+              await axios.post(API_URL, requestData);
+            }
             
             alert("제출 완료");
+            window.location.reload();
         } catch (error) {
             console.error(error);
-            alert("제출 실패");
-        } finally {
-            window.location.reload();
-        }
+        } 
+    }
+
+    const valuidation = () => {
+      if (category.length <= 0) {
+        alert("카테고리를 입력해주세요.");
+      }
+      if (areaType.length <= 0) {
+        alert("흡연구역 구분을 선택해주세요.");
+      }
+      if (implicit === undefined) {
+        alert("암묵적인 흡연구역 여부를 선택해주세요.");
+      }
+      if (buildingName.length <= 0) {
+        alert("건물 이름을 입력해주세요.");
+      }
+      if (path.length <= 0) {
+        alert("흡연구역 영역을 지정해주세요.");
+      }
+      if (position.lat === 0 && position.lng === 0) {
+        alert("흡연구역 위치를 지정해주세요.");
+      }
+
+      return true;
     }
 
     return (
