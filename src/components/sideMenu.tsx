@@ -74,7 +74,7 @@ const SideMenu = ({
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("add")}>
                         <ADD_ICON className={styles.sidebarButtonIcon} />
-                        {isSidebarOpen && <span>흡연구역 추가 요청하기</span>}
+                        {isSidebarOpen && <span>흡연구역 추가요청</span>}
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("setting")}>
                         <SETTING_ICON className={styles.sidebarButtonIcon} />
