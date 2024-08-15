@@ -68,29 +68,34 @@ const SideMenu = ({
             {isOpen && (
                 <div className={styles.menuItems}>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("info")}>
-                        <MOBILEINFO_ICON className={styles.sidebarButtonIcon}/>
+                        <MOBILEINFO_ICON className={styles.sidebarButtonIcon} />
+                        {isSidebarOpen && <span>서비스 소개</span>}
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("search")}>
-                        <SEARCH_ICON className={styles.sidebarButtonIcon}/>
+                        <SEARCH_ICON className={styles.sidebarButtonIcon} />
+                        {isSidebarOpen && <span>검색하기</span>}
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("add")}>
-                        <ADD_ICON className={styles.sidebarButtonIcon}/>
+                        <ADD_ICON className={styles.sidebarButtonIcon} />
+                        {isSidebarOpen && <span>흡연구역 추가요청</span>}
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("setting")}>
-                        <SETTING_ICON className={styles.sidebarButtonIcon}/>
+                        <SETTING_ICON className={styles.sidebarButtonIcon} />
+                        {isSidebarOpen && <span>실험실</span>}
                     </div>
                     <div className={styles.menuItem} onClick={() => setActiveMenu("feedback")}>
-                        <FEEDBACK_ICON className={styles.sidebarButtonIcon}/>
+                        <FEEDBACK_ICON className={styles.sidebarButtonIcon} />
+                        {isSidebarOpen && <span>피드백</span>}
                     </div>
 
                     {/* 설정 컴포넌트 */}
                     {activeMenu === "setting" && (
-                        <SettingArea onClose={() => setActiveMenu(null)}/>
+                        <SettingArea onClose={() => setActiveMenu(null)} />
                     )}
 
                     {/* 피드백 컴포넌트 */}
                     {activeMenu === "feedback" && (
-                        <FeedbackModal onClose={() => setActiveMenu(null)} isOpen/>
+                        <FeedbackModal onClose={() => setActiveMenu(null)} isOpen />
                     )}
 
                     {/* 검색 컴포넌트 */}
