@@ -98,11 +98,8 @@
 }
 .searchContainer .close svg:hover {
     cursor: pointer;
-    transform: scale(1.1);
+    transform: scale(1.1); 
 }
-
-
-
 
 /* 닫기 버튼 스타일링 */
 .closeButton {
