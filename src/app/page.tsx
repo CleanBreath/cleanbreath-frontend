@@ -11,20 +11,25 @@ import MarkerOverlay from '@/components/markerOverlay';
 import Polygon from '@/components/setPolygon';
 import ReactGA from 'react-ga4';
 import SMOK_ICON from "../../public/smokMarker.png";
-import NONSMOK_ICON from "../../public/nonSmokMarker.png"
+import NONSMOK_ICON from "../../public/nonSmokMarker.png";
+import SmokModal from '@/components/smokModal';
 import Image from "next/image";
 import { Address } from '@/interface/AddressInterface';
 import DrawingField from '@/components/drawingField';
 import { get } from 'http';
 
+// Import the Feedback components
+import FeedbackButton from '@/components/feedbackButton';
+import FeedbackModal from '@/components/feedbackModal';
+
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
 
 export default function Home() {
-  const [loading, error] = useKakaoLoader({
-    appkey: APP_KEY,
-    libraries: ['services', 'clusterer', 'drawing'],
-  });
+    const [loading, error] = useKakaoLoader({
+        appkey: APP_KEY,
+        libraries: ['services', 'clusterer', 'drawing'],
+    });
 
   const [center, setCenter] = useState({ lat: 37.394329, lng: 126.956939 });
   const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
@@ -91,65 +96,66 @@ export default function Home() {
 
 
 
-  useEffect(() => {
-    ReactGA.initialize(TRACKING_ID);
-    ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
-  }, []);
+    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const data = await listData();
-        const apartmentsData = await ApartmentsData();
-        setData(data);
-        setApartmentsData(apartmentsData);
-      } catch (err) {
-        setError('데이터를 불러오는 중 오류가 발생했습니다.');
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
+    useEffect(() => {
+        ReactGA.initialize(TRACKING_ID);
+        ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
+    }, []);
+
+    useEffect(() => {
+        const loadData = async () => {
+            setIsLoading(true);
+            setError(null);
+            try {
+                const data = await listData();
+                const apartmentsData = await ApartmentsData();
+                setData(data);
+                setApartmentsData(apartmentsData);
+            } catch (err) {
+                setError('데이터를 불러오는 중 오류가 발생했습니다.');
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        if (userLocation) {
+            setCenter(userLocation);
+        }
+    }, [userLocation]);
+
+    const handleListClick = (item: AddressData) => {
+        setMarkerPosition({
+            lat: item.address_latitude,
+            lng: item.address_longitude,
+        });
+
+        setCenter({
+            lat: item.address_latitude,
+            lng: item.address_longitude,
+        });
     };
-    loadData();
-  }, []);
 
-  useEffect(() => {
-    if (userLocation) {
-      setCenter(userLocation);
-    }
-  }, [userLocation]);
+    const toggleMenu = (menu: string | null) => {
+        setActiveMenu(activeMenu === menu ? null : menu);
+    };
 
+    const nonSmokingToggle = () => {
+        setIsNonSmoking(!isNonSmoking);
+    };
 
-  const handleListClick = (item: AddressData) => {
-    setMarkerPosition({
-      lat: item.address_latitude,
-      lng: item.address_longitude,
-    });
+    const smokingToggle = () => {
+        setIsSmoking(!isSmoking);
+    };
 
-    setCenter({
-      lat: item.address_latitude,
-      lng: item.address_longitude,
-    });
-  };
-
-  const toggleMenu = (menu : string | null) => {
-    setActiveMenu(activeMenu === menu ? null : menu);
-  }
-
-  const nonSmokingToggle = () => {
-    setIsNonSmoking(!isNonSmoking);
-  };
-
-  const smokingToggle = () => {
-    setIsSmoking(!isSmoking);
-  };
-
-  const handleOverlayClick = () => {
-    setIsOverlayClicked(false);
-    setIsOverlayClicked(true);
-  };
+    const handleOverlayClick = () => {
+        setIsOverlayClicked(false);
+        setIsOverlayClicked(true);
+    };
 
   const handlePolygonClick = (lat: number, lng: number) => {
     setMarkerPosition({ lat, lng });
@@ -170,6 +176,7 @@ export default function Home() {
         activeMenu={activeMenu}
         setActiveMenu={toggleMenu}
         isData={isData}
+        isApartmentsData={isApartmentsData}
         isLoading={isLoading}
         error={errorMsg}
         toggleAddFunc={togleAddFunc}
@@ -249,6 +256,7 @@ export default function Home() {
                       height={60}
                       onClick={() => {
                         setIsOverlayClicked(true);
+                        setPolygonState("address");
                         handlePolygonClick(
                           item.address_latitude,
                           item.address_longitude

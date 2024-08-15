@@ -5,6 +5,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import ClOSE_ICON from "../../public/close.svg";
 
+
 interface AddComponentProps {
   setActiveMenu: (menu: string | null) => void;
   toggleAddFunc: (funcName: string | null) => void;
