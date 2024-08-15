@@ -1,16 +1,18 @@
 /* 리스트 버튼 클릭할 경우 */
 .list {
     width: 300px;
-    height: calc(100vh - 150px);
+    height: calc(100vh - 30%);
     font-size: 16px;
     color: #000;
     background-color: #fff;
     z-index: 3;
     position: absolute;
-    top: 150px;
-    right: 100px;
+    top: 175px;
+    right: 25px;
     border: none;
     overflow-y: scroll;
+    border: solid 2px #007E8F;
+    border-top: none;
     -ms-overflow-style: none;
 }
 
@@ -46,9 +48,10 @@
     z-index: 3;
     background-color: #fff;
     position: absolute;
-    top: 100px;
-    right: 100px;
-    border: none;
+    top: 125px;
+    right: 25px;
+    border: solid 2px #007E8F;
+    border-bottom: none;
 }
 
 .searchContainer .searchArea {
@@ -67,6 +70,8 @@
     width: calc(300px - 60px);
     height: 28px;
     flex-shrink: 0;
+    position: absolute;
+    left: 5px;
     border-radius: 50px;
     background: #D9D9D9;
     border: none;
@@ -74,6 +79,27 @@
     float: left;
 }
 
+.searchContainer .close {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    margin-top: 0.3rem;
+    margin-right: 0.2rem;
+}
+
+.searchContainer .close svg {
+    width: 25px;
+    height: 25px;
+    fill: #000;
+}
+
+.searchContainer .close svg:active {
+    transform: scale(0.9);
+}
+.searchContainer .close svg:hover {
+    cursor: pointer;
+    transform: scale(1.1); 
+}
 
 /* 닫기 버튼 스타일링 */
 .closeButton {

@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import styles from "../../styles/sidebar.module.css";
-
 import LOGO_ICON from "../../public/logo.svg";
 import MOBILELOGO_ICON from "../../public/mobilelogo.svg";
-import LIST_ICON from "../../public/list.svg";
 import ADD_ICON from "../../public/add.svg";
 import SETTING_ICON from "../../public/setting.svg";
-import NOTICE_ICON from "../../public/Notice.svg";
 import FEEDBACK_ICON from "../../public/feedback.svg";
 import INFO_ICON from "../../public/info.svg";
 import MOBILEINFO_ICON from "../../public/mobileinfo.svg";
@@ -14,36 +11,42 @@ import SEARCH_ICON from "../../public/search.svg";
 import RIGHT_ICON from "../../public/right.svg";
 import SettingArea from "@/components/settingArea";
 import AddComponent from "./addComponent";
-import NoticeList from "@/components/noticeList";
 import FeedbackModal from '@/components/feedbackModal';
 import SearchComponent from "./searchComponent";
+import { Address } from "@/interface/AddressInterface";
 
 interface SideMenuProps {
     onListClick: (item: any) => void;
     activeMenu: string | null;
     setActiveMenu: (menu: string | null) => void;
     isData: any[];
+    isApartmentsData: any[];
     isLoading: boolean;
     error: string | null;
+    toggleAddFunc : (funcName : string | null) => void;
+    addressData : Address[];
+    position : { lat: number, lng: number };
+    path : { lat: number, lng: number }[];
 }
 
 const SideMenu = ({
-                      onListClick,
-                      isData,
-                      isLoading,
-                      activeMenu,
-                      setActiveMenu,
-                      error,
-                  }: SideMenuProps) => {
+    onListClick,
+    isData,
+    isLoading,
+    activeMenu,
+    setActiveMenu,
+    error,
+    isApartmentsData,
+    toggleAddFunc,
+    addressData,
+    position,
+    path,
+}: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
-    };
-
-    const handleClose = () => {
-        setActiveMenu(null);
     };
 
     const handleIconClick = () => {
@@ -99,10 +102,11 @@ const SideMenu = ({
                     {activeMenu === "search" && (
                         <SearchComponent
                             onListClick={onListClick}
+                            isApartmentsData={isApartmentsData}
                             isData={isData}
                             isLoading={isLoading}
                             error={error}
-                            onClose={handleClose} // onClose 추가
+                            setActiveMenu={setActiveMenu}
                         />
                     )}
                 </div>
@@ -163,16 +167,23 @@ const SideMenu = ({
                     <SearchComponent
                         onListClick={onListClick}
                         isData={isData}
+                        isApartmentsData={isApartmentsData}
                         isLoading={isLoading}
                         error={error}
-                        onClose={handleClose} // onClose 추가
+                        setActiveMenu={setActiveMenu}
                     />
                 )}
 
                 {/* 추가 컴포넌트 */}
                 {activeMenu === "add" && (
                     <div className={styles.add}>
-                        <AddComponent />
+                        <AddComponent
+                            setActiveMenu={setActiveMenu}
+                            toggleAddFunc={toggleAddFunc}
+                            addressData={addressData}
+                            position={position}
+                            path={path}
+                        />
                     </div>
                 )}
 
