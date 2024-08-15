@@ -166,7 +166,18 @@
     fill: white;
 }
 
-/* 모바일 화면에서 플로팅 메뉴 아이템 스타일 */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 메뉴 아이템의 기본 스타일 */
 .menuItems {
     display: flex;
     flex-direction: column;
@@ -177,25 +188,49 @@
     z-index: 999;
 }
 
+/* 애니메이션 적용 */
 .menuItem {
     display: flex;
     align-items: center;
-    width: 160px; /* 메뉴 아이템의 크기를 줄임 */
+    width: 160px;
     height: 45px;
     background-color: #007e8f;
-    border-radius: 22.5px; /* 모서리를 유지하면서 크기를 줄임 */
+    border-radius: 22.5px;
     margin-bottom: 12px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    padding-right: 12px; /* 텍스트와 아이콘 사이에 여백 추가 */
+    padding-right: 12px;
     cursor: pointer;
-    flex-direction: row-reverse; /* 아이콘을 오른쪽으로, 텍스트를 왼쪽으로 */
+    flex-direction: row-reverse;
+    opacity: 0;
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+.menuItem:nth-child(1) {
+    animation-delay: 1s;
+}
+
+.menuItem:nth-child(2) {
+    animation-delay: 0.8s;
+}
+
+.menuItem:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.menuItem:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.menuItem:nth-child(5) {
+    animation-delay: 0.2s;
 }
 
 .menuItem span {
     color: white;
-    margin-right: 8px; /* 텍스트와 아이콘 사이의 여백 줄임 */
-    font-size: 14px; /* 글자 크기를 줄임 */
+    margin-right: 8px;
+    font-size: 14px;
 }
+
 
 /* 미디어 쿼리 추가: 모바일 화면에 대한 설정 */
 @media only screen and (max-width: 768px) {
