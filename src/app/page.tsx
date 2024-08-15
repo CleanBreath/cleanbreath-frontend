@@ -276,6 +276,7 @@ export default function Home() {
           />
         )}
       </Map>
+      {/* 실시간 위치 추후 기능 */}
       {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
     </div>
   );
