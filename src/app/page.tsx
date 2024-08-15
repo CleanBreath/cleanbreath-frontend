@@ -46,7 +46,6 @@ export default function Home() {
   const [PolygonState, setPolygonState] = useState<string | null>(null);
   const [statute, setStatute] = useState<string | null>(null);
   const [zoomalbe, setZoomable] = useState(true);
-  
   const [address, setAddress] = useState<Address[]>([]); // 콜백 패턴으로 받아온 주소 데이터들 state 변수
   const [activeFunc, setActiveFunc] = useState<string | null>(null); // Add Component 활성화 함수 state 변수
   const [position, setPosition] = useState<{ lat: number; lng: number }>({lat: 0, lng: 0}); // 마커 위치 state 변수
@@ -129,15 +128,9 @@ export default function Home() {
     }, [userLocation]);
 
     const handleListClick = (item: AddressData) => {
-        setMarkerPosition({
-            lat: item.address_latitude,
-            lng: item.address_longitude,
-        });
-
-        setCenter({
-            lat: item.address_latitude,
-            lng: item.address_longitude,
-        });
+        handlePolygonClick(item.address_latitude, item.address_longitude);
+        setIsOverlayClicked(true);
+        setPolygonState("address");
     };
 
     const toggleMenu = (menu: string | null) => {

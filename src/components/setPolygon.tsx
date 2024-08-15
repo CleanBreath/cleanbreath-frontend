@@ -80,6 +80,10 @@ export default function SetPolygon({
                         const isSmokingZone = path.divisionArea.startsWith('SMOKING_ZONE');
                         const pathCoordinates = parsePathCoordinates(path);
 
+                        if (item.address_category.includes('병설유치원')) {
+                            return null;
+                        }
+
                         const setSpecialCategoryColor = (addressCategory: string) => {
                             const specialCategories = [
                                 '유치원', '초등학교', '중학교', '고등학교'
@@ -99,7 +103,6 @@ export default function SetPolygon({
                                 : (setSpecialCategoryColor(item.address_category) || '#FFBA5A'));
                         const fillOpacity = hoveredPolygon === index ? 0.9 : 0.7;
                         const strokeWeight = hoveredPolygon === index ? 5 : 0;
-
                         return (
                             <div
                                 key={`${isSmokingZone ? 'smoking' : 'nonSmoking'}-${index}-${pathIndex}`}

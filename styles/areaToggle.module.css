@@ -78,7 +78,6 @@
     }
 }
 
-/* State Box */
 .state {
     width: 12.5vh;
     height: 6.8vh;
@@ -145,7 +144,7 @@
     font-size: 13px;
     font-weight: 400;
     word-wrap: break-word;
-}
+} 
 
 /* 모바일 화면에서 .state 요소 좌상단에 위치시키기 */
 @media (max-width: 768px) {
