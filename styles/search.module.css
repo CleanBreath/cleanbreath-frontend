@@ -226,8 +226,10 @@
 
     .cleanBreath {
         display: block;
-        margin-left: 34%;
-        transform: translateX(-205%);
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        transform: translateX(-15%);
     }
 
     .mobileMargin {
