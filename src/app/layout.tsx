@@ -3,7 +3,7 @@ import "../../styles/global.css";
 import Head from "next/head";
 
 export const metadata: Metadata = {
-  title: "CleanBreath - 흡연 및 금연구역 시각화 서비스",
+  title: "CleanBreath",
   description:
     "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.",
   icons: {
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     },
   ],
   openGraph: {
-    title: "CleanBreath - 흡연 및 금연구역 시각화 서비스",
+    title: "CleanBreath",
     description:
       "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.",
     url: "https://bluesky-cleanbreath.com/",

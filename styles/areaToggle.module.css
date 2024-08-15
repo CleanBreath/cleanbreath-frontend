@@ -6,22 +6,22 @@
     width: auto;
     height: auto;
     background-color: #007E8F;
-    margin: 20px;
+    margin: 2vh;
     border-radius: 15px;
 }
 
 .toggle svg {
-    width: 60px;
-    height: 45px;
+    width: 6vh;
+    height: 4.5vh;
 }
 
 .toggle div {
     float: left;
     display: flex;
     align-items: center;
-    width: 60px;
-    height: 55px;
-    margin: 11px;
+    width: 5.5vh;
+    height: 5vh;
+    margin: 1.1vh;
 }
 
 /* nonSmokingIcon css */
@@ -80,16 +80,16 @@
 
 /* State Box */
 .state {
-    width: 125px;
-    height: 70px;
+    width: 12.5vh;
+    height: 6.8vh;
     position: absolute;
     background: white;
     border-radius: 15px;
-    border: 2px #007E8F solid;
+    border: 2.5px solid #007E8F;
     z-index: 1;
-    right: 200px;
+    right: 20vh;
     top: 0;
-    margin-top: 22px;
+    margin-top: 2.2vh;
 }
 
 .box1, .box2, .box3 {
@@ -99,30 +99,31 @@
 }
 
 .box1 {
-    width: 70px;
-    height: 15px;
-    left: 15px;
-    top: 5px;
+    width: 15vh;
+    height: 1.5vh;
+    left: 1.5vh;
+    top: 0.5vh;
 }
 
 .box2 {
-    width: 68px;
-    height: 17px;
-    left: 15px;
-    top: 26px;
+    width: 15vh;
+    height: 1.5vh;
+    left: 1.5vh;
+    top: 2.6vh;
 }
 
 .box3 {
-    width: 95px;
-    height: 17px;
-    left: 15px;
-    top: 49px;
+    width: 15vh;
+    height: 1.5vh;
+    left: 1.5vh;
+    top: 4.9vh;
 }
 
 .circle {
-    width: 15px;
-    height: 15px;
+    width: 1.5vh;
+    height: 1.5vh;
     position: absolute;
+    border-radius: 50%;
 }
 
 .green {
@@ -138,11 +139,10 @@
 }
 
 .labelText {
-    margin-left: 20px;
+    margin-left: 2vh;
     text-align: center;
     color: black;
     font-size: 13px;
-    font-family: 'Red Hat Display', sans-serif;
     font-weight: 400;
     word-wrap: break-word;
 }
@@ -151,8 +151,9 @@
 @media (max-width: 768px) {
     .state {
         right: auto; /* right 속성 무효화 */
-        left: 10px;  /* 좌상단으로 이동 */
-        top: 10px;   /* 좌상단으로 이동 */
+        left: 1vh;  /* 좌상단으로 이동 */
+        top: 1vh;   /* 좌상단으로 이동 */
         margin-top: 0; /* margin-top 초기화 */
+        width: 14vh;
     }
 }
