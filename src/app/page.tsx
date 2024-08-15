@@ -201,13 +201,19 @@ export default function Home() {
         onDoubleClick={handleAddressPositionEndClick}
         onMouseMove={handleMouseMove}
       >
-        <MapMarker position={position ?? center} />
-        <DrawingField
-            activeFunc={activeFunc}
-            setPolygon={setPolygon}
-            path={path}
-            mousePosition={mousePosition}
-        />
+        {
+          activeMenu === "add" && (
+            <>
+              <MapMarker position={position ?? center} />
+              <DrawingField
+                activeFunc={activeFunc}
+                setPolygon={setPolygon}
+                path={path}
+                mousePosition={mousePosition}
+              />
+            </>
+          )
+        }
 
         {isOverlayClicked && markerPosition && (
           <MarkerOverlay

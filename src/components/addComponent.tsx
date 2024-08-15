@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/add.module.css";
 import axios from "axios";
 import dayjs from "dayjs";
+import ClOSE_ICON from "../../public/close.svg";
 
 interface AddComponentProps {
+  setActiveMenu: (menu: string | null) => void;
   toggleAddFunc: (funcName: string | null) => void;
   addressData: Address[];
   position: { lat: number; lng: number };
@@ -15,7 +17,7 @@ const API_URL = "https://server.bluesky-cleanbreath.com/v1/smokingArea/add";
 const API_URL_DEV = "http://localhost:7001/v1/smokingArea/add";
 
 
-export default function AddComponent({ toggleAddFunc, addressData, position, path }: AddComponentProps) {
+export default function AddComponent({ setActiveMenu ,toggleAddFunc, addressData, position, path }: AddComponentProps) {
     const [category, setCategory] = useState<string>("");
     const [areaType, setAreaType] = useState<string>("");
     const [implicit, setImplicit] = useState<string | undefined>("");
@@ -66,6 +68,7 @@ export default function AddComponent({ toggleAddFunc, addressData, position, pat
 
     return (
       <div className={styles.container}>
+          <ClOSE_ICON className={styles.close} onClick={() => setActiveMenu(null)}/>
         <div className={styles.title}>
           <h1>
             <span style={{ color: "#027100" }}>흡연구역</span>&nbsp;
