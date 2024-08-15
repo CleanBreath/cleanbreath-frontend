@@ -54,7 +54,7 @@
     border-radius: 15px;
 }
 
-.menu h1{
+.menu h1 {
     color: white;
 }
 
@@ -63,7 +63,7 @@
     position: relative;
 }
 
-.menu .IconOpen:hover{
+.menu .IconOpen:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
     cursor: pointer;
@@ -89,7 +89,6 @@
 .menu .IconOpen .up {
     transform: rotate(90deg);
 }
-
 
 /* 사이드바가 오픈할 경우 */
 .sidebarOpen {
@@ -146,8 +145,8 @@
 
 /* 모바일 화면에서의 플로팅 버튼 */
 .sidebarButton {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     background-color: #007e8f;
     border-radius: 50%;
     position: fixed;
@@ -162,32 +161,40 @@
 }
 
 .sidebarButtonIcon {
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     fill: white;
 }
 
+/* 모바일 화면에서 플로팅 메뉴 아이템 스타일 */
 .menuItems {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     position: fixed;
-    bottom: 100px;
-    right: 30px;
+    bottom: 80px;
+    right: 25px;
     z-index: 999;
 }
 
 .menuItem {
-    width: 50px;
-    height: 50px;
-    background-color: #007e8f;
-    border-radius: 50%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-bottom: 15px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    width: 160px; /* 메뉴 아이템의 크기를 줄임 */
+    height: 45px;
+    background-color: #007e8f;
+    border-radius: 22.5px; /* 모서리를 유지하면서 크기를 줄임 */
+    margin-bottom: 12px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    padding-right: 12px; /* 텍스트와 아이콘 사이에 여백 추가 */
     cursor: pointer;
+    flex-direction: row-reverse; /* 아이콘을 오른쪽으로, 텍스트를 왼쪽으로 */
+}
+
+.menuItem span {
+    color: white;
+    margin-right: 8px; /* 텍스트와 아이콘 사이의 여백 줄임 */
+    font-size: 14px; /* 글자 크기를 줄임 */
 }
 
 /* 미디어 쿼리 추가: 모바일 화면에 대한 설정 */

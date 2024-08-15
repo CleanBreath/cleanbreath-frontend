@@ -24,7 +24,7 @@
     margin: 11px;
 }
 
-/*nonSmokingIcon css*/
+/* nonSmokingIcon css */
 .nonSmokingIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
@@ -41,7 +41,7 @@
     transform: scale(0.9);
 }
 
-/*smokingIcon css*/
+/* smokingIcon css */
 .smokingIcon:hover {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
@@ -145,4 +145,14 @@
     font-family: 'Red Hat Display', sans-serif;
     font-weight: 400;
     word-wrap: break-word;
+}
+
+/* 모바일 화면에서 .state 요소 좌상단에 위치시키기 */
+@media (max-width: 768px) {
+    .state {
+        right: auto; /* right 속성 무효화 */
+        left: 10px;  /* 좌상단으로 이동 */
+        top: 10px;   /* 좌상단으로 이동 */
+        margin-top: 0; /* margin-top 초기화 */
+    }
 }
