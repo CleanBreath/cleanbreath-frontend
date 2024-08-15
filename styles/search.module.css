@@ -1,4 +1,14 @@
-/* 리스트 버튼 클릭할 경우 */
+@keyframes slide {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 .list {
     width: 300px;
     height: calc(100vh - 30%);
@@ -14,6 +24,7 @@
     border: solid 2px #007E8F;
     border-top: none;
     -ms-overflow-style: none;
+    animation: slide 0.5s ease-out;
 }
 
 .list::-webkit-scrollbar, .list::-webkit-scrollbar-thumb {
@@ -52,6 +63,7 @@
     right: 25px;
     border: solid 2px #007E8F;
     border-bottom: none;
+    animation: slide 0.5s ease-out;
 }
 
 .searchContainer .searchArea {
@@ -100,6 +112,7 @@
     cursor: pointer;
     transform: scale(1.1); 
 }
+
 
 /* 닫기 버튼 스타일링 */
 .closeButton {
@@ -161,6 +174,7 @@
         bottom: 0;
         padding: 20px;
         box-sizing: border-box;
+        border: none;
         z-index: 1;
         overflow-y: scroll;
     }
