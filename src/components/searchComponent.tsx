@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { AddressData, ApartmentData } from "../api/types";
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
 import SMOKING_ICON from "../../public/smok.svg";
+import CLOSE_ICON from "../../public/close.svg";
 import styles from "../../styles/search.module.css";
 import LOGO_ICON from "../../public/logo.svg";
 
@@ -15,7 +16,7 @@ interface searchProps {
 }
 
 
-export default function SearchComponent({ onListClick, isData, isApartmentsData,isLoading, error, setActiveMenu }: searchProps) {
+export default function SearchComponent({ onListClick, isData, isApartmentsData, isLoading, error, setActiveMenu }: searchProps) {
     const [searchTerm, setSearchTerm] = useState<string>("");
 
     const filteredData = useMemo(() => {
@@ -54,6 +55,9 @@ export default function SearchComponent({ onListClick, isData, isApartmentsData,
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+                </div>
+                <div className={styles.close}>
+                    <CLOSE_ICON onClick={() => setActiveMenu(null)} />
                 </div>
             </div>
             <div className={styles.list}>

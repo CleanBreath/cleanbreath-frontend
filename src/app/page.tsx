@@ -44,7 +44,6 @@ export default function Home() {
   const [statute, setStatute] = useState<string | null>(null);
   const [zoomalbe, setZoomable] = useState(true);
 
-    // State for Feedback Modal
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
     useEffect(() => {
