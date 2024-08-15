@@ -192,7 +192,7 @@
 }
 
 .submitBtn {
-    margin-top: 2.5vh;
+    margin-top: 2vh;
     display: flex;
     justify-content: center;
 }
@@ -209,4 +209,41 @@
 
 .submitBtn > button:hover {
     background-color: #005F6B;
+}
+
+
+@media only screen and (max-width: 768px) {
+    @keyframes addCopoment {
+        0% {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        25% {
+            transform: translateY(75%);
+            opacity: 0.25;
+        }
+        50% {
+            transform: translateY(50%);
+            opacity: 0.5;
+        }
+        75% {
+            transform: translateY(25%);
+            opacity: 0.75;
+        }
+        100% {
+            transform: translateY(0%);
+            opacity: 1;
+        }
+    }
+
+
+    .container {
+        position: absolute;
+        width: 47vh;
+        height: 42vh;
+        bottom: -9vh;
+        right: -4vh;
+        overflow: scroll;
+        animation: addCopoment 0.5s ease-in;
+    }
 }

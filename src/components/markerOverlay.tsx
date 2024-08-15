@@ -81,7 +81,7 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
           {filteredData.some((item) => item.smoking === '금연구역') && (
             <>
               <p className={styles.AUStatute}>
-                국민건강증진법 제9조제6항, 시행 : 2024.7.10
+                국민건강증진법 제9조제6항, 시행: 2024.7.10
               </p>
               <div className={styles.help}>
                 <a href="https://www.anyang.go.kr/health/contents.do?key=1329"><HELP_ICON /></a>

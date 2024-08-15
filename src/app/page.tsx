@@ -5,14 +5,12 @@ import SideMenu from '@/components/sideMenu';
 import { CustomOverlayMap, Map, MapMarker, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
 import { AddressData, ApartmentData } from '../api/types';
 import { listData, ApartmentsData } from '../api/api';
-import CurrentLocation from '@/components/currentLocation';
 import AreaToggleComponent from '@/components/areaToggleComponent';
 import MarkerOverlay from '@/components/markerOverlay';
 import Polygon from '@/components/setPolygon';
 import ReactGA from 'react-ga4';
 import SMOK_ICON from "../../public/smokMarker.png";
 import NONSMOK_ICON from "../../public/nonSmokMarker.png";
-import SmokModal from '@/components/smokModal';
 import Image from "next/image";
 import { Address } from '@/interface/AddressInterface';
 import DrawingField from '@/components/drawingField';
@@ -77,6 +75,7 @@ export default function Home() {
         setPath((prev) => [...prev, {lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng()}]);
         setIsDrawing(true);
     }
+
     // AddComponent 영역 그리기 종료 클릭 이벤트
     const handleAddressPositionEndClick = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
         setActiveFunc(null);
@@ -92,8 +91,6 @@ export default function Home() {
     const togleAddFunc = (funcName : string | null) => {
         setActiveFunc(activeFunc === funcName ? null : funcName);
     }
-
-
 
     const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
 
@@ -128,15 +125,9 @@ export default function Home() {
     }, [userLocation]);
 
     const handleListClick = (item: AddressData) => {
-        setMarkerPosition({
-            lat: item.address_latitude,
-            lng: item.address_longitude,
-        });
-
-        setCenter({
-            lat: item.address_latitude,
-            lng: item.address_longitude,
-        });
+        handlePolygonClick(item.address_latitude, item.address_longitude);
+        setIsOverlayClicked(true);
+        setPolygonState("address");
     };
 
     const toggleMenu = (menu: string | null) => {
@@ -224,82 +215,78 @@ export default function Home() {
                                 setPolygon={setPolygon}
                                 path={path}
                                 mousePosition={mousePosition}
+                                polygon={polygon}
                             />
                         </>
                     )
                 }
-
-                {isOverlayClicked && markerPosition && (
-                    <MarkerOverlay
-                        markerPosition={markerPosition}
-                        isData={isData}
-                        isApartmentsData={isApartmentsData}
-                        PolygonState={PolygonState}
-                        setIsOverlayClicked={setIsOverlayClicked}
-                        statute={statute}
-                        setStatute={setStatute}
-                    />
-                )}
-
-                {userLocation && <MapMarker position={userLocation}></MapMarker>}
-                {isSmoking && isData.length > 0 && (
-                    <MarkerClusterer averageCenter={true} minLevel={3}>
-                        {isData.flatMap((item) =>
-                            item.paths
-                                .filter((path) => path.divisionArea.startsWith("SMOKING_ZONE"))
-                                .map((pathIndex) => (
-                                    <CustomOverlayMap
-                                        key={`${item.address_idx}-${pathIndex.divisionArea}`}
-                                        position={{
-                                            lat: item.address_latitude,
-                                            lng: item.address_longitude,
-                                        }}
-                                        yAnchor={1}
-                                    >
-                                        <Image
-                                            src={SMOK_ICON}
-                                            alt={"Smok"}
-                                            width={40}
-                                            height={60}
-                                            onClick={() => {
-                                                setIsOverlayClicked(true);
-                                                setPolygonState("address");
-                                                handlePolygonClick(
-                                                    item.address_latitude,
-                                                    item.address_longitude
-                                                );
-                                            }}
-                                        />
-                                    </CustomOverlayMap>
-                                ))
-                        )}
-                    </MarkerClusterer>
-                )}
-
-                {isData.length > 0 && (
-                    <Polygon
-                        isData={isData}
-                        isApartmentsData={isApartmentsData}
-                        isNonSmoking={isNonSmoking}
-                        isSmoking={isSmoking}
-                        handlePolygonClick={handlePolygonClick}
-                        handleOverlayClick={handleOverlayClick}
-                        isOverlayClicked={isOverlayClicked}
-                        setPolygonState={setPolygonState}
-                        setStatute={setStatute}
-                    />
-                )}
+                <MarkerClusterer averageCenter={true} minLevel={8}>
+                    {isNonSmoking && isData?.map((item, index) => (
+                        <div key={index}>
+                            <MapMarker
+                                position={{
+                                    lat: item.address_latitude,
+                                    lng: item.address_longitude,
+                                }}
+                                image={{
+                                    src: NONSMOK_ICON.src,
+                                    size: {
+                                        width: 35,
+                                        height: 35,
+                                    },
+                                }}
+                                onClick={() => handlePolygonClick(item.address_latitude, item.address_longitude)}
+                            >
+                            </MapMarker>
+                            {markerPosition && markerPosition.lat === item.address_latitude && markerPosition.lng === item.address_longitude && isOverlayClicked && (
+                                <CustomOverlayMap
+                                    position={{
+                                        lat: item.address_latitude,
+                                        lng: item.address_longitude,
+                                    }}
+                                    yAnchor={1}
+                                >
+                                    <MarkerOverlay data={item} />
+                                </CustomOverlayMap>
+                            )}
+                        </div>
+                    ))}
+                    {isSmoking && isApartmentsData?.map((item, index) => (
+                        <div key={index}>
+                            <MapMarker
+                                position={{
+                                    lat: item.apartment_latitude,
+                                    lng: item.apartment_longitude,
+                                }}
+                                image={{
+                                    src: SMOK_ICON.src,
+                                    size: {
+                                        width: 35,
+                                        height: 35,
+                                    },
+                                }}
+                                onClick={() => handlePolygonClick(item.apartment_latitude, item.apartment_longitude)}
+                            >
+                            </MapMarker>
+                            {markerPosition && markerPosition.lat === item.apartment_latitude && markerPosition.lng === item.apartment_longitude && isMarkerClicked && (
+                                <CustomOverlayMap
+                                    position={{
+                                        lat: item.apartment_latitude,
+                                        lng: item.apartment_longitude,
+                                    }}
+                                    yAnchor={1}
+                                >
+                                    <MarkerOverlay data={item} />
+                                </CustomOverlayMap>
+                            )}
+                        </div>
+                    ))}
+                </MarkerClusterer>
+                <Polygon isNonSmoking={isNonSmoking} statute={statute} PolygonState={PolygonState} />
             </Map>
 
-            {/* Feedback Button */}
             <FeedbackButton onClick={handleFeedbackButtonClick} />
-
-            {/* Feedback Modal */}
-            {isFeedbackModalOpen && (
-                <FeedbackModal onClose={handleFeedbackModalClose}  isOpen/>
-            )}
-
-            {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
+            <FeedbackModal isOpen={isFeedbackModalOpen} onClose={handleFeedbackModalClose} />
         </div>
     );
 }
