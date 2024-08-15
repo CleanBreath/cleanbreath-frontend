@@ -14,6 +14,7 @@ import AddComponent from "./addComponent";
 import FeedbackModal from '@/components/feedbackModal';
 import SearchComponent from "./searchComponent";
 import { Address } from "@/interface/AddressInterface";
+import ServiceInfoModal from "../components/ServiceInfoModal"; 
 
 interface SideMenuProps {
     onListClick: (item: any) => void;
@@ -44,6 +45,7 @@ const SideMenu = ({
 }: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isServiceInfoOpen, setIsServiceInfoOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -55,6 +57,11 @@ const SideMenu = ({
 
     const handleMenuClick = (menu: string | null) => {
         setActiveMenu(activeMenu === menu ? null : menu);
+
+        // 'info' 메뉴 클릭 시 모달 열기
+        if (menu === 'info') {
+            setIsServiceInfoOpen(true);
+        }
     };
 
     return (
@@ -67,23 +74,23 @@ const SideMenu = ({
             {/* 모바일 화면에서 플로팅 버튼 클릭 시 나타나는 메뉴 */}
             {isOpen && (
                 <div className={styles.menuItems}>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("info")}>
+                    <div className={styles.menuItem} onClick={() => handleMenuClick("info")}>
                         <MOBILEINFO_ICON className={styles.sidebarButtonIcon} />
                         {isSidebarOpen && <span>서비스 소개</span>}
                     </div>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("search")}>
+                    <div className={styles.menuItem} onClick={() => handleMenuClick("search")}>
                         <SEARCH_ICON className={styles.sidebarButtonIcon} />
                         {isSidebarOpen && <span>검색하기</span>}
                     </div>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("add")}>
+                    <div className={styles.menuItem} onClick={() => handleMenuClick("add")}>
                         <ADD_ICON className={styles.sidebarButtonIcon} />
                         {isSidebarOpen && <span>흡연구역 추가요청</span>}
                     </div>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("setting")}>
+                    <div className={styles.menuItem} onClick={() => handleMenuClick("setting")}>
                         <SETTING_ICON className={styles.sidebarButtonIcon} />
                         {isSidebarOpen && <span>실험실</span>}
                     </div>
-                    <div className={styles.menuItem} onClick={() => setActiveMenu("feedback")}>
+                    <div className={styles.menuItem} onClick={() => handleMenuClick("feedback")}>
                         <FEEDBACK_ICON className={styles.sidebarButtonIcon} />
                         {isSidebarOpen && <span>피드백</span>}
                     </div>
@@ -131,7 +138,7 @@ const SideMenu = ({
                 <div className={styles.menu}>
                     <div
                         className={isSidebarOpen ? styles.IconOpen : styles.Icon}
-                        onClick={() => handleMenuClick('info')}
+                        onClick={() => handleMenuClick('info')}  
                     >
                         <INFO_ICON />
                         {isSidebarOpen && (<h1>서비스 소개</h1>)}
@@ -192,6 +199,13 @@ const SideMenu = ({
                     <SettingArea onClose={() => setActiveMenu(null)} />
                 )}
             </div>
+
+             {/* 서비스 소개 모달 렌더링 */}
+             {activeMenu === "info" && isSidebarOpen && (
+             <ServiceInfoModal 
+                isOpen={isServiceInfoOpen} 
+                onClose={() => setIsServiceInfoOpen(false)} 
+            />)}
         </div>
     );
 };
