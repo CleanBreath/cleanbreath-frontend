@@ -239,7 +239,7 @@
 
     .container {
         position: absolute;
-        width: 47vh;
+        width: calc(100% + 28vh);
         height: 42vh;
         bottom: -9vh;
         right: -4vh;
