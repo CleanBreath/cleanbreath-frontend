@@ -98,6 +98,19 @@ const SideMenu = ({
                         <FeedbackModal onClose={() => setActiveMenu(null)} isOpen />
                     )}
 
+                    {/* 흡연구역 컴포넌트 */}
+                    {
+                        activeMenu === "add" && (
+                            <AddComponent
+                                setActiveMenu={setActiveMenu}
+                                toggleAddFunc={toggleAddFunc}
+                                addressData={addressData}
+                                position={position}
+                                path={path}
+                            />
+                        )
+                    }
+
                     {/* 검색 컴포넌트 */}
                     {activeMenu === "search" && (
                         <SearchComponent
