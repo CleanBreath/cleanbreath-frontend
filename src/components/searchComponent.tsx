@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { AddressData, ApartmentData } from "../api/types";
 import NON_SMOKING_ICON from "../../public/nonSmok.svg";
 import SMOKING_ICON from "../../public/smok.svg";
@@ -15,9 +15,26 @@ interface searchProps {
     setActiveMenu: (menu: string | null) => void;
 }
 
+const getSize = () => {
+    const [size, setSize] = useState<number | null>(null);
+
+    useEffect(() => {
+        const updateSize = () => {
+            setSize(window.innerWidth);
+        };
+        updateSize();
+
+        window.addEventListener("resize", updateSize);
+
+        return () => window.removeEventListener("resize", updateSize);
+    }, []);
+    return size;
+}
+
 
 export default function SearchComponent({ onListClick, isData, isApartmentsData, isLoading, error, setActiveMenu }: searchProps) {
     const [searchTerm, setSearchTerm] = useState<string>("");
+    const size = getSize();
 
     const filteredData = useMemo(() => {
         if (searchTerm.trim() === "") {
@@ -70,7 +87,7 @@ export default function SearchComponent({ onListClick, isData, isApartmentsData,
                         ) : filteredData.length > 0 ? (
                             filteredData.map((item) => (
                                 <div key={item.address_idx} className={styles.listdata}
-                                     onClick={() => handleListItemClick(item)}>
+                                     onClick={() => {handleListItemClick(item); (size !== null && size <= 768) ? setActiveMenu(null) : null; }}>
                                     <p>{item.address_idx}</p>
                                     <p>{item.address_buildingName}</p>
                                     {item.smoking === "금연구역" ? <NON_SMOKING_ICON /> : <SMOKING_ICON />}
