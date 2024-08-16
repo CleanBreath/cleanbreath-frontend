@@ -6,6 +6,10 @@
 
 body {
 	font-family: "Red Hat Display";
+	user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 
