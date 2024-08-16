@@ -97,7 +97,7 @@ export default function AddComponent({ setActiveMenu ,toggleAddFunc, addressData
         <div className={styles.title}>
           <h1>
             <span style={{ color: "#027100" }}>흡연구역</span>&nbsp;
-            <span style={{ color: "black" }}>추가 요청</span>
+            <span style={{ color: "black" }}>추가요청</span>
           </h1>
         </div>
         <div className={styles.address}>
