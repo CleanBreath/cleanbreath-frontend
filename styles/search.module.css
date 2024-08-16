@@ -17,7 +17,7 @@
     background-color: #fff;
     z-index: 3;
     position: absolute;
-    top: 175px;
+    top: 150px;
     right: 25px;
     border: none;
     overflow-y: scroll;
@@ -59,7 +59,7 @@
     z-index: 3;
     background-color: #fff;
     position: absolute;
-    top: 125px;
+    top: 100px;
     right: 25px;
     border: solid 2px #007E8F;
     border-bottom: none;
@@ -226,8 +226,10 @@
 
     .cleanBreath {
         display: block;
-        margin-left: 34%;
-        transform: translateX(-205%);
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        transform: translateX(-15%);
     }
 
     .mobileMargin {

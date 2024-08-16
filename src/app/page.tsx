@@ -232,6 +232,17 @@ export default function Home() {
           />
         )}
 
+        {/* Feedback Button */}
+        <FeedbackButton onClick={handleFeedbackButtonClick} />
+
+        {/* Feedback Modal */}
+        {isFeedbackModalOpen && (
+            <FeedbackModal
+                isOpen={isFeedbackModalOpen}
+                onClose={handleFeedbackModalClose}
+            />
+        )}
+
         {userLocation && <MapMarker position={userLocation}></MapMarker>}
         {isSmoking && isData.length > 0 && (
           <MarkerClusterer averageCenter={true} minLevel={3}>
@@ -266,7 +277,7 @@ export default function Home() {
             )}
           </MarkerClusterer>
         )}
-
+        
         {isData.length > 0 && (
           <Polygon
             isData={isData}

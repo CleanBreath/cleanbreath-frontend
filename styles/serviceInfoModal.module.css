@@ -24,6 +24,12 @@
     flex-direction: column;
 }
 
+
+.element {
+    margin-left: 28px;
+    line-height: 28px;
+}
+
 .modalHeader {
     background: #007E8F;
     display: grid;
@@ -72,10 +78,12 @@
 
 .modalBottom {
     margin-top: auto; /* 바닥을 모달의 하단에 위치시킴 */
-    font-size: 12px;
+    font-size: 15px;
     font-weight: bold;
     padding: 10px;
+    margin-top: 10px;
     text-align: right;
+    line-height: 28px;
 }
 
 .modalTitle {
