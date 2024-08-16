@@ -15,7 +15,7 @@ interface searchProps {
     setActiveMenu: (menu: string | null) => void;
 }
 
-const getSize = () => {
+const useSize = () => {
     const [size, setSize] = useState<number | null>(null);
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const getSize = () => {
 
 export default function SearchComponent({ onListClick, isData, isApartmentsData, isLoading, error, setActiveMenu }: searchProps) {
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const size = getSize();
+    const size = useSize();
 
     const filteredData = useMemo(() => {
         if (searchTerm.trim() === "") {
