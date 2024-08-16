@@ -177,7 +177,7 @@
 
 .implicit {
     margin-left: 2.5vh;
-    margin-top: 2.5vh;
+    margin-top: 1vh;
 }
 .implicit > div > h3 {
     font-size: 20px;
@@ -192,7 +192,8 @@
 }
 
 .submitBtn {
-    margin-top: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
     display: flex;
     justify-content: center;
 }
@@ -211,39 +212,58 @@
     background-color: #005F6B;
 }
 
+@keyframes addCopoment {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    25% {
+        transform: translateY(75%);
+        opacity: 0.25;
+    }
+    50% {
+        transform: translateY(50%);
+        opacity: 0.5;
+    }
+    75% {
+        transform: translateY(25%);
+        opacity: 0.75;
+    }
+    100% {
+        transform: translateY(0%);
+        opacity: 1;
+    }
+}
+
 
 @media only screen and (max-width: 768px) {
-    @keyframes addCopoment {
-        0% {
-            transform: translateY(100%);
-            opacity: 0;
-        }
-        25% {
-            transform: translateY(75%);
-            opacity: 0.25;
-        }
-        50% {
-            transform: translateY(50%);
-            opacity: 0.5;
-        }
-        75% {
-            transform: translateY(25%);
-            opacity: 0.75;
-        }
-        100% {
-            transform: translateY(0%);
-            opacity: 1;
-        }
-    }
-
-
     .container {
         position: absolute;
-        width: calc(100% + 28vh);
-        height: 42vh;
-        bottom: -9vh;
-        right: -4vh;
+        width: 23.5rem;
+        height: 26rem;
+        bottom: -9.5vh;
+        right: -0.4vh;
         overflow: scroll;
         animation: addCopoment 0.5s ease-in;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .container {
+        position: absolute;
+        width: 22rem;
+        height: 26rem;
+        bottom: -12vh;
+        right: -2.8vh;
+        overflow: scroll;
+        animation: addCopoment 0.5s ease-in;
+    }
+    .setAreaPath > div > button {
+        width: 5rem;
+        height: 1.8rem;
+    }
+    .address > div > button {
+        width: 5rem;
+        height: 1.8rem;
     }
 }
