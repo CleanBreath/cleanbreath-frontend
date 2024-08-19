@@ -105,6 +105,22 @@
     transform: scale(0.9);
 }
 
+.catDetail {
+    z-index: 4;
+    left: 0;
+    top: 50px;
+    width: auto;
+    padding: 15px;
+    position: absolute;
+    color: #000;
+    font-family: "Red Hat Display";
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    display: inline-block;
+}
+
 .detail {
     position: relative;
     width: 80%;
