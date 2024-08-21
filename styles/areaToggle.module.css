@@ -24,16 +24,14 @@
     margin: 1.1vh;
 }
 
-/* nonSmokingIcon css */
-.nonSmokingIcon {
-    background-color: inherit;
-    border-radius: 15px;
+.toggle div:hover {
+    cursor: pointer;
 }
 
+/* nonSmokingIcon css */
 .nonSmokingIconOpen {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
-    cursor: pointer;
 }
 
 .nonSmokingIcon:active, .nonSmokingIconOpen:active {
@@ -41,11 +39,6 @@
 }
 
 /* smokingIcon css */
-.smokingIcon {
-    background-color: inherit;
-    border-radius: 15px;
-}
-
 .smokingIconOpen {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
