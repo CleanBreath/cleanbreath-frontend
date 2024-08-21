@@ -18,6 +18,7 @@ import DrawingField from '@/components/drawingField';
 // Import the Feedback components
 import FeedbackButton from '@/components/feedbackButton';
 import FeedbackModal from '@/components/feedbackModal';
+import { tree } from 'next/dist/build/templates/app-page';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
@@ -30,8 +31,8 @@ export default function Home() {
 
     const [center, setCenter] = useState({ lat: 37.394329, lng: 126.956939 });
     const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
-    const [isNonSmoking, setIsNonSmoking] = useState(true);
-    const [isSmoking, setIsSmoking] = useState(false);
+    const [isNonSmoking, setIsNonSmoking] = useState<boolean>(true);
+    const [isSmoking, setIsSmoking] = useState<boolean>(false);
     const [activeMenu, setActiveMenu] = useState<string | null>(null);
     const [isData, setData] = useState<AddressData[]>([]);
     const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
