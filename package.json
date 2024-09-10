@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.8",
     "axios": "^1.7.4",
     "dayjs": "^1.11.12",
     "kakao.maps.d.ts": "^0.1.40",
@@ -25,6 +26,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "webpack": "^5.94.0"
   }
 }

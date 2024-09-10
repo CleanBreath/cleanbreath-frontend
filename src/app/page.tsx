@@ -23,6 +23,8 @@ import { tree } from 'next/dist/build/templates/app-page';
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
 
+
+
 export default function Home() {
     const [loading, error] = useKakaoLoader({
         appkey: APP_KEY,
