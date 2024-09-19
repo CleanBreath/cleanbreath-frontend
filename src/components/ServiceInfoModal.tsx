@@ -47,7 +47,7 @@ const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
                 <div className={styles.modalBottom}>
                     <p>출처:흡연 구역 아이콘 제작자: Freepik - Flaticon</p>
                     <p>대림대학교 bluesky팀:최현준,유현목,최시헌,김건우,문찬수,김장환</p>
-                    <p>최종 업데이트: 2024-08-15</p>
+                    <p>최종 업데이트: 2024-09-19</p>
                 </div>
             </div>
         </div>
