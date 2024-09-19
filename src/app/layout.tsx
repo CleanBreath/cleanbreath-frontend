@@ -1,11 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "../../styles/global.css";
 import Head from "next/head";
 
+const APP_NAME = "CleanBreath";
+const APP_DEFAULT_TITLE = "CleanBreath";
+const APP_TITLE_TEMPLATE = "%s - CleanBreath";
+const APP_DESCRIPTION = "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.";
+
 export const metadata: Metadata = {
-  title: "CleanBreath",
-  description:
-    "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.",
+  applicationName: APP_NAME,
+  title: {
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
+  },
+  description: APP_DESCRIPTION,
   icons: {
     icon: "/cleanBreathFavicon.ico",
   },
@@ -26,12 +34,25 @@ export const metadata: Metadata = {
       url: "https://github.com/CleanBreath/cleanbreath-frontend",
     },
   ],
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_DEFAULT_TITLE,
+    // startUpImage: [],
+  },
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
-    title: "CleanBreath",
-    description:
-      "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.",
-    url: "https://bluesky-cleanbreath.com/",
     type: "website",
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+    url: "https://bluesky-cleanbreath.com/",
     images: [
       {
         url: "https://bluesky-cleanbreath.com/OGImage.png",
@@ -41,10 +62,22 @@ export const metadata: Metadata = {
       },
     ],
   },
+  twitter: {
+    card: "summary",
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
+  },
   robots: {
     index: true,
     follow: true,
-  },
+  }
+};
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
 };
 
 export default function RootLayout({
@@ -56,8 +89,13 @@ export default function RootLayout({
     <html lang="ko">
       <Head>
         <link rel="canonical" href="https://bluesky-cleanbreath.com/" />
+        <link rel="manifest" href="/manifest.json" />
       </Head>
-      <body>{children}</body>
+      <body>
+        {children}
+        
+      </body>
+
     </html>
   );
 }

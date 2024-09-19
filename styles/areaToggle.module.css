@@ -24,17 +24,14 @@
     margin: 1.1vh;
 }
 
-/* nonSmokingIcon css */
-.nonSmokingIcon:hover {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
+.toggle div:hover {
     cursor: pointer;
 }
 
+/* nonSmokingIcon css */
 .nonSmokingIconOpen {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
-    cursor: pointer;
 }
 
 .nonSmokingIcon:active, .nonSmokingIconOpen:active {
@@ -42,11 +39,6 @@
 }
 
 /* smokingIcon css */
-.smokingIcon:hover {
-    background-color: rgba(0, 0, 0, 40%);
-    border-radius: 15px;
-}
-
 .smokingIconOpen {
     background-color: rgba(0, 0, 0, 40%);
     border-radius: 15px;
@@ -57,7 +49,7 @@
 }
 
 /* Responsive design for toggle button */
-@media (max-width: 768px) {
+@media screen and (max-width: 768px) {
     .toggle {
         width: 130px;
         height: 58px;
