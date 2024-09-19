@@ -18,7 +18,6 @@ import DrawingField from '@/components/drawingField';
 // Import the Feedback components
 import FeedbackButton from '@/components/feedbackButton';
 import FeedbackModal from '@/components/feedbackModal';
-import { tree } from 'next/dist/build/templates/app-page';
 
 const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
 const TRACKING_ID = "G-YPYE7W46DT";
@@ -26,7 +25,7 @@ const TRACKING_ID = "G-YPYE7W46DT";
 
 
 export default function Home() {
-    const [loading, error] = useKakaoLoader({
+    const [loading] = useKakaoLoader({
         appkey: APP_KEY,
         libraries: ['services', 'clusterer', 'drawing'],
     });
@@ -35,7 +34,7 @@ export default function Home() {
     const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
     const [isNonSmoking, setIsNonSmoking] = useState<boolean>(true);
     const [isSmoking, setIsSmoking] = useState<boolean>(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    const [activeMenu, setActiveMenu] = useState<string | null>("info");
     const [isData, setData] = useState<AddressData[]>([]);
     const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -163,13 +162,10 @@ export default function Home() {
         setIsFeedbackModalOpen(false);
     };
 
-    if (loading) {
-        return <div>Loading Kakao Map</div>;
-    }
+    // if (loading) {
+    //     return <div>Loading Kakao Map</div>;
+    // }
 
-  if (error) {
-    return <div>Error loading Kakao Map: {error.message}</div>;
-  }
   return (
     <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
       <SideMenu

@@ -91,7 +91,11 @@ export default function RootLayout({
         <link rel="canonical" href="https://bluesky-cleanbreath.com/" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
-      <body>{children}</body>
+      <body>
+        {children}
+        
+      </body>
+
     </html>
   );
 }
