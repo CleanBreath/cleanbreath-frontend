@@ -11,9 +11,9 @@
     z-index: 1;
     z-index: 1000;
 }
-
+/*모달 창 나오는거 크기 조정*/
 .modalContent {
-    width: 60%;
+    width: 70%;
     height: 80%; /* 높이를 조정하여 콘텐츠가 잘 보이도록 함 */
     max-height: 90vh; /* 화면 높이의 90%로 제한 */
     background: white;
@@ -52,7 +52,7 @@
     align-self: end;
     color: white;
     margin: 0;
-    font-size: 18px;
+    font-size: 30px;
     justify-self: start;
 }
 
@@ -61,14 +61,14 @@
     align-self: end;
     justify-self: end;
     color: white;
-    font-size: 12px;
+    font-size: 18px;
     margin: 0;
 }
 
 .closeButton {
     background: none;
     border: none;
-    font-size: 30px;
+    font-size: 45px;
     cursor: pointer;
     color: white;
     position: absolute;
@@ -78,7 +78,7 @@
 
 .modalBottom {
     margin-top: auto; /* 바닥을 모달의 하단에 위치시킴 */
-    font-size: 15px;
+    font-size: 19px;
     font-weight: bold;
     padding: 10px;
     margin-top: 10px;
@@ -95,13 +95,14 @@
 
 .modalBody {
     padding: 20px;
+    font-weight: bold;
     font-size: 27px;
     line-height: 1.5;
 }
 
 .sectionTitle {
     padding: 10px 20px;
-    font-size: 24px;
+    font-size: 35px;
     font-weight: bold;
     margin-bottom: 10px;
 }
@@ -111,7 +112,8 @@
 .effectList,
 .methodList {
     padding: 0 20px;
-    font-size: 21px;
+    font-size: 24px;
+    font-weight: bold;
     list-style-type: disc;
 }
 
