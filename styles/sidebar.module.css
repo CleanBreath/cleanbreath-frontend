@@ -7,10 +7,6 @@
     background-color: #007E8F;
     box-shadow: 6px 0px 5px rgba(0, 0, 0, 0.25);
     z-index: 1;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 }
 
 .sidebarHeader {
@@ -99,10 +95,6 @@
     animation-duration: 1s;
     animation-fill-mode: forwards;
     background-color: #007E8F;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
 }
 
 .sidebarOpen .sidebarHeader {
@@ -206,15 +198,15 @@
 }
 
 .menuItem:nth-child(1) {
-    animation-delay: 0.8s;
+    animation-delay: 0.5s;
 }
 
 .menuItem:nth-child(2) {
-    animation-delay: 0.6s;
+    animation-delay: 0.4s;
 }
 
 .menuItem:nth-child(3) {
-    animation-delay: 0.4s;
+    animation-delay: 0.3s;
 }
 
 .menuItem:nth-child(4) {
@@ -222,7 +214,7 @@
 }
 
 .menuItem:nth-child(5) {
-    animation-delay: 0s;
+    animation-delay: 0.1s;
 }
 
 .menuItem span {

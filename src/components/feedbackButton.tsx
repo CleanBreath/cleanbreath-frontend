@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../../styles/FeedbackButton.module.css";
+import styles from "../../styles/feedbackButton.module.css"
 import FEEDBACK_ICON from "../../public/feedbackicon.svg";
 
 type FeedbackButtonProps = {

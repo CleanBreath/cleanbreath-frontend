@@ -7,8 +7,13 @@ interface ServiceInfoModalProps {
 }
 
 const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
+const handleOverlayClick = (event: React.MouseEvent<HTMLDivElement,MouseEvent>) => { //오버레이 눌렀을때도 닫기 가능
+    if (event.target === event.currentTarget) {
+        setActiveMenu(null);
+    }
+};
     return (
-        <div className={styles.modalOverlay}>
+    <div className={styles.modalOverlay} onClick={handleOverlayClick}>
             <div className={styles.modalContent}>
                 <div className={styles.modalHeader}>
                     <LOGO_ICON className={styles.logoIcon} />
@@ -46,8 +51,8 @@ const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
                 </ul>
                 <div className={styles.modalBottom}>
                     <p>출처:흡연 구역 아이콘 제작자: Freepik - Flaticon</p>
-                    <p>대림대학교 bluesky팀:최현준,유현목,최시헌,김건우,문찬수,김장환</p>
-                    <p>최종 업데이트: 2024-09-19</p>
+                    <p>대림대학교 Bluesky팀:최현준,유현목,최시헌,김건우,문찬수,김장환</p>
+                    <p>최종 업데이트: 2024-09-29</p>
                 </div>
             </div>
         </div>

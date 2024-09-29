@@ -70,6 +70,8 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                   {tooltip && <div className={styles.tooltip}>{tooltip}</div>}
                 </div>
                 <p className={styles.subTitle}>{item.address_name}</p>
+                {(cat.includes('초등학교') || cat.includes('중학교') || cat.includes('유치원') || cat.includes('고등학교')) &&
+                 <p className={styles.catDetail}>시설의 경계선으로부터 30미터 이내의 구역은 금연구역</p>}
               </div>
             );
           })}
@@ -81,10 +83,10 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
           {filteredData.some((item) => item.smoking === '금연구역') && (
             <>
               <p className={styles.AUStatute}>
-                국민건강증진법 제9조제6항, 시행: 2024.7.10
+                국민건강증진법 제9조제6항, 시행: 2024.8.17
               </p>
               <div className={styles.help}>
-                <a href="https://www.anyang.go.kr/health/contents.do?key=1329"><HELP_ICON /></a>
+                <a href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95"><HELP_ICON /></a>
               </div> 
             </>
           )}
