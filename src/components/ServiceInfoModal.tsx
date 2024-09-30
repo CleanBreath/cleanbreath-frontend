@@ -3,12 +3,20 @@ import styles from "../../styles/serviceInfoModal.module.css";
 import LOGO_ICON from "../../public/logo.svg";
 
 interface ServiceInfoModalProps {
-    setActiveMenu: (meny : string | null) => void;
+    setActiveMenu: (menu: string | null) => void;
 }
 
 const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
+    // 백그라운드 클릭 시 모달 닫기 함수
+    const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        // e.target이 modalContent가 아니면 모달을 닫음
+        if (e.target === e.currentTarget) {
+            setActiveMenu(null);
+        }
+    };
+
     return (
-        <article className={styles.modalOverlay}>
+        <article className={styles.modalOverlay} onClick={handleBackgroundClick}>
             <section className={styles.modalContent}>
                 <header className={styles.modalHeader}>
                     <LOGO_ICON className={styles.logoIcon} alt="CleanBreath 로고" />
@@ -21,7 +29,7 @@ const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
                         <span className={styles.highlightGreen}>서비스</span> 소개
                     </h2>
                     <p className={styles.modalBody}>
-                        CleanBreath는 흡연자와 비흡연자를 위해 흡연구역과 금연구역을 명확하게 안내하는 서비스입니다.
+                        <span className={styles.BoldText}>CleanBreath</span>는 흡연자와 비흡연자를 위해 흡연구역과 금연구역을 명확하게 안내하는 서비스입니다.
                         사용자에게 흡연 가능한 장소와 금연구역을 시각적으로 쉽게 확인할 수 있는 기능을 제공합니다.
                     </p>
                     <section className={styles.element}>
@@ -46,18 +54,11 @@ const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
                             <li>흡연자 편의 제공: 흡연자들에게 합법적이고 적절한 흡연 장소를 쉽게 찾아갈 수 있도록 지원합니다.</li>
                         </ul>
                     </section>
-                    <section className={styles.element}>
-                        <h3 className={styles.sectionTitle}>서비스 사용 방법</h3>
-                        <ul className={styles.methodList}>
-                            <li>간편한 시작: 웹사이트에 접속한 후, 사용자는 간단한 인터페이스를 통해 주변의 흡연구역과 금연구역을 탐색할 수 있습니다.</li>
-                            <li>모바일 친화성: CleanBreath는 모바일 환경에서도 최적화되어 있어, 언제 어디서든 쉽게 이용할 수 있습니다.</li>
-                        </ul>
-                    </section>
                 </main>
                 <footer className={styles.modalBottom}>
                     <p>아이콘 출처: 흡연 구역 아이콘 제작자: Freepik - Flaticon</p>
                     <p>정보 출처: 안양시 동안구 및 만안구 보건소 자료실</p>
-                    <p>대림대학교 bluesky팀: 최현준, 유현목, 최시헌, 김건우, 문찬수, 김장환</p>
+                    <p>대림대학교 Bluesky 팀: 최현준, 유현목, 최시헌, 김건우, 문찬수, 김장환</p>
                     <p>최종 업데이트: 2024-08-15</p>
                 </footer>
             </section>
