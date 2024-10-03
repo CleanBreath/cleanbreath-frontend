@@ -72,6 +72,7 @@ const SideMenu = ({
                     <div className={styles.menuItem} onClick={() => handleMenuClick("info")}>
                         <MOBILEINFO_ICON className={styles.sidebarButtonIcon} />
                         {isSidebarOpen && <span>서비스 소개</span>}
+                        
                     </div>
                     <div className={styles.menuItem} onClick={() => handleMenuClick("search")}>
                         <SEARCH_ICON className={styles.sidebarButtonIcon} />
@@ -219,7 +220,7 @@ const SideMenu = ({
             </div>
 
              {/* 서비스 소개 모달 렌더링 */}
-             {activeMenu === "info" && isSidebarOpen && (
+             {activeMenu === "info" && (
              <ServiceInfoModal 
                 setActiveMenu={setActiveMenu} 
             />)}

@@ -54,6 +54,8 @@ export default function Home() {
     const [polygon, setPolygon] = useState<kakao.maps.Polygon>(); // Polygon 객체 state 변수
     const [isDrawing, setIsDrawing] = useState(false); // 영역 그리기 상태 변수
 
+    
+
     // 위도 및 경도 값을 받아서 주소를 반환하는 함수
     const getPositionToAddress = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
         const latLng = mouseEvent.latLng;
