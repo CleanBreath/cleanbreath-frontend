@@ -26,7 +26,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
     const handleConfirm = () => {
         const count = parseInt(cigaretteCount, 10);
         if (!isNaN(count) && count > 0) {
-            const cost = count * 4500 * 365;
+            const cost = count * (4500/20) * 365;
             setTotalCost(cost);
             setShowResult(true);
         } else {
@@ -49,7 +49,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                     <button className={styles.closeButton} onClick={onClose}>&times;</button>
                 </div>
                 <div className={styles.content}>
-                    <p className={styles.question}> &quot;하루에 몇 갑을 피우시나요? &quot;</p>
+                    <p className={styles.question}> &quot;하루에 몇 개비를 피우시나요? &quot;</p>
                     <div className={styles.inputContainer}>
                         <input
                             type="number"
@@ -60,7 +60,7 @@ const RedPillModal: React.FC<RedPillModalProps> = ({ isOpen, onClose }) => {
                             step="1" // 1씩 증가
                             className={styles.input}
                         />
-                        <label>갑</label>
+                        <label>개비</label>
                     </div>
                     <button className={styles.confirmButton} onClick={handleConfirm}>
                         확인

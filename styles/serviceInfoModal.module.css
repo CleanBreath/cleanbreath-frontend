@@ -78,15 +78,15 @@
 
 .modalBottom {
     margin-top: auto; /* 바닥을 모달의 하단에 위치시킴 */
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
     padding: 10px;
-    margin-top: 10px;
     text-align: right;
     line-height: 28px;
 }
 
 .modalTitle {
+    margin-top: 2%;
     padding: 10px;
     font-size: 40px;
     font-weight: bold;
@@ -94,8 +94,8 @@
 }
 
 .modalBody {
-    padding: 20px;
-    font-size: 27px;
+    padding: 5%;
+    font-size: 20px;
     line-height: 1.5;
 }
 
