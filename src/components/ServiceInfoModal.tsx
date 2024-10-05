@@ -3,12 +3,20 @@ import styles from "../../styles/serviceInfoModal.module.css";
 import LOGO_ICON from "../../public/logo.svg";
 
 interface ServiceInfoModalProps {
-    setActiveMenu: (meny : string | null) => void;
+    setActiveMenu: (menu : string | null) => void;
 }
 
 const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
+
+    const closeModal = (event: React.MouseEvent<HTMLDivElement>) => {
+        // 모달창 바깥을 클릭하면 모달창 닫히게 하는 코드임
+        if (event.target === event.currentTarget) {
+            setActiveMenu(null);
+        }
+    };
+
     return (
-        <article className={styles.modalOverlay}>
+        <article className={styles.modalOverlay} onClick={closeModal}>
             <section className={styles.modalContent}>
                 <header className={styles.modalHeader}>
                     <LOGO_ICON className={styles.logoIcon} alt="CleanBreath 로고" />
