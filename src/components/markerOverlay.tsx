@@ -42,8 +42,15 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
     const showTooltip = (text: string) => setTooltip(text);
     const hideTooltip = () => setTooltip(null);
 
+    const target = document.getElementById('targetOverlay');
+    const clientRect = target?.getBoundingClientRect();
+    const [x, y] = [clientRect?.left, clientRect?.top];
+    console.log("x : " + x + ", y : " + y);
+
     const renderAddressOverlay = () => (
       <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
+        <article id='targetOverlay'/>
+        
         <div className={styles.container}>
           {filteredData.map((item) => {
             const cat = item.address_category;

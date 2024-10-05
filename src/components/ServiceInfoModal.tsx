@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from "../../styles/serviceInfoModal.module.css";
 import LOGO_ICON from "../../public/logo.svg";
 
 interface ServiceInfoModalProps {
     setActiveMenu: (menu: string | null) => void;
+    activeMenu: string | null;
 }
 
-const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
-    // 백그라운드 클릭 시 모달 닫기 함수
+export const getCookie = (cname: string): string => {
+    const name = cname + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i].trim();
+        if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
+    }
+    return '';
+};
+
+const ServiceInfoModal = ({ setActiveMenu, activeMenu }: ServiceInfoModalProps) => {
     const handleBackgroundClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         // e.target이 modalContent가 아니면 모달을 닫음
         if (e.target === e.currentTarget) {
@@ -15,6 +25,24 @@ const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
         }
     };
 
+    const setCookie = (cname: string, cvalue: string, exdays: number): void => {
+        const todayDate = new Date();
+        todayDate.setTime(todayDate.getTime() + exdays * 24 * 60 * 60 * 1000);
+        const expires = 'expires=' + todayDate.toUTCString();
+        document.cookie = `${cname}=${cvalue}; ${expires}; path=/`;
+    };
+
+    const [isChecked, setIsChecked] = useState(false);
+
+    const closePopup = () => {
+        if (isChecked) {
+            setCookie('close', 'Y', 1);
+        }
+        setActiveMenu(null); 
+    };
+
+    const cookieData = getCookie('close');
+   
     return (
         <article className={styles.modalOverlay} onClick={handleBackgroundClick}>
             <section className={styles.modalContent}>
@@ -22,7 +50,17 @@ const ServiceInfoModal = ({ setActiveMenu }: ServiceInfoModalProps) => {
                     <LOGO_ICON className={styles.logoIcon} alt="CleanBreath 로고" />
                     <h1 className={styles.cleanBreath}>CleanBreath</h1>
                     <p className={styles.modalHashTags}>#금연구역 #흡연구역 #클브</p>
-                    <button className={styles.closeButton} onClick={() => setActiveMenu(null)}>&times;</button>
+                    <button className={styles.closeButton} onClick={closePopup}>&times;</button>
+                    {cookieData !== 'Y' &&
+                        <p className={styles.modalHashTags}>
+                            <input 
+                                type="checkbox" 
+                                checked={isChecked} 
+                                onChange={(e) => setIsChecked(e.target.checked)} 
+                            />
+                            오늘 하루동안 보지 않기
+                        </p>
+                    }
                 </header>
                 <main>
                     <h2 className={styles.modalTitle}>
