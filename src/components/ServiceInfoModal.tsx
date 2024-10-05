@@ -58,7 +58,7 @@ const ServiceInfoModal = ({ setActiveMenu, activeMenu }: ServiceInfoModalProps) 
                                 checked={isChecked} 
                                 onChange={(e) => setIsChecked(e.target.checked)} 
                             />
-                            오늘 로딩시 다시 보지 않기
+                            오늘 하루동안 보지 않기
                         </p>
                     }
                 </header>
