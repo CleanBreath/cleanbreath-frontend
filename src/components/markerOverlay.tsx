@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { CustomOverlayMap } from 'react-kakao-maps-sdk';
 import { AddressData, ApartmentData } from '@/api/types';
 import PARK_ICON from "../../public/park.png";
@@ -24,7 +24,7 @@ interface MarkerOverlayProps {
     PolygonState: string | null;
     setIsOverlayClicked: (isOverlayClicked: boolean) => void;
     statute: string | null;
-    setStatute: (statute: string | null) => void; 
+    setStatute: (statute: string | null) => void;
 }
 
 const changeText = (text: string, maxLength: number): string => {
@@ -36,75 +36,92 @@ const TITLE_CHAR_LIMIT = 9;
 export default function MarkerOverlay({ markerPosition, isData, isApartmentsData, PolygonState, setIsOverlayClicked, statute, setStatute }: MarkerOverlayProps) {
     const [tooltip, setTooltip] = useState<string | null>(null);
     const filteredData = isData.filter(
-      (item : AddressData) => item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng
+        (item : AddressData) => item.address_latitude === markerPosition.lat && item.address_longitude === markerPosition.lng
     );
+    const overlayRef = useRef<HTMLDivElement>(null);  // 오버레이 창을 overlayRef로 지정하여 참조
 
     const showTooltip = (text: string) => setTooltip(text);
     const hideTooltip = () => setTooltip(null);
 
-    const renderAddressOverlay = () => (
-      <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
-        <div className={styles.container}>
-          {filteredData.map((item) => {
-            const cat = item.address_category;
-            return (
-              <div key={item.address_idx} className={styles.markerWrapper}>
-                <div
-                  className={styles.title}
-                  onMouseEnter={() => showTooltip(item.address_buildingName)}
-                  onMouseLeave={hideTooltip}
-                >
-                  <p>{changeText(item.address_buildingName, TITLE_CHAR_LIMIT)}</p>
-                  <div className={styles.icon} onClick={() => {}}>
-                    {(cat.includes('학교') || cat.includes('유치원')) && (<Image src={SCHOOL_ICON} alt="학교" />)}
-                    {cat.includes('공원') && <Image src={PARK_ICON} alt="공원" />}
-                    {cat.includes('지방청사') && <Image src={GOVERNMENT_ICON} alt="지방청사" />}
-                    {cat.includes('금융기관') && <Image src={BANK_ICON} alt="금융기관" />}
-                    {(cat.includes('복합상가건물') || cat.includes('회사')) && (<Image src={BUILDING_ICON} alt="건물" />)}
-                    {cat.includes('아파트') && <Image src={APART_ICON} alt="아파트" />}
-                    {cat.includes('의료기관') && <Image src={MEDICAL_ICON} alt="의료기관" />}
-                    {cat.includes('주유소') && <Image src={GAS_ICON} alt="주유소" />}
-                    {cat.includes('주택') && <Image src={HOUSE_ICON} alt="주택" />}
-                    {cat.includes('지하철') && <Image src={SUBWAY_ICON} alt="지하철" />}
-                  </div>
-                  {tooltip && <div className={styles.tooltip}>{tooltip}</div>}
-                </div>
-                <p className={styles.subTitle}>{item.address_name}</p>
-                {(cat.includes('초등학교') || cat.includes('중학교') || cat.includes('유치원') || cat.includes('고등학교')) &&
-                 <p className={styles.catDetail}>시설의 경계선으로부터 30미터 이내의 구역은 금연구역</p>}
-              </div>
-            );
-          })}
-          
-          <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
-            <CLOSE_ICON />
-          </div>
 
-          {filteredData.some((item) => item.smoking === '금연구역') && (
-            <>
-              <p className={styles.AUStatute}>
-                국민건강증진법 제9조제6항, 시행: 2024.8.17
-              </p>
-              <div className={styles.help}>
-                <a href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95"><HELP_ICON /></a>
-              </div> 
-            </>
-          )}
-          
-          {statute !== null && (
-            <div className={styles.statute}>
-              <Statute statute={statute} setStatute={setStatute} />
+    // 오버레이 정보창 바깥쪽 클릭 감지 함수
+    const clickOutside = (event: MouseEvent) => {
+        if (overlayRef.current && !overlayRef.current.contains(event.target as Node)) {
+            setIsOverlayClicked(false);
+        }
+    };
+
+    //mousedown 이벤트로 오버레이창 바깥쪽 클릭시 clickOutside 호출함
+    useEffect(() => {
+        document.addEventListener('mousedown', clickOutside);
+        return () => {
+            document.removeEventListener('mousedown', clickOutside);  //언마운트->이벤트 리스너 제거함(메모리누수방지, 불필요한동작방지)
+        };
+    }, []);
+
+    const renderAddressOverlay = () => (
+        <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
+            <div className={styles.container} ref={overlayRef}>
+                {filteredData.map((item) => {
+                    const cat = item.address_category;
+                    return (
+                        <div key={item.address_idx} className={styles.markerWrapper}>
+                            <div
+                                className={styles.title}
+                                onMouseEnter={() => showTooltip(item.address_buildingName)}
+                                onMouseLeave={hideTooltip}
+                            >
+                                <p>{changeText(item.address_buildingName, TITLE_CHAR_LIMIT)}</p>
+                                <div className={styles.icon} onClick={() => {}}>
+                                    {(cat.includes('학교') || cat.includes('유치원')) && (<Image src={SCHOOL_ICON} alt="학교" />)}
+                                    {cat.includes('공원') && <Image src={PARK_ICON} alt="공원" />}
+                                    {cat.includes('지방청사') && <Image src={GOVERNMENT_ICON} alt="지방청사" />}
+                                    {cat.includes('금융기관') && <Image src={BANK_ICON} alt="금융기관" />}
+                                    {(cat.includes('복합상가건물') || cat.includes('회사')) && (<Image src={BUILDING_ICON} alt="건물" />)}
+                                    {cat.includes('아파트') && <Image src={APART_ICON} alt="아파트" />}
+                                    {cat.includes('의료기관') && <Image src={MEDICAL_ICON} alt="의료기관" />}
+                                    {cat.includes('주유소') && <Image src={GAS_ICON} alt="주유소" />}
+                                    {cat.includes('주택') && <Image src={HOUSE_ICON} alt="주택" />}
+                                    {cat.includes('지하철') && <Image src={SUBWAY_ICON} alt="지하철" />}
+                                </div>
+                                {tooltip && <div className={styles.tooltip}>{tooltip}</div>}
+                            </div>
+                            <p className={styles.subTitle}>{item.address_name}</p>
+                            {(cat.includes('초등학교') || cat.includes('중학교') || cat.includes('유치원') || cat.includes('고등학교')) &&
+                                <p className={styles.catDetail}>시설의 경계선으로부터 30미터 이내의 구역은 금연구역</p>}
+                        </div>
+                    );
+                })}
+
+                <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
+                    <CLOSE_ICON />
+                </div>
+
+                {filteredData.some((item) => item.smoking === '금연구역') && (
+                    <>
+                        <p className={styles.AUStatute}>
+                            국민건강증진법 제9조제6항, 시행: 2024.8.17
+                        </p>
+                        <div className={styles.help}>
+                            <a href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95"><HELP_ICON /></a>
+                        </div>
+                    </>
+                )}
+
+                {statute !== null && (
+                    <div className={styles.statute}>
+                        <Statute statute={statute} setStatute={setStatute} />
+                    </div>
+                )}
             </div>
-          )}
-        </div>
-      </CustomOverlayMap>
+        </CustomOverlayMap>
     );
 
     const renderApartmentOverlay = () => (
         <CustomOverlayMap position={markerPosition} yAnchor={1} xAnchor={0.5} zIndex={3}>
-            <div className={styles.container}>
+            <div className={styles.container} ref={overlayRef}>
                 {isApartmentsData.map((item : ApartmentData) => {
-                  const path = item.path.some((path) => path.latitude === markerPosition.lat && path.longitude === markerPosition.lng);
+                    const path = item.path.some((path) => path.latitude === markerPosition.lat && path.longitude === markerPosition.lng);
                     if (path) {
                         return (
                             <div key={item.id} className={styles.markerWrapper}>
@@ -119,26 +136,26 @@ export default function MarkerOverlay({ markerPosition, isData, isApartmentsData
                                             {tooltip}
                                         </div>
                                     )}
-                                  <div className={styles.icon}>
-                                    <Image src={APART_ICON} alt="아파트" />
-                                  </div>
+                                    <div className={styles.icon}>
+                                        <Image src={APART_ICON} alt="아파트" />
+                                    </div>
                                 </div>
                                 <p className={styles.subTitle}>{item.address}</p>
                                 {item.path.map((path) => (
-                                  <div className={styles.detail} key={item.id}>
-                                    <p>엘베이터 : {path.elevator === true ? '금연구역' : '흡연가능 구역'}</p>
-                                    <p>복도 : {path.hallway === true ? '금연구역' : '흡연가능 구역'}</p>
-                                    <p>계단 : {path.stairs === true ? '금연구역' : '흡연가능 구역'}</p>
-                                    <p>지하주차장 : {path.underground_parking_lot === true ? '금연구역' : '흡연가능 구역'}</p>
-                                  </div>
-                                  ))}
+                                    <div className={styles.detail} key={item.id}>
+                                        <p>엘베이터 : {path.elevator === true ? '금연구역' : '흡연가능 구역'}</p>
+                                        <p>복도 : {path.hallway === true ? '금연구역' : '흡연가능 구역'}</p>
+                                        <p>계단 : {path.stairs === true ? '금연구역' : '흡연가능 구역'}</p>
+                                        <p>지하주차장 : {path.underground_parking_lot === true ? '금연구역' : '흡연가능 구역'}</p>
+                                    </div>
+                                ))}
                             </div>
                         );
                     }
                     return null;
                 })}
                 <div className={styles.close} onClick={() => { setIsOverlayClicked(false) }}>
-                  <CLOSE_ICON />  
+                    <CLOSE_ICON />
                 </div>
             </div>
         </CustomOverlayMap>
