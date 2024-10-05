@@ -96,6 +96,7 @@ const SideMenu = ({
                         activeMenu === "info" && (
                             <ServiceInfoModal 
                                 setActiveMenu={setActiveMenu}
+                                activeMenu={activeMenu}
                             />
                         )
                     }
@@ -222,7 +223,8 @@ const SideMenu = ({
              {/* 서비스 소개 모달 렌더링 */}
              {activeMenu === "info" && (
              <ServiceInfoModal 
-                setActiveMenu={setActiveMenu} 
+                setActiveMenu={setActiveMenu}
+                activeMenu={activeMenu} 
             />)}
         </div>
     );

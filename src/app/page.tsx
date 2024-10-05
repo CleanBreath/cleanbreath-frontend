@@ -15,6 +15,7 @@ import Image from "next/image";
 import { Address } from '@/interface/AddressInterface';
 import DrawingField from '@/components/drawingField';
 import CurrentLocation from '@/components/currentLocation';
+import { getCookie } from "../components/ServiceInfoModal";
 
 // Import the Feedback components
 import FeedbackButton from '@/components/feedbackButton';
@@ -35,7 +36,13 @@ export default function Home() {
     const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
     const [isNonSmoking, setIsNonSmoking] = useState<boolean>(true);
     const [isSmoking, setIsSmoking] = useState<boolean>(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>("info");
+    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    useEffect(() => {
+      const cookieData = getCookie('close');
+      if (cookieData !== 'Y') {
+        setActiveMenu("info");   
+      }
+    }, []);
     const [isData, setData] = useState<AddressData[]>([]);
     const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -55,8 +62,6 @@ export default function Home() {
     const [path, setPath] = useState<{lat : number, lng : number}[]>([]) // 영역 값 state 변수
     const [polygon, setPolygon] = useState<kakao.maps.Polygon>(); // Polygon 객체 state 변수
     const [isDrawing, setIsDrawing] = useState(false); // 영역 그리기 상태 변수
-
-    
 
     // 위도 및 경도 값을 받아서 주소를 반환하는 함수
     const getPositionToAddress = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
