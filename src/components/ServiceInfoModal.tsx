@@ -100,11 +100,6 @@ const ServiceInfoModal = ({ setActiveMenu, activeMenu }: ServiceInfoModalProps) 
                     <p>최종 업데이트: 2024-08-15</p>
                 </footer>
             </section>
-            <div className={styles.popup}>
-                <div className={styles.popupContent}>
-                    
-                </div>
-            </div>
         </article>
     );
 };
