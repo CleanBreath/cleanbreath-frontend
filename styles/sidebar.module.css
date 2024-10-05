@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700&display=swap');
+/* RedHatDisplay 폰트 적용 */
+
 /* 기본 스타일 설정 */
 .sidebar {
     width: 100px;
@@ -107,6 +110,7 @@
     font-size: 40px;
     font-weight: bold;
     color: #fff;
+    font-family: 'Red Hat Display', sans-serif; /* 폰트 추가 */
 }
 
 .sidebarOpen .sidebarHeader .activeIcon {
