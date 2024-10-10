@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700&display=swap');
+/* RedHatDisplay 폰트 적용 */
+
 .modalOverlay {
     position: fixed;
     top: 0;
@@ -17,7 +20,7 @@
     height: 80%; /* 높이를 조정하여 콘텐츠가 잘 보이도록 함 */
     max-height: 90vh; /* 화면 높이의 90%로 제한 */
     background: white;
-    border-radius: 10px;
+    border-radius: 15px;
     overflow: auto; /* 스크롤 가능하도록 설정 */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     display: flex;
@@ -26,8 +29,9 @@
 
 
 .element {
-    margin-left: 28px;
+    /* margin-left: 28px; */
     line-height: 28px;
+    margin: 0 4vw;
 }
 
 .modalHeader {
@@ -54,6 +58,8 @@
     margin: 0;
     font-size: 18px;
     justify-self: start;
+    font-family: 'Red Hat Display', sans-serif; /* 폰트 추가 */
+    font-weight: 650;
 }
 
 .modalHashTags {
@@ -78,32 +84,41 @@
 
 .modalBottom {
     margin-top: auto; /* 바닥을 모달의 하단에 위치시킴 */
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     padding: 10px;
+    margin-top: 10px;
     text-align: right;
-    line-height: 28px;
+    line-height: 20px;
+    color: #c3c3c3;
 }
 
 .modalTitle {
-    margin-top: 2%;
     padding: 10px;
     font-size: 40px;
-    font-weight: bold;
+    font-weight: 700;
     text-align: center;
+    padding: 60px 0px 20px 0px;
 }
 
 .modalBody {
-    padding: 5%;
-    font-size: 20px;
+    padding: 40px;
+    font-size: 18px;
     line-height: 1.5;
+    text-align: center;
+    margin: 0 5vw;
+}
+
+.BoldText {
+    font-weight: 800;
 }
 
 .sectionTitle {
-    padding: 10px 20px;
-    font-size: 24px;
+    padding: 40px 20px 0px 20px;
+    font-size: 18px;
     font-weight: bold;
     margin-bottom: 10px;
+    /* background-color: red; */
 }
 
 .featureList,
@@ -111,7 +126,7 @@
 .effectList,
 .methodList {
     padding: 0 20px;
-    font-size: 21px;
+    font-size: 15px;
     list-style-type: disc;
 }
 
@@ -125,6 +140,11 @@
 .highlightGreen {
     color: #007E8F;
 }
+
+.Team {
+    color: #969696;
+}
+
 
 /* 모바일 화면 */
 @media (max-width: 768px) {
@@ -152,5 +172,6 @@
     
     .modalBottom {
         margin-top: auto; /* 바닥을 모달의 하단에 위치시킴 */
+        
     }
 }

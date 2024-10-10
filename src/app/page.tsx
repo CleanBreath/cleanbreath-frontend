@@ -14,6 +14,8 @@ import NONSMOK_ICON from "../../public/nonSmokMarker.png";
 import Image from "next/image";
 import { Address } from '@/interface/AddressInterface';
 import DrawingField from '@/components/drawingField';
+import CurrentLocation from '@/components/currentLocation';
+import { getCookie } from "../components/ServiceInfoModal";
 
 // Import the Feedback components
 import FeedbackButton from '@/components/feedbackButton';
@@ -34,7 +36,13 @@ export default function Home() {
     const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
     const [isNonSmoking, setIsNonSmoking] = useState<boolean>(true);
     const [isSmoking, setIsSmoking] = useState<boolean>(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>("info");
+    const [activeMenu, setActiveMenu] = useState<string | null>(null);
+    useEffect(() => {
+      const cookieData = getCookie('close');
+      if (cookieData !== 'Y') {
+        setActiveMenu("info");   
+      }
+    }, []);
     const [isData, setData] = useState<AddressData[]>([]);
     const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +53,7 @@ export default function Home() {
     const [PolygonState, setPolygonState] = useState<string | null>(null);
     const [statute, setStatute] = useState<string | null>(null);
     const [zoomalbe, setZoomable] = useState(true);
+    const [isDrag, setDrag] = useState(false);
 
     const [address, setAddress] = useState<Address[]>([]); // 콜백 패턴으로 받아온 주소 데이터들 state 변수
     const [activeFunc, setActiveFunc] = useState<string | null>(null); // Add Component 활성화 함수 state 변수
@@ -194,6 +203,10 @@ export default function Home() {
         minLevel={6}
         level={3}
         zoomable={zoomalbe}
+        onDragStart={() => {setDrag(true); setIsOverlayClicked(false);}}
+        onDragEnd={() => {setDrag(false); setIsOverlayClicked(true);} }
+        onZoomStart={() => {setDrag(true);}}
+        onZoomChanged={() => {setDrag(false);}}
         onClick={(_, mouseEvent) => {
           if(activeFunc === "getAddress") {
             getPositionToAddress(_, mouseEvent);
@@ -201,6 +214,7 @@ export default function Home() {
           if(activeFunc === "drawPolygonStart") {
             handleAddressPositionStartClick(_, mouseEvent);
           }
+          
         }}
         onDoubleClick={handleAddressPositionEndClick}
         onMouseMove={handleMouseMove}
@@ -277,7 +291,7 @@ export default function Home() {
           </MarkerClusterer>
         )}
         
-        {isData.length > 0 && (
+        {isData.length > 0 && !isDrag && (
           <Polygon
             isData={isData}
             isApartmentsData={isApartmentsData}
@@ -292,7 +306,7 @@ export default function Home() {
         )}
       </Map>
       {/* 실시간 위치 추후 기능 */}
-      {/*<CurrentLocation setUserLocation={setUserLocation} />*/}
+      {/* <CurrentLocation setUserLocation={setUserLocation} /> */}
     </div>
   );
 }

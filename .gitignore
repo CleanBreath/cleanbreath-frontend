@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# pwa 불필요한 파일 삭제
+public/sw.js
+public/workbox-*.js
+public/workbox-*.js.map
+public/sw.js.map
