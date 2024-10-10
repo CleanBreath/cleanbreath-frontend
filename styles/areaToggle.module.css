@@ -72,7 +72,7 @@
 
 .state {
     width: 12.5vh;
-    height: 6.8vh;
+    height: 9.1vh;
     position: absolute;
     background: white;
     border-radius: 15px;
@@ -83,7 +83,7 @@
     margin-top: 2.2vh;
 }
 
-.box1, .box2, .box3 {
+.box1, .box2, .box3, .box4{
     position: absolute;
     display: flex;
     align-items: center;
@@ -110,6 +110,13 @@
     top: 4.9vh;
 }
 
+.box4 {
+    width: 15vh;
+    height: 1.5vh;
+    left: 1vh;
+    top: 7.1vh;
+}
+
 .circle {
     width: 1.5vh;
     height: 1.5vh;
@@ -127,6 +134,10 @@
 
 .red {
     background: #E83600;
+}
+
+.lightGreen {
+    background: #007E8F;
 }
 
 .labelText {
