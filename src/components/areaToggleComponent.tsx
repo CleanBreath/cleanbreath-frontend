@@ -33,9 +33,13 @@ export default function AreaToggleComponent({isNonSmoking, isSmoking, nonSmoking
                     <div className={styles.circle + ' ' + styles.red}></div>
                     <div className={styles.labelText}>절대 보호구역</div>
                 </div>
+                <div className={styles.box4}>
+                    <div className={styles.circle + ' ' + styles.lightGreen}></div>
+                    <div className={styles.labelText}>금연 아파트</div>
+                </div>
             </div>
         </>
-        
+
     );
 }
 
