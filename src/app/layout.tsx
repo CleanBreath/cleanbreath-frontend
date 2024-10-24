@@ -3,7 +3,7 @@ import "../../styles/global.css";
 import Head from "next/head";
 
 const APP_NAME = "CleanBreath";
-const APP_DEFAULT_TITLE = "CleanBreath";
+const APP_DEFAULT_TITLE = "안양시 금연구역 및 흡연구역 시각화 서비스";
 const APP_TITLE_TEMPLATE = "%s - CleanBreath";
 const APP_DESCRIPTION = "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.";
 

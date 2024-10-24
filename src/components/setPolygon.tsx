@@ -34,7 +34,7 @@ export default function SetPolygon({
         let intervalId: NodeJS.Timeout | undefined;
 
         if(!isOverlayClicked) {
-          setApartClickedPolygon(null);
+            setApartClickedPolygon(null);
         }
 
         if (isOverlayClicked || apartClickedPolygon !== null || apartHoveredPolygon !== null) {

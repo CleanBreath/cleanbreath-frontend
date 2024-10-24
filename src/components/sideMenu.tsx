@@ -45,7 +45,7 @@ const SideMenu = ({
 }: SideMenuProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [isServiceInfoOpen, setIsServiceInfoOpen] = useState(false);
+    // const [isServiceInfoOpen, setIsServiceInfoOpen] = useState(false);
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -144,7 +144,7 @@ const SideMenu = ({
                 <div className={styles.sidebarHeader}>
                     {isSidebarOpen ? (
                         <>
-                            <a href="#">
+                            <a href="/">
                                 <LOGO_ICON />
                             </a>
                             <p>CleanBreath</p>
@@ -161,28 +161,28 @@ const SideMenu = ({
                         onClick={() => handleMenuClick('info')}  
                     >
                         <INFO_ICON />
-                        {isSidebarOpen && (<h1>서비스 소개</h1>)}
+                        {isSidebarOpen && (<span>서비스 소개</span>)}
                     </div>
                     <div
                         className={isSidebarOpen ? styles.IconOpen : styles.Icon}
                         onClick={() => handleMenuClick('list')}
                     >
                         <SEARCH_ICON />
-                        {isSidebarOpen && (<h1>검색하기</h1>)}
+                        {isSidebarOpen && (<span>검색하기</span>)}
                     </div>
                     <div
                         className={isSidebarOpen ? styles.IconOpen : styles.Icon}
                         onClick={() => handleMenuClick('add')}
                     >
                         <ADD_ICON />
-                        {isSidebarOpen && (<h1>흡연구역 추가 요청하기</h1>)}
+                        {isSidebarOpen && (<span>흡연구역 추가 요청하기</span>)}
                     </div>
                     <div
                         className={isSidebarOpen ? styles.IconOpen : styles.Icon}
                         onClick={() => isSidebarOpen ? handleMenuClick('setting') : setIsSidebarOpen(true)}
                     >
                         <SETTING_ICON />
-                        {isSidebarOpen && (<h1>실험실</h1>)}
+                        {isSidebarOpen && (<span>실험실</span>)}
                         {isSidebarOpen && <RIGHT_ICON
                             className={activeMenu === 'setting' ? styles.down : styles.up}
                         />}
@@ -220,12 +220,13 @@ const SideMenu = ({
                 )}
             </div>
 
-             {/* 서비스 소개 모달 렌더링 */}
-             {activeMenu === "info" && (
-             <ServiceInfoModal 
-                setActiveMenu={setActiveMenu}
-                activeMenu={activeMenu} 
-            />)}
+            {/* 서비스 소개 모달 렌더링 */}
+            {activeMenu === "info" && (
+                <ServiceInfoModal 
+                    setActiveMenu={setActiveMenu}
+                    activeMenu={activeMenu} 
+                />
+            )}
         </div>
     );
 };
