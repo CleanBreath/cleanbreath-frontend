@@ -42,7 +42,7 @@ const ServiceInfoModal = ({ setActiveMenu, activeMenu }: ServiceInfoModalProps) 
     };
 
     const cookieData = getCookie('close');
-   
+
     return (
         <article className={styles.modalOverlay} onClick={handleBackgroundClick}>
             <section className={styles.modalContent}>
@@ -52,14 +52,14 @@ const ServiceInfoModal = ({ setActiveMenu, activeMenu }: ServiceInfoModalProps) 
                     <p className={styles.modalHashTags}>#안양시 #금연구역 #흡연구역 #클브</p>
                     <button className={styles.closeButton} onClick={closePopup}>&times;</button>
                     {cookieData !== 'Y' &&
-                        <p className={styles.modalHashTags}>
+                        <label className={styles.modalHashTags}>
                             <input 
                                 type="checkbox" 
                                 checked={isChecked} 
                                 onChange={(e) => setIsChecked(e.target.checked)} 
                             />
                             오늘 하루동안 보지 않기
-                        </p>
+                        </label>
                     }
                 </header>
                 <main>
@@ -97,7 +97,7 @@ const ServiceInfoModal = ({ setActiveMenu, activeMenu }: ServiceInfoModalProps) 
                 <footer className={styles.modalBottom}>
                     <p>아이콘 출처 : 흡연 구역 아이콘 제작자 : Freepik - Flaticon</p>
                     <p>정보 출처 : 안양시 동안구 및 만안구 보건소 자료실</p>
-                    <p className={styles.Team}>대림대학교 Bluesky 팀 : 최현준, 유현목, 최시헌, 김건우, 문찬수, 김장환</p>
+                    <p className={styles.Team}>대림대학교 CieloBlu 팀 : 최현준, 유현목, 최시헌, 김건우, 문찬수, 김장환</p>
                     <br />
                     <p>최종 업데이트 : 2024-08-15</p>
                 </footer>
