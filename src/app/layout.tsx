@@ -76,6 +76,11 @@ export const metadata: Metadata = {
     "max-snippet": -1,
     "max-image-preview": "large",
     "max-video-preview": -1,
+  },
+  verification : {
+    other : {
+      "naver-site-verification" : "6966c0f44b19d32900c068b84aac20a3a0591742"
+    }
   }
 };
 
@@ -101,7 +106,6 @@ export default function RootLayout({
       <Head>
         <link rel="canonical" href="https://bluesky-cleanbreath.com/" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="naver-site-verification" content="6966c0f44b19d32900c068b84aac20a3a0591742" />
       </Head>
       <body>
         {children}
