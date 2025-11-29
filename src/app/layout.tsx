@@ -3,9 +3,9 @@ import "../../styles/global.css";
 import Head from "next/head";
 
 const APP_NAME = "CleanBreath";
-const APP_DEFAULT_TITLE = "안양시 금연구역 및 흡연구역 시각화 서비스";
+const APP_DEFAULT_TITLE = "경기도 안양시 금연구역 및 흡연구역 시각화 서비스";
 const APP_TITLE_TEMPLATE = "%s - CleanBreath";
-const APP_DESCRIPTION = "흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.";
+const APP_DESCRIPTION = "경기도 안양시 흡연구역과 금연 구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 서비스입니다.";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -73,7 +73,23 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    "max-snippet": -1,
+    "max-image-preview": "large",
+    "max-video-preview": -1,
+  },
+  verification : {
+    other : {
+      "naver-site-verification" : "6966c0f44b19d32900c068b84aac20a3a0591742"
+    }
   }
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: APP_NAME,
+  url: "https://bluesky-cleanbreath.com/",
+  description: APP_DESCRIPTION,
 };
 
 export const viewport: Viewport = {
@@ -93,7 +109,10 @@ export default function RootLayout({
       </Head>
       <body>
         {children}
-        
+        <script
+          type="application/json+ld"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
 
     </html>
