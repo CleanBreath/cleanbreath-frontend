@@ -14,6 +14,8 @@ import {
   PanelLeft,
   MessageSquarePlus,
   MapPinPlus,
+  Scale,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -268,6 +270,43 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                   <span className="text-sm font-medium">흡연구역</span>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 법률 안내 카드 */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.3 }}
+        >
+          <Card className="border-0 bg-linear-to-br from-amber-500/10 to-orange-500/5 shadow-sm">
+            <CardContent className="p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20">
+                  <Scale
+                    size={16}
+                    className="text-amber-600 dark:text-amber-400"
+                  />
+                </div>
+                <h3 className="font-semibold">금연구역 관련 법률</h3>
+              </div>
+              <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
+                국민건강증진법에 따른 금연구역 지정 시설 및 관련 규정을
+                확인해보세요.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full gap-2"
+                asChild
+              >
+                <Link href="/statute">
+                  <Scale size={14} />
+                  자세히 보러가기
+                  <ExternalLink size={12} />
+                </Link>
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
