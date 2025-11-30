@@ -40,3 +40,4 @@ public/sw.js
 public/workbox-*.js
 public/workbox-*.js.map
 public/sw.js.map
+/src/generated/prisma

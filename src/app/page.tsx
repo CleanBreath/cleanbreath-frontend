@@ -1,312 +1,151 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import SideMenu from '@/components/sideMenu';
-import { CustomOverlayMap, Map, MapMarker, useKakaoLoader, MarkerClusterer } from 'react-kakao-maps-sdk';
-import { AddressData, ApartmentData } from '../api/types';
-import { listData, ApartmentsData } from '../api/api';
-import AreaToggleComponent from '@/components/areaToggleComponent';
-import MarkerOverlay from '@/components/markerOverlay';
-import Polygon from '@/components/setPolygon';
-import ReactGA from 'react-ga4';
-import SMOK_ICON from "../../public/smokMarker.png";
-import NONSMOK_ICON from "../../public/nonSmokMarker.png";
-import Image from "next/image";
-import { Address } from '@/interface/AddressInterface';
-import DrawingField from '@/components/drawingField';
-import CurrentLocation from '@/components/currentLocation';
-import { getCookie } from "../components/ServiceInfoModal";
+import { useState, useCallback, useEffect } from "react";
+import * as motion from "motion/react-client";
+import { X, Cigarette, CigaretteOff, MapPin } from "lucide-react";
+import { Sidebar } from "@/components/sidebar/sidebar";
+import { KakaoMap } from "@/components/map/kakao-map";
+import { AreaToggle } from "@/components/map/area-toggle";
+import { FeedbackModal } from "@/components/feedback/feedback-modal";
+import { useAddressList } from "@/hooks/use-address";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import type { AddressItem } from "@/types";
 
-// Import the Feedback components
-import FeedbackButton from '@/components/feedbackButton';
-import FeedbackModal from '@/components/feedbackModal';
-
-const APP_KEY = '6cf24fc76a6d5ae29260b2a99b27b49a';
-const TRACKING_ID = "G-YPYE7W46DT";
-
-
+const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
 
 export default function Home() {
-    const [loading] = useKakaoLoader({
-        appkey: APP_KEY,
-        libraries: ['services', 'clusterer', 'drawing'],
-    });
+  const [center, setCenter] = useState(DEFAULT_CENTER);
+  const [showNonSmoking, setShowNonSmoking] = useState(true);
+  const [showSmoking, setShowSmoking] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<AddressItem | null>(
+    null
+  );
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [mapKey, setMapKey] = useState(0);
 
-    const [center, setCenter] = useState({ lat: 37.394329, lng: 126.956939 });
-    const [markerPosition, setMarkerPosition] = useState<{ lat: number; lng: number } | null>(null);
-    const [isNonSmoking, setIsNonSmoking] = useState<boolean>(true);
-    const [isSmoking, setIsSmoking] = useState<boolean>(false);
-    const [activeMenu, setActiveMenu] = useState<string | null>(null);
-    useEffect(() => {
-      const cookieData = getCookie('close');
-      if (cookieData !== 'Y') {
-        setActiveMenu("info");   
-      }
-    }, []);
-    const [isData, setData] = useState<AddressData[]>([]);
-    const [isApartmentsData, setApartmentsData] = useState<ApartmentData[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [errorMsg, setError] = useState<string | null>(null);
-    const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-    const [isOverlayClicked, setIsOverlayClicked] = useState(false);
-    const [isMarkerClicked, setIsMarkerClicked] = useState(false);
-    const [PolygonState, setPolygonState] = useState<string | null>(null);
-    const [statute, setStatute] = useState<string | null>(null);
-    const [zoomalbe, setZoomable] = useState(true);
-    const [isDrag, setDrag] = useState(false);
+  const { data: addressData, isLoading } = useAddressList();
+  const addresses = addressData?.data ?? [];
 
-    const [address, setAddress] = useState<Address[]>([]); // 콜백 패턴으로 받아온 주소 데이터들 state 변수
-    const [activeFunc, setActiveFunc] = useState<string | null>(null); // Add Component 활성화 함수 state 변수
-    const [position, setPosition] = useState<{ lat: number; lng: number }>({lat: 0, lng: 0}); // 마커 위치 state 변수
-    const [mousePosition, setMousePosition] = useState({lat: 0, lng: 0}); // 마우스 위치 state 변수
-    const [path, setPath] = useState<{lat : number, lng : number}[]>([]) // 영역 값 state 변수
-    const [polygon, setPolygon] = useState<kakao.maps.Polygon>(); // Polygon 객체 state 변수
-    const [isDrawing, setIsDrawing] = useState(false); // 영역 그리기 상태 변수
+  // 사이드바 접힘 상태 변경 시 지도 리사이즈
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMapKey((prev) => prev + 1);
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [isCollapsed]);
 
-    // 위도 및 경도 값을 받아서 주소를 반환하는 함수
-    const getPositionToAddress = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
-        const latLng = mouseEvent.latLng;
-        const geocoder = new kakao.maps.services.Geocoder();
-        setPosition({lat: latLng.getLat(), lng: latLng.getLng()});
-        geocoder.coord2Address(latLng.getLng(), latLng.getLat(), getPositionCallback);
-    }
+  const handleAddressClick = useCallback((address: AddressItem) => {
+    setCenter({ lat: address.latitude, lng: address.longitude });
+    setSelectedAddress(address);
+  }, []);
 
-    // getPositionToAddress callback 함수
-    const getPositionCallback = (result : any, status : string) => {
-        if(status === kakao.maps.services.Status.OK) {
-            setAddress(result);
-        }
-    }
+  const handleNonSmokingToggle = useCallback(() => {
+    setShowNonSmoking((prev) => !prev);
+  }, []);
 
-    // AddComponent 영역 그리기 시작 클릭 이벤트
-    const handleAddressPositionStartClick = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
-        if(!isDrawing) {
-            setPath([]);
-        }
-        setPath((prev) => [...prev, {lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng()}]);
-        setIsDrawing(true);
-    }
-
-    // AddComponent 영역 그리기 종료 클릭 이벤트
-    const handleAddressPositionEndClick = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
-        setActiveFunc(null);
-        setIsDrawing(false);
-    }
-
-    // AddComponent 마우스 이동 이벤트
-    const handleMouseMove = (_map : kakao.maps.Map, mouseEvent : kakao.maps.event.MouseEvent) => {
-        setMousePosition({lat: mouseEvent.latLng.getLat(), lng: mouseEvent.latLng.getLng()});
-    }
-
-    // AddComponent 함수 활성화 토글 함수
-    const togleAddFunc = (funcName : string | null) => {
-        setActiveFunc(activeFunc === funcName ? null : funcName);
-    }
-
-    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
-
-    useEffect(() => {
-        ReactGA.initialize(TRACKING_ID);
-        ReactGA.send({ hitType: "pageview", page: window.location.pathname + window.location.search });
-    }, []);
-
-    useEffect(() => {
-        const loadData = async () => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const data = await listData();
-                const apartmentsData = await ApartmentsData();
-                setData(data);
-                setApartmentsData(apartmentsData);
-            } catch (err) {
-                setError('데이터를 불러오는 중 오류가 발생했습니다.');
-                console.error(err);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadData();
-    }, []);
-
-    useEffect(() => {
-        if (userLocation) {
-            setCenter(userLocation);
-        }
-    }, [userLocation]);
-
-    const handleListClick = (item: AddressData) => {
-        handlePolygonClick(item.address_latitude, item.address_longitude);
-        setIsOverlayClicked(true);
-        setPolygonState("address");
-    };
-
-    const toggleMenu = (menu: string | null) => {
-        setActiveMenu(activeMenu === menu ? null : menu);
-    };
-
-    const nonSmokingToggle = () => {
-        setIsNonSmoking(!isNonSmoking);
-    };
-
-    const smokingToggle = () => {
-        setIsSmoking(!isSmoking);
-    };
-
-    const handleOverlayClick = () => {
-        setIsOverlayClicked(false);
-        setIsOverlayClicked(true);
-    };
-
-    const handlePolygonClick = (lat: number, lng: number) => {
-        setMarkerPosition({ lat, lng });
-        setCenter({ lat, lng });
-    };
-
-    const handleFeedbackButtonClick = () => {
-        setIsFeedbackModalOpen(true);
-    };
-
-    const handleFeedbackModalClose = () => {
-        setIsFeedbackModalOpen(false);
-    };
-
-    // if (loading) {
-    //     return <div>Loading Kakao Map</div>;
-    // }
+  const handleSmokingToggle = useCallback(() => {
+    setShowSmoking((prev) => !prev);
+  }, []);
 
   return (
-    <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
-      <SideMenu
-        onListClick={handleListClick}
-        activeMenu={activeMenu}
-        setActiveMenu={toggleMenu}
-        isData={isData}
-        isApartmentsData={isApartmentsData}
+    <div className="flex h-dvh w-screen overflow-hidden">
+      <Sidebar
+        addresses={addresses}
         isLoading={isLoading}
-        error={errorMsg}
-        toggleAddFunc={togleAddFunc}
-        addressData={address}
-        position={position}
-        path={path}
+        onItemClick={handleAddressClick}
+        isCollapsed={isCollapsed}
+        onCollapsedChange={setIsCollapsed}
+        onFeedbackClick={() => setIsFeedbackOpen(true)}
       />
-      <AreaToggleComponent
-        isNonSmoking={isNonSmoking}
-        isSmoking={isSmoking}
-        nonSmokingToggle={nonSmokingToggle}
-        smokingToggle={smokingToggle}
-      />
-      <Map
-        center={center}
-        isPanto={true}
-        style={{ width: "100%", height: "100%", zIndex: 0 }}
-        minLevel={6}
-        level={3}
-        zoomable={zoomalbe}
-        onDragStart={() => {setDrag(true); setIsOverlayClicked(false);}}
-        onDragEnd={() => {setDrag(false); setIsOverlayClicked(true);} }
-        onZoomStart={() => {setDrag(true);}}
-        onZoomChanged={() => {setDrag(false);}}
-        onClick={(_, mouseEvent) => {
-          if(activeFunc === "getAddress") {
-            getPositionToAddress(_, mouseEvent);
-          }
-          if(activeFunc === "drawPolygonStart") {
-            handleAddressPositionStartClick(_, mouseEvent);
-          }
-          
-        }}
-        onDoubleClick={handleAddressPositionEndClick}
-        onMouseMove={handleMouseMove}
-      >
-        {
-          activeMenu === "add" && (
-            <>
-              <MapMarker position={position ?? center} />
-              <DrawingField
-                activeFunc={activeFunc}
-                setPolygon={setPolygon}
-                path={path}
-                mousePosition={mousePosition}
-              />
-            </>
-          )
-        }
 
-        {isOverlayClicked && markerPosition && (
-          <MarkerOverlay
-            markerPosition={markerPosition}
-            isData={isData}
-            isApartmentsData={isApartmentsData}
-            PolygonState={PolygonState}
-            setIsOverlayClicked={setIsOverlayClicked}
-            statute={statute}
-            setStatute={setStatute}
-          />
-        )}
+      <main className="relative flex-1">
+        <AreaToggle
+          showNonSmoking={showNonSmoking}
+          showSmoking={showSmoking}
+          onNonSmokingToggle={handleNonSmokingToggle}
+          onSmokingToggle={handleSmokingToggle}
+        />
 
-        {/* Feedback Button */}
-        <FeedbackButton onClick={handleFeedbackButtonClick} />
+        <KakaoMap
+          key={mapKey}
+          center={center}
+          addresses={addresses}
+          showNonSmoking={showNonSmoking}
+          showSmoking={showSmoking}
+          onMarkerClick={handleAddressClick}
+        />
 
-        {/* Feedback Modal */}
-        {isFeedbackModalOpen && (
-            <FeedbackModal
-                isOpen={isFeedbackModalOpen}
-                onClose={handleFeedbackModalClose}
-            />
-        )}
-
-        {userLocation && <MapMarker position={userLocation}></MapMarker>}
-        {isSmoking && isData.length > 0 && (
-          <MarkerClusterer averageCenter={true} minLevel={3}>
-            {isData.flatMap((item) =>
-              item.paths
-                .filter((path) => path.divisionArea.startsWith("SMOKING_ZONE"))
-                .map((pathIndex) => (
-                  <CustomOverlayMap
-                    key={`${item.address_idx}-${pathIndex.divisionArea}`}
-                    position={{
-                      lat: item.address_latitude,
-                      lng: item.address_longitude,
-                    }}
-                    yAnchor={1}
+        {/* 선택된 구역 정보 카드 */}
+        {selectedAddress && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-4 left-1/2 z-30 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2"
+          >
+            <Card className="border-0 bg-background/95 shadow-2xl backdrop-blur-md">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-sm ${
+                      selectedAddress.category === "SMOKING"
+                        ? "bg-red-500"
+                        : "bg-green-500"
+                    }`}
                   >
-                    <Image
-                      src={SMOK_ICON}
-                      alt={"Smok"}
-                      width={40}
-                      height={60}
-                      onClick={() => {
-                        setIsOverlayClicked(true);
-                        setPolygonState("address");
-                        handlePolygonClick(
-                          item.address_latitude,
-                          item.address_longitude
-                        );
-                      }}
-                    />
-                  </CustomOverlayMap>
-                ))
-            )}
-          </MarkerClusterer>
+                    {selectedAddress.category === "SMOKING" ? (
+                      <Cigarette size={22} className="text-white" />
+                    ) : (
+                      <CigaretteOff size={22} className="text-white" />
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-semibold leading-tight">
+                        {selectedAddress.addressName}
+                      </h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 shrink-0 rounded-full"
+                        onClick={() => setSelectedAddress(null)}
+                      >
+                        <X size={14} />
+                      </Button>
+                    </div>
+                    <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <MapPin size={12} />
+                      <span className="truncate">
+                        {selectedAddress.buildingName}
+                      </span>
+                    </div>
+                    <Badge
+                      className={`mt-2 ${
+                        selectedAddress.category === "SMOKING"
+                          ? "bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-300"
+                          : "bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-300"
+                      }`}
+                    >
+                      {selectedAddress.category === "SMOKING"
+                        ? "흡연구역"
+                        : "금연구역"}
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
         )}
-        
-        {isData.length > 0 && !isDrag && (
-          <Polygon
-            isData={isData}
-            isApartmentsData={isApartmentsData}
-            isNonSmoking={isNonSmoking}
-            isSmoking={isSmoking}
-            handlePolygonClick={handlePolygonClick}
-            handleOverlayClick={handleOverlayClick}
-            isOverlayClicked={isOverlayClicked}
-            setPolygonState={setPolygonState}
-            setStatute={setStatute}
-          />
-        )}
-      </Map>
-      {/* 실시간 위치 추후 기능 */}
-      {/* <CurrentLocation setUserLocation={setUserLocation} /> */}
+      </main>
+
+      {/* 피드백 모달 */}
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+      />
     </div>
   );
 }
