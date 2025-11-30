@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CleanBreath 🌬️
 
-## Getting Started
+안양시 금연구역 및 흡연구역 정보를 제공하는 지도 서비스입니다.
 
-First, run the development server:
+## 주요 기능
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- 🗺️ 카카오맵 기반 금연/흡연구역 지도
+- 🚭 금연구역 마커 표시 (녹색)
+- 🚬 흡연구역 마커 표시 (빨간색)
+- 📋 구역 목록 조회 및 검색
+- ⚖️ 금연구역 관련 법률 정보 제공
+- 📍 신규 구역 등록 요청
+- 💬 피드백 기능
+
+## 기술 스택
+
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- Motion (Framer Motion)
+- Tanstack Query
+- Radix UI + shadcn/ui
+- Kakao Maps API
+
+## 시작하기
+
+### 환경 변수 설정
+
+`.env.local` 파일에 카카오맵 API 키를 설정하세요:
+
+```env
+NEXT_PUBLIC_KAKAO_MAP_API_KEY=your_kakao_map_api_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 설치 및 실행
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# 의존성 설치
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+# 개발 서버 실행
+npm run dev
 
-## Learn More
+# 빌드
+npm run build
+```
 
-To learn more about Next.js, take a look at the following resources:
+[http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 프로젝트 구조
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+src/
+├── app/              # 페이지 라우트
+│   ├── page.tsx      # 메인 지도 페이지
+│   ├── register/     # 구역 등록 페이지
+│   └── statute/      # 법률 정보 페이지
+├── components/       # 컴포넌트
+│   ├── feedback/     # 피드백 모달
+│   ├── map/          # 지도 관련
+│   ├── sidebar/      # 사이드바
+│   └── ui/           # shadcn/ui 컴포넌트
+├── api/              # API 클라이언트
+├── hooks/            # 커스텀 훅
+├── json/             # 정적 데이터 (법률 정보)
+└── types/            # 타입 정의
+```
 
-## Deploy on Vercel
+## 라이선스
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+MIT
