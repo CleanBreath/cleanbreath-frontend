@@ -236,9 +236,8 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                 <h3 className="font-semibold">서비스 소개</h3>
               </div>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                CleanBreath는 안양시의 금연구역과 흡연구역 정보를 제공합니다.
-                지도에서 구역을 확인하고, 깨끗한 공기를 마실 수 있는 곳을
-                찾아보세요.
+                CleanBreath는 금연구역과 흡연구역 정보를 제공합니다. 지도에서
+                구역을 확인하고, 깨끗한 공기를 마실 수 있는 곳을 찾아보세요.
               </p>
             </CardContent>
           </Card>

@@ -2,11 +2,20 @@
 
 import { useState, useCallback, useEffect } from "react";
 import * as motion from "motion/react-client";
-import { X, Cigarette, CigaretteOff, MapPin, Building2 } from "lucide-react";
+import {
+  X,
+  Cigarette,
+  CigaretteOff,
+  MapPin,
+  Building2,
+  Info,
+} from "lucide-react";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { KakaoMap } from "@/components/map/kakao-map";
 import { AreaToggle } from "@/components/map/area-toggle";
 import { FeedbackModal } from "@/components/feedback/feedback-modal";
+import { VersionModal } from "@/components/version/version-modal";
+import { DisclaimerModal } from "@/components/disclaimer/disclaimer-modal";
 import { useAddressList } from "@/hooks/use-address";
 import { useApartmentList } from "@/hooks/use-apartment";
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,6 +37,7 @@ export default function Home() {
     useState<ApartmentItem | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [isVersionOpen, setIsVersionOpen] = useState(false);
   const [mapKey, setMapKey] = useState(0);
 
   const { data: addressData, isLoading } = useAddressList();
@@ -336,11 +346,30 @@ export default function Home() {
         )}
       </main>
 
+      {/* 버전 정보 버튼 */}
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => setIsVersionOpen(true)}
+        className="fixed bottom-4 right-4 z-30 h-12 w-12 rounded-full bg-background/90 shadow-lg backdrop-blur-sm"
+      >
+        <Info size={20} />
+      </Button>
+
       {/* 피드백 모달 */}
       <FeedbackModal
         isOpen={isFeedbackOpen}
         onClose={() => setIsFeedbackOpen(false)}
       />
+
+      {/* 버전 정보 모달 */}
+      <VersionModal
+        isOpen={isVersionOpen}
+        onClose={() => setIsVersionOpen(false)}
+      />
+
+      {/* 책임한계 안내 모달 */}
+      <DisclaimerModal />
     </div>
   );
 }
