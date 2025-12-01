@@ -25,6 +25,7 @@ import {
   BookMarked,
   ChevronDown,
   ChevronUp,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -78,7 +79,7 @@ export default function StatutePage() {
               <Scale size={20} className="text-primary" />
             </div>
             <div>
-              <h1 className="font-bold">금연구역 관련 법률</h1>
+              <h1 className="font-bold">금연구역 관련 법령</h1>
               <p className="text-xs text-muted-foreground">
                 국민건강증진법 시행규칙
               </p>
@@ -220,11 +221,44 @@ export default function StatutePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.5 }}
-            className="mt-6 rounded-lg bg-muted/50 p-4 text-center"
+            className="mt-6 space-y-3"
           >
-            <p className="text-xs text-muted-foreground">
-              본 내용은 참고용이며, 정확한 법률 내용은 관련 법령을 확인해주세요.
-            </p>
+            <Card className="border-0 bg-muted/50 shadow-sm">
+              <CardContent className="p-4 text-center">
+                <p className="text-xs text-muted-foreground">
+                  본 내용은 참고용이며, 정확한 법령 내용은 관련 법령을
+                  확인해주세요.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 bg-linear-to-br from-primary/10 to-primary/5 shadow-sm">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20">
+                      <Scale size={20} className="text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">국민건강증진법</h3>
+                      <p className="text-xs text-muted-foreground">
+                        법제처 국가법령정보센터
+                      </p>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <a
+                      href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      법령 보기
+                      <ExternalLink size={12} />
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </motion.div>
         </main>
       </ScrollArea>

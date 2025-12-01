@@ -54,10 +54,10 @@ export const metadata: Metadata = {
       template: APP_TITLE_TEMPLATE,
     },
     description: APP_DESCRIPTION,
-    url: "https://bluesky-cleanbreath.com/",
+    url: "https://cleanbreath.cmu02-studio.com/",
     images: [
       {
-        url: "https://bluesky-cleanbreath.com/OGImage.png",
+        url: "https://cleanbreath.cmu02-studio.com/OGImage.png",
         width: 1200,
         height: 630,
         alt: "CleanBreath 서비스 소개 이미지",
@@ -90,7 +90,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: APP_NAME,
-  url: "https://bluesky-cleanbreath.com/",
+  url: "https://cleanbreath.cmu02-studio.com/",
   description: APP_DESCRIPTION,
 };
 
@@ -106,22 +106,10 @@ export default function RootLayout({
   return (
     <html lang="ko" suppressHydrationWarning>
       <Head>
-        <link rel="canonical" href="https://bluesky-cleanbreath.com/" />
+        <link rel="canonical" href="https://cleanbreath.cmu02-studio.com/" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
       <body>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                const theme = localStorage.getItem('theme') || 'system';
-                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-                const effectiveTheme = theme === 'system' ? systemTheme : theme;
-                document.documentElement.classList.add(effectiveTheme);
-              } catch (e) {}
-            `,
-          }}
-        />
         <QueryProvider>{children}</QueryProvider>
         <script
           type="application/json+ld"

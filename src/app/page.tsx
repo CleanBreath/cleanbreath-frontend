@@ -2,16 +2,17 @@
 
 import { useState, useCallback, useEffect } from "react";
 import * as motion from "motion/react-client";
-import { X, Cigarette, CigaretteOff, MapPin } from "lucide-react";
+import { X, Cigarette, CigaretteOff, MapPin, Building2 } from "lucide-react";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { KakaoMap } from "@/components/map/kakao-map";
 import { AreaToggle } from "@/components/map/area-toggle";
 import { FeedbackModal } from "@/components/feedback/feedback-modal";
 import { useAddressList } from "@/hooks/use-address";
+import { useApartmentList } from "@/hooks/use-apartment";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import type { AddressItem } from "@/types";
+import type { AddressItem, ApartmentItem } from "@/types";
 
 const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
 
@@ -19,15 +20,21 @@ export default function Home() {
   const [center, setCenter] = useState(DEFAULT_CENTER);
   const [showNonSmoking, setShowNonSmoking] = useState(true);
   const [showSmoking, setShowSmoking] = useState(false);
+  const [showApartments, setShowApartments] = useState(true);
   const [selectedAddress, setSelectedAddress] = useState<AddressItem | null>(
     null
   );
+  const [selectedApartment, setSelectedApartment] =
+    useState<ApartmentItem | null>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [mapKey, setMapKey] = useState(0);
 
   const { data: addressData, isLoading } = useAddressList();
+  const { data: apartmentData, isLoading: isApartmentLoading } =
+    useApartmentList();
   const addresses = addressData?.data ?? [];
+  const apartments = apartmentData ?? [];
 
   // 사이드바 접힘 상태 변경 시 지도 리사이즈
   useEffect(() => {
@@ -50,12 +57,29 @@ export default function Home() {
     setShowSmoking((prev) => !prev);
   }, []);
 
+  const handleApartmentToggle = useCallback(() => {
+    setShowApartments((prev) => !prev);
+  }, []);
+
+  const handleApartmentClick = useCallback((apartment: ApartmentItem) => {
+    if (apartment.path.length > 0) {
+      setCenter({
+        lat: apartment.path[0].latitude,
+        lng: apartment.path[0].longitude,
+      });
+    }
+    setSelectedApartment(apartment);
+    setSelectedAddress(null);
+  }, []);
+
   return (
     <div className="flex h-dvh w-screen overflow-hidden">
       <Sidebar
         addresses={addresses}
-        isLoading={isLoading}
+        apartments={apartments}
+        isLoading={isLoading || isApartmentLoading}
         onItemClick={handleAddressClick}
+        onApartmentClick={handleApartmentClick}
         isCollapsed={isCollapsed}
         onCollapsedChange={setIsCollapsed}
         onFeedbackClick={() => setIsFeedbackOpen(true)}
@@ -65,17 +89,22 @@ export default function Home() {
         <AreaToggle
           showNonSmoking={showNonSmoking}
           showSmoking={showSmoking}
+          showApartments={showApartments}
           onNonSmokingToggle={handleNonSmokingToggle}
           onSmokingToggle={handleSmokingToggle}
+          onApartmentToggle={handleApartmentToggle}
         />
 
         <KakaoMap
           key={mapKey}
           center={center}
           addresses={addresses}
+          apartments={apartments}
           showNonSmoking={showNonSmoking}
           showSmoking={showSmoking}
+          showApartments={showApartments}
           onMarkerClick={handleAddressClick}
+          onApartmentClick={handleApartmentClick}
         />
 
         {/* 선택된 구역 정보 카드 */}
@@ -133,6 +162,55 @@ export default function Home() {
                         ? "흡연구역"
                         : "금연구역"}
                     </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* 선택된 아파트 정보 카드 */}
+        {selectedApartment && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="absolute bottom-4 left-1/2 z-30 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2"
+          >
+            <Card className="border-0 bg-background/95 shadow-2xl backdrop-blur-md">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500 shadow-sm">
+                    <Building2 size={22} className="text-white" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-semibold leading-tight">
+                        {selectedApartment.apartmentName}
+                      </h3>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 shrink-0 rounded-full"
+                        onClick={() => setSelectedApartment(null)}
+                      >
+                        <X size={14} />
+                      </Button>
+                    </div>
+                    <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <MapPin size={12} />
+                      <span className="truncate">
+                        {selectedApartment.address}
+                      </span>
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300">
+                        {selectedApartment.numberOfBuilding}개 동
+                      </Badge>
+                      <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300">
+                        {selectedApartment.numberOfHouseholds}세대
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </CardContent>

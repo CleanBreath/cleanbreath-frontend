@@ -16,6 +16,8 @@ import {
   MapPinPlus,
   Scale,
   ExternalLink,
+  Activity,
+  Building2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -30,14 +32,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { AddressItem } from "@/types";
+import type { AddressItem, ApartmentItem } from "@/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface SidebarProps {
   addresses: AddressItem[];
+  apartments: ApartmentItem[];
   isLoading: boolean;
   onItemClick: (address: AddressItem) => void;
+  onApartmentClick: (apartment: ApartmentItem) => void;
   isCollapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
   onFeedbackClick: () => void;
@@ -45,8 +49,10 @@ interface SidebarProps {
 
 export function Sidebar({
   addresses,
+  apartments,
   isLoading,
   onItemClick,
+  onApartmentClick,
   isCollapsed,
   onCollapsedChange,
   onFeedbackClick,
@@ -81,7 +87,7 @@ export function Sidebar({
 
       {/* 탭 컨텐츠 */}
       <Tabs defaultValue="info" className="flex flex-1 flex-col">
-        <TabsList className="mx-4 mt-4 grid w-auto grid-cols-2 bg-muted/50">
+        <TabsList className="mx-4 mt-4 grid w-auto grid-cols-3 bg-muted/50">
           <TabsTrigger
             value="info"
             className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
@@ -94,7 +100,14 @@ export function Sidebar({
             className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
           >
             <List size={14} />
-            <span>목록</span>
+            <span>구역</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="apartments"
+            className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+          >
+            <Building2 size={14} />
+            <span>아파트</span>
           </TabsTrigger>
         </TabsList>
 
@@ -108,6 +121,17 @@ export function Sidebar({
             isLoading={isLoading}
             onItemClick={(address) => {
               onItemClick(address);
+              setIsOpen(false);
+            }}
+          />
+        </TabsContent>
+
+        <TabsContent value="apartments" className="flex-1 overflow-hidden p-4">
+          <ApartmentList
+            apartments={apartments}
+            isLoading={isLoading}
+            onItemClick={(apartment) => {
+              onApartmentClick(apartment);
               setIsOpen(false);
             }}
           />
@@ -161,7 +185,7 @@ export function Sidebar({
       {/* 데스크탑: 접을 수 있는 사이드바 */}
       <motion.aside
         initial={false}
-        animate={{ width: isCollapsed ? 0 : 320 }}
+        animate={{ width: isCollapsed ? 0 : 380 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="hidden h-full shrink-0 overflow-hidden border-r bg-background md:flex md:flex-col"
         style={{ borderRightWidth: isCollapsed ? 0 : 1 }}
@@ -172,7 +196,7 @@ export function Sidebar({
       {/* 데스크탑: 사이드바 토글 버튼 */}
       <motion.div
         initial={false}
-        animate={{ left: isCollapsed ? 16 : 336 }}
+        animate={{ left: isCollapsed ? 16 : 396 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="fixed top-4 z-50 hidden md:block"
       >
@@ -289,7 +313,7 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                     className="text-amber-600 dark:text-amber-400"
                   />
                 </div>
-                <h3 className="font-semibold">금연구역 관련 법률</h3>
+                <h3 className="font-semibold">금연구역 관련 법령</h3>
               </div>
               <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
                 국민건강증진법에 따른 금연구역 지정 시설 및 관련 규정을
@@ -304,6 +328,42 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                 <Link href="/statute">
                   <Scale size={14} />
                   자세히 보러가기
+                  <ExternalLink size={12} />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* 서버 상태 카드 */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+        >
+          <Card className="border-0 bg-linear-to-br from-blue-500/10 to-cyan-500/5 shadow-sm">
+            <CardContent className="p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20">
+                  <Activity
+                    size={16}
+                    className="text-blue-600 dark:text-blue-400"
+                  />
+                </div>
+                <h3 className="font-semibold">서버 상태</h3>
+              </div>
+              <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
+                API 서버와 데이터베이스의 실시간 상태를 확인할 수 있습니다.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full gap-2"
+                asChild
+              >
+                <Link href="/health">
+                  <Activity size={14} />
+                  상태 확인하기
                   <ExternalLink size={12} />
                 </Link>
               </Button>
@@ -383,6 +443,72 @@ function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
               )}
             >
               {address.category === "SMOKING" ? "흡연" : "금연"}
+            </Badge>
+          </motion.div>
+        ))}
+      </div>
+    </ScrollArea>
+  );
+}
+
+interface ApartmentListProps {
+  apartments: ApartmentItem[];
+  isLoading: boolean;
+  onItemClick: (apartment: ApartmentItem) => void;
+}
+
+function ApartmentList({
+  apartments,
+  isLoading,
+  onItemClick,
+}: ApartmentListProps) {
+  if (isLoading) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <div className="flex flex-col items-center gap-2">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="text-sm text-muted-foreground">불러오는 중...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!apartments.length) {
+    return (
+      <div className="flex h-40 items-center justify-center">
+        <p className="text-muted-foreground">데이터가 없습니다</p>
+      </div>
+    );
+  }
+
+  return (
+    <ScrollArea className="h-[calc(100vh-280px)]">
+      <div className="space-y-1.5 pr-2">
+        {apartments.map((apartment, index) => (
+          <motion.div
+            key={apartment.id}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.2, delay: Math.min(index * 0.02, 0.5) }}
+            className="flex cursor-pointer items-center gap-2.5 rounded-lg bg-card/50 p-2 transition-all hover:bg-accent"
+            onClick={() => onItemClick(apartment)}
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500">
+              <Building2 size={14} className="text-white" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">
+                {apartment.apartmentName}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {apartment.address}
+              </p>
+            </div>
+            <Badge
+              variant="secondary"
+              className="shrink-0 bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+            >
+              {apartment.numberOfBuilding}동
             </Badge>
           </motion.div>
         ))}
