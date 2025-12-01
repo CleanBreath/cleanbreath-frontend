@@ -2,7 +2,7 @@
  * Apartment API 관련 타입 정의
  */
 
-export type DesignationStatus = "DESIGNATED" | "NOT_DESIGNATED";
+export type DesignationStatus = "YES" | "NO";
 
 export interface ApartmentPath {
   hallway: DesignationStatus;

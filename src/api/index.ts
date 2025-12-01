@@ -31,3 +31,6 @@ export {
   getPendingAddressesPage,
   addSmokingArea,
 } from "./pending-address";
+
+// Health Check API
+export { checkServerHealth } from "./health";

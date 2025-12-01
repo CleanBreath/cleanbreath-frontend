@@ -2,16 +2,19 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { renderToString } from "react-dom/server";
-import { Cigarette, CigaretteOff } from "lucide-react";
-import type { AddressItem } from "@/types";
+import { Cigarette, CigaretteOff, Building2 } from "lucide-react";
+import type { AddressItem, ApartmentItem } from "@/types";
 
 interface KakaoMapProps {
   center: { lat: number; lng: number };
   level?: number;
   addresses?: AddressItem[];
+  apartments?: ApartmentItem[];
   showNonSmoking?: boolean;
   showSmoking?: boolean;
+  showApartments?: boolean;
   onMarkerClick?: (address: AddressItem) => void;
+  onApartmentClick?: (apartment: ApartmentItem) => void;
 }
 
 const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_APP_KEY || "";
@@ -92,9 +95,12 @@ export function KakaoMap({
   center,
   level = 3,
   addresses = [],
+  apartments = [],
   showNonSmoking = true,
   showSmoking = false,
+  showApartments = true,
   onMarkerClick,
+  onApartmentClick,
 }: KakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -156,85 +162,160 @@ export function KakaoMap({
     overlaysRef.current = [];
     polygonsRef.current = [];
 
-    if (!addresses.length) return;
-
-    addresses.forEach((address) => {
-      // 각 path의 divisionArea를 확인하여 흡연/금연 구역 판단
-      const hasSmokingZone = address.path.some((p) =>
-        isSmokingZone(p.divisionArea)
-      );
-      const hasNonSmokingZone = address.path.some(
-        (p) => p.divisionArea === "NON_SMOKING_ZONE"
-      );
-
-      // 토글 상태에 따라 필터링
-      if (hasSmokingZone && !hasNonSmokingZone && !showSmoking) return;
-      if (hasNonSmokingZone && !hasSmokingZone && !showNonSmoking) return;
-
-      // 폴리곤 생성 (각 path별로)
-      address.path.forEach((pathItem) => {
-        const isSmoking = isSmokingZone(pathItem.divisionArea);
-
-        // 토글 상태에 따라 개별 폴리곤 필터링
-        if (isSmoking && !showSmoking) return;
-        if (!isSmoking && !showNonSmoking) return;
-
-        const lats = pathItem.pathsLatitude
-          .split(",")
-          .map((s) => parseFloat(s.trim()));
-        const lngs = pathItem.pathsLongitude
-          .split(",")
-          .map((s) => parseFloat(s.trim()));
-
-        if (lats.length !== lngs.length || lats.length < 3) return;
-
-        const polygonPath = lats.map(
-          (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i])
+    // 주소 마커 렌더링
+    if (addresses.length > 0) {
+      addresses.forEach((address) => {
+        // 각 path의 divisionArea를 확인하여 흡연/금연 구역 판단
+        const hasSmokingZone = address.path.some((p) =>
+          isSmokingZone(p.divisionArea)
+        );
+        const hasNonSmokingZone = address.path.some(
+          (p) => p.divisionArea === "NON_SMOKING_ZONE"
         );
 
-        const colors = getZoneColor(pathItem.divisionArea);
+        // 토글 상태에 따라 필터링
+        if (hasSmokingZone && !hasNonSmokingZone && !showSmoking) return;
+        if (hasNonSmokingZone && !hasSmokingZone && !showNonSmoking) return;
 
-        const polygon = new window.kakao.maps.Polygon({
-          path: polygonPath,
-          strokeWeight: 2,
-          strokeColor: colors.stroke,
-          strokeOpacity: 0.9,
-          fillColor: colors.fill,
-          fillOpacity: 0.4,
-          map,
+        // 폴리곤 생성 (각 path별로)
+        address.path.forEach((pathItem) => {
+          const isSmoking = isSmokingZone(pathItem.divisionArea);
+
+          // 토글 상태에 따라 개별 폴리곤 필터링
+          if (isSmoking && !showSmoking) return;
+          if (!isSmoking && !showNonSmoking) return;
+
+          const lats = pathItem.pathsLatitude
+            .split(",")
+            .map((s) => parseFloat(s.trim()));
+          const lngs = pathItem.pathsLongitude
+            .split(",")
+            .map((s) => parseFloat(s.trim()));
+
+          if (lats.length !== lngs.length || lats.length < 3) return;
+
+          const polygonPath = lats.map(
+            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i])
+          );
+
+          const colors = getZoneColor(pathItem.divisionArea);
+
+          const polygon = new window.kakao.maps.Polygon({
+            path: polygonPath,
+            strokeWeight: 2,
+            strokeColor: colors.stroke,
+            strokeOpacity: 0.9,
+            fillColor: colors.fill,
+            fillOpacity: 0.4,
+            map,
+          });
+
+          window.kakao.maps.event.addListener(polygon, "click", () => {
+            onMarkerClick?.(address);
+          });
+
+          polygonsRef.current.push(polygon);
+
+          // 마커 생성 (폴리곤 중심에)
+          const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+          const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
+          const markerPosition = new window.kakao.maps.LatLng(
+            centerLat,
+            centerLng
+          );
+
+          const content = document.createElement("div");
+          content.innerHTML = createMarkerContent(pathItem.divisionArea);
+          content.style.cursor = "pointer";
+          content.onclick = () => onMarkerClick?.(address);
+
+          const overlay = new window.kakao.maps.CustomOverlay({
+            position: markerPosition,
+            content,
+            yAnchor: 0.5,
+            xAnchor: 0.5,
+          });
+
+          overlay.setMap(map);
+          overlaysRef.current.push(overlay);
         });
-
-        window.kakao.maps.event.addListener(polygon, "click", () => {
-          onMarkerClick?.(address);
-        });
-
-        polygonsRef.current.push(polygon);
-
-        // 마커 생성 (폴리곤 중심에)
-        const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
-        const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-        const markerPosition = new window.kakao.maps.LatLng(
-          centerLat,
-          centerLng
-        );
-
-        const content = document.createElement("div");
-        content.innerHTML = createMarkerContent(pathItem.divisionArea);
-        content.style.cursor = "pointer";
-        content.onclick = () => onMarkerClick?.(address);
-
-        const overlay = new window.kakao.maps.CustomOverlay({
-          position: markerPosition,
-          content,
-          yAnchor: 0.5,
-          xAnchor: 0.5,
-        });
-
-        overlay.setMap(map);
-        overlaysRef.current.push(overlay);
       });
-    });
-  }, [map, addresses, showNonSmoking, showSmoking, onMarkerClick]);
+    }
+
+    // 아파트 마커 렌더링
+    if (apartments.length > 0 && showApartments) {
+      apartments.forEach((apartment) => {
+        apartment.path.forEach((pathItem) => {
+          // pathsLat, pathsLng를 파싱
+          const lats = pathItem.pathsLat
+            .split(",")
+            .map((s) => parseFloat(s.trim()));
+          const lngs = pathItem.pathsLng
+            .split(",")
+            .map((s) => parseFloat(s.trim()));
+
+          if (lats.length !== lngs.length || lats.length < 3) return;
+
+          const polygonPath = lats.map(
+            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i])
+          );
+
+          // 아파트는 파란색 계열로 표시
+          const polygon = new window.kakao.maps.Polygon({
+            path: polygonPath,
+            strokeWeight: 2,
+            strokeColor: "#2563EB",
+            strokeOpacity: 0.9,
+            fillColor: "#3B82F6",
+            fillOpacity: 0.3,
+            map,
+          });
+
+          window.kakao.maps.event.addListener(polygon, "click", () => {
+            onApartmentClick?.(apartment);
+          });
+
+          polygonsRef.current.push(polygon);
+
+          // 마커 생성 (폴리곤 중심에)
+          const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+          const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
+          const markerPosition = new window.kakao.maps.LatLng(
+            centerLat,
+            centerLng
+          );
+
+          const content = document.createElement("div");
+          content.innerHTML = renderToString(
+            <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-lg">
+              <Building2 size={20} className="text-white" />
+            </div>
+          );
+          content.style.cursor = "pointer";
+          content.onclick = () => onApartmentClick?.(apartment);
+
+          const overlay = new window.kakao.maps.CustomOverlay({
+            position: markerPosition,
+            content,
+            yAnchor: 0.5,
+            xAnchor: 0.5,
+          });
+
+          overlay.setMap(map);
+          overlaysRef.current.push(overlay);
+        });
+      });
+    }
+  }, [
+    map,
+    addresses,
+    apartments,
+    showNonSmoking,
+    showSmoking,
+    showApartments,
+    onMarkerClick,
+    onApartmentClick,
+  ]);
 
   useEffect(() => {
     renderMarkers();
