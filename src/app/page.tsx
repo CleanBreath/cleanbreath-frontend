@@ -46,7 +46,26 @@ export default function Home() {
 
   const handleAddressClick = useCallback((address: AddressItem) => {
     setCenter({ lat: address.latitude, lng: address.longitude });
-    setSelectedAddress(address);
+
+    // category가 제대로 설정되지 않은 경우 path의 divisionArea로 판단
+    const hasSmokingZone = address.path.some((p) =>
+      p.divisionArea.startsWith("SMOKING_ZONE")
+    );
+    const hasNonSmokingZone = address.path.some(
+      (p) => p.divisionArea === "NON_SMOKING_ZONE"
+    );
+
+    // category 보정
+    const correctedAddress = {
+      ...address,
+      category:
+        hasSmokingZone && !hasNonSmokingZone
+          ? ("SMOKING" as const)
+          : ("NON_SMOKING" as const),
+    };
+
+    setSelectedAddress(correctedAddress);
+    setSelectedApartment(null);
   }, []);
 
   const handleNonSmokingToggle = useCallback(() => {
@@ -175,7 +194,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-4 left-1/2 z-30 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2"
+            className="absolute bottom-4 left-1/2 z-30 w-[calc(100%-2rem)] max-w-md -translate-x-1/2"
           >
             <Card className="border-0 bg-background/95 shadow-2xl backdrop-blur-md">
               <CardContent className="p-4">
@@ -211,6 +230,104 @@ export default function Home() {
                         {selectedApartment.numberOfHouseholds}세대
                       </Badge>
                     </div>
+
+                    {/* 금연구역 지정 범위 */}
+                    {selectedApartment.path.length > 0 && (
+                      <div className="mt-3 space-y-1.5 rounded-lg bg-muted/50 p-2.5">
+                        <p className="text-xs font-semibold text-muted-foreground">
+                          금연구역 지정 범위
+                        </p>
+                        <div className="grid grid-cols-2 gap-1.5">
+                          <div
+                            className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
+                              selectedApartment.path[0].hallway === "YES"
+                                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            <span>복도</span>
+                            <Badge
+                              variant="secondary"
+                              className={`h-4 px-1.5 text-[10px] ${
+                                selectedApartment.path[0].hallway === "YES"
+                                  ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : "bg-background"
+                              }`}
+                            >
+                              {selectedApartment.path[0].hallway === "YES"
+                                ? "지정"
+                                : "미지정"}
+                            </Badge>
+                          </div>
+                          <div
+                            className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
+                              selectedApartment.path[0].stairs === "YES"
+                                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            <span>계단</span>
+                            <Badge
+                              variant="secondary"
+                              className={`h-4 px-1.5 text-[10px] ${
+                                selectedApartment.path[0].stairs === "YES"
+                                  ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : "bg-background"
+                              }`}
+                            >
+                              {selectedApartment.path[0].stairs === "YES"
+                                ? "지정"
+                                : "미지정"}
+                            </Badge>
+                          </div>
+                          <div
+                            className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
+                              selectedApartment.path[0].elevator === "YES"
+                                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            <span>엘리베이터</span>
+                            <Badge
+                              variant="secondary"
+                              className={`h-4 px-1.5 text-[10px] ${
+                                selectedApartment.path[0].elevator === "YES"
+                                  ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : "bg-background"
+                              }`}
+                            >
+                              {selectedApartment.path[0].elevator === "YES"
+                                ? "지정"
+                                : "미지정"}
+                            </Badge>
+                          </div>
+                          <div
+                            className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
+                              selectedApartment.path[0]
+                                .undergroundParkingLot === "YES"
+                                ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                                : "bg-muted text-muted-foreground"
+                            }`}
+                          >
+                            <span>지하주차장</span>
+                            <Badge
+                              variant="secondary"
+                              className={`h-4 px-1.5 text-[10px] ${
+                                selectedApartment.path[0]
+                                  .undergroundParkingLot === "YES"
+                                  ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : "bg-background"
+                              }`}
+                            >
+                              {selectedApartment.path[0]
+                                .undergroundParkingLot === "YES"
+                                ? "지정"
+                                : "미지정"}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </CardContent>
