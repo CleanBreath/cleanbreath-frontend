@@ -20,7 +20,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.555.0",
     "motion": "^12.23.24",
-    "next": "^16.0.4",
+    "next": "^16.0.7",
     "react": "^19.2.0",
     "react-compiler-runtime": "^19.1.0-rc.3",
     "react-dom": "^19.2.0",
