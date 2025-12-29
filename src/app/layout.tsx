@@ -4,10 +4,10 @@ import Head from "next/head";
 import { QueryProvider } from "@/components/providers/query-provider";
 
 const APP_NAME = "CleanBreath";
-const APP_DEFAULT_TITLE = "금연구역 및 흡연구역 시각화 서비스";
-const APP_TITLE_TEMPLATE = "%s - CleanBreath";
+const APP_DEFAULT_TITLE = "CleanBreath - 금연구역 및 흡연구역 지도 서비스";
+const APP_TITLE_TEMPLATE = "%s | CleanBreath";
 const APP_DESCRIPTION =
-  "흡연구역과 금연구역을 명확히 구분하여 사용자에게 시각적 안내를 제공하는 지도 서비스입니다.";
+  "금연구역과 흡연구역을 지도에서 쉽게 확인하세요. 공동주택, 아파트, 공공장소의 금연구역 정보를 제공하는 무료 지도 서비스입니다. 국민건강증진법 기반 금연구역 안내.";
 
 export const metadata: Metadata = {
   applicationName: APP_NAME,
@@ -20,16 +20,18 @@ export const metadata: Metadata = {
     icon: "/cleanBreathFavicon.ico",
   },
   keywords: [
-    "CleanBreath",
-    "흡연구역",
     "금연구역",
-    "흡연구역 안내",
-    "금연구역 안내",
-    "지도",
+    "흡연구역",
     "금연구역 지도",
     "흡연구역 지도",
+    "금연구역 안내",
+    "흡연구역 안내",
     "공동주택 금연구역",
     "아파트 금연구역",
+    "국민건강증진법",
+    "금연구역 찾기",
+    "흡연 가능 장소",
+    "CleanBreath",
   ],
   authors: [
     {

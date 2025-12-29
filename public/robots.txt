@@ -1,0 +1,12 @@
+# CleanBreath - 금연구역 및 흡연구역 지도 서비스
+# https://cleanbreath.cmu02-studio.com
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://cleanbreath.cmu02-studio.com/sitemap.xml
+
+# 크롤링 속도 조절 (선택사항)
+Crawl-delay: 1

@@ -56,25 +56,7 @@ export default function Home() {
 
   const handleAddressClick = useCallback((address: AddressItem) => {
     setCenter({ lat: address.latitude, lng: address.longitude });
-
-    // category가 제대로 설정되지 않은 경우 path의 divisionArea로 판단
-    const hasSmokingZone = address.path.some((p) =>
-      p.divisionArea.startsWith("SMOKING_ZONE")
-    );
-    const hasNonSmokingZone = address.path.some(
-      (p) => p.divisionArea === "NON_SMOKING_ZONE"
-    );
-
-    // category 보정
-    const correctedAddress = {
-      ...address,
-      category:
-        hasSmokingZone && !hasNonSmokingZone
-          ? ("SMOKING" as const)
-          : ("NON_SMOKING" as const),
-    };
-
-    setSelectedAddress(correctedAddress);
+    setSelectedAddress(address);
     setSelectedApartment(null);
   }, []);
 
