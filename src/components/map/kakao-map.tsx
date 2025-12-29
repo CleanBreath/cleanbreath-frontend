@@ -211,7 +211,12 @@ export function KakaoMap({
           });
 
           window.kakao.maps.event.addListener(polygon, "click", () => {
-            onMarkerClick?.(address);
+            // 클릭된 폴리곤의 divisionArea를 기반으로 카테고리 결정
+            const category = isSmoking ? "SMOKING" : "NON_SMOKING";
+            onMarkerClick?.({
+              ...address,
+              category: category as "SMOKING" | "NON_SMOKING",
+            });
           });
 
           polygonsRef.current.push(polygon);
@@ -227,7 +232,14 @@ export function KakaoMap({
           const content = document.createElement("div");
           content.innerHTML = createMarkerContent(pathItem.divisionArea);
           content.style.cursor = "pointer";
-          content.onclick = () => onMarkerClick?.(address);
+          content.onclick = () => {
+            // 클릭된 마커의 divisionArea를 기반으로 카테고리 결정
+            const category = isSmoking ? "SMOKING" : "NON_SMOKING";
+            onMarkerClick?.({
+              ...address,
+              category: category as "SMOKING" | "NON_SMOKING",
+            });
+          };
 
           const overlay = new window.kakao.maps.CustomOverlay({
             position: markerPosition,
