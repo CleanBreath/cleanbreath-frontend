@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import * as motion from "motion/react-client";
 import {
   ArrowLeft,
@@ -23,17 +22,13 @@ import {
   Gamepad2,
   UtensilsCrossed,
   BookMarked,
-  ChevronDown,
-  ChevronUp,
   ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { StatuteCard } from "@/components/statute/statute-card";
 import statuteData from "@/json/statute.json";
-import { cn } from "@/lib/utils";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   "정부,지방청사": <Building2 size={20} />,
@@ -111,108 +106,16 @@ export default function StatutePage() {
           {/* 법률 목록 */}
           <div className="space-y-3">
             {statuteData.map((statute, index) => (
-              <motion.div
+              <StatuteCard
                 key={statute.category}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: Math.min(index * 0.05, 0.5),
-                }}
-              >
-                <Card
-                  className={cn(
-                    "cursor-pointer border-0 shadow-sm transition-all hover:shadow-md",
-                    expandedIndex === index && "ring-2 ring-primary/20"
-                  )}
-                  onClick={() => toggleExpand(index)}
-                >
-                  <CardContent className="p-4">
-                    {/* 카테고리 헤더 */}
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                          {categoryIcons[statute.category] || (
-                            <Building2 size={20} />
-                          )}
-                        </div>
-                        <div>
-                          <h2 className="font-semibold">{statute.category}</h2>
-                          <p className="text-xs text-muted-foreground">
-                            {statute.designated_no_smoking_areas.length}개 항목
-                          </p>
-                        </div>
-                      </div>
-                      <Button variant="ghost" size="icon" className="shrink-0">
-                        {expandedIndex === index ? (
-                          <ChevronUp size={18} />
-                        ) : (
-                          <ChevronDown size={18} />
-                        )}
-                      </Button>
-                    </div>
-
-                    {/* 확장된 내용 */}
-                    {expandedIndex === index && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="mt-4"
-                      >
-                        <Separator className="mb-4" />
-
-                        {/* 지정 금연구역 */}
-                        <div className="mb-4">
-                          <h3 className="mb-2 text-sm font-medium text-primary">
-                            지정 금연구역
-                          </h3>
-                          <div className="space-y-2">
-                            {statute.designated_no_smoking_areas.map(
-                              (area, i) => (
-                                <div
-                                  key={i}
-                                  className="flex items-start gap-2 rounded-lg bg-muted/50 p-2"
-                                >
-                                  <Badge
-                                    variant="secondary"
-                                    className="mt-0.5 shrink-0 px-1.5 py-0.5 text-[10px]"
-                                  >
-                                    {i + 1}
-                                  </Badge>
-                                  <p className="text-sm text-muted-foreground">
-                                    {area}
-                                  </p>
-                                </div>
-                              )
-                            )}
-                          </div>
-                        </div>
-
-                        {/* 세부 내용 */}
-                        <div>
-                          <h3 className="mb-2 text-sm font-medium text-primary">
-                            세부 규정
-                          </h3>
-                          <div className="space-y-2">
-                            {statute.content.map((content, i) => (
-                              <div
-                                key={i}
-                                className="flex items-start gap-2 rounded-lg bg-green-50 p-2 dark:bg-green-950/30"
-                              >
-                                <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500" />
-                                <p className="text-sm text-muted-foreground">
-                                  {content}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
+                category={statute.category}
+                designatedNoSmokingAreas={statute.designated_no_smoking_areas}
+                content={statute.content}
+                icon={categoryIcons[statute.category]}
+                isExpanded={expandedIndex === index}
+                onToggle={() => toggleExpand(index)}
+                index={index}
+              />
             ))}
           </div>
 
