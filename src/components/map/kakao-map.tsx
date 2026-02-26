@@ -94,10 +94,8 @@ export function KakaoMap({
   const showNonSmoking = useMapStore((state) => state.showNonSmoking);
   const showSmoking = useMapStore((state) => state.showSmoking);
   const showApartments = useMapStore((state) => state.showApartments);
-  const setSelectedAddress = useMapStore((state) => state.setSelectedAddress);
-  const setSelectedApartment = useMapStore(
-    (state) => state.setSelectedApartment,
-  );
+  const selectAddress = useMapStore((state) => state.selectAddress);
+  const selectApartment = useMapStore((state) => state.selectApartment);
 
   const mapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -194,7 +192,7 @@ export function KakaoMap({
           window.kakao.maps.event.addListener(polygon, "click", () => {
             // 클릭된 폴리곤의 divisionArea를 기반으로 카테고리 결정
             const category = isSmoking ? "SMOKING" : "NON_SMOKING";
-            setSelectedAddress({
+            selectAddress({
               ...address,
               category: category as "SMOKING" | "NON_SMOKING",
             });
@@ -216,7 +214,7 @@ export function KakaoMap({
           content.onclick = () => {
             // 클릭된 마커의 divisionArea를 기반으로 카테고리 결정
             const category = isSmoking ? "SMOKING" : "NON_SMOKING";
-            setSelectedAddress({
+            selectAddress({
               ...address,
               category: category as "SMOKING" | "NON_SMOKING",
             });
@@ -265,7 +263,7 @@ export function KakaoMap({
           });
 
           window.kakao.maps.event.addListener(polygon, "click", () => {
-            setSelectedApartment(apartment);
+            selectApartment(apartment);
           });
 
           polygonsRef.current.push(polygon);
@@ -285,7 +283,7 @@ export function KakaoMap({
             </div>,
           );
           content.style.cursor = "pointer";
-          content.onclick = () => setSelectedApartment(apartment);
+          content.onclick = () => selectApartment(apartment);
 
           const overlay = new window.kakao.maps.CustomOverlay({
             position: markerPosition,
@@ -306,8 +304,8 @@ export function KakaoMap({
     showNonSmoking,
     showSmoking,
     showApartments,
-    setSelectedAddress,
-    setSelectedApartment,
+    selectAddress,
+    selectApartment,
   ]);
 
   useEffect(() => {
