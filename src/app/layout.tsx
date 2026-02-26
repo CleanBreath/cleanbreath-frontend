@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "../../styles/global.css";
 import Head from "next/head";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { SchedulerProvider } from "@/components/providers/scheduler-provider";
 
 const APP_NAME = "CleanBreath";
 const APP_DEFAULT_TITLE = "CleanBreath - 금연구역 및 흡연구역 지도 서비스";
@@ -113,7 +114,9 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </Head>
       <body>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <SchedulerProvider>{children}</SchedulerProvider>
+        </QueryProvider>
         <script
           type="application/json+ld"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

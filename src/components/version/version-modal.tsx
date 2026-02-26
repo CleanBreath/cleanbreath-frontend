@@ -14,8 +14,21 @@ interface VersionModalProps {
 }
 
 const VERSION_INFO = {
-  current: "0.2.0",
+  current: "0.3.0",
   versions: [
+    {
+      version: "0.3.0",
+      date: "2025.02",
+      developers: ["최현준"],
+      changes: [
+        "데이터 로딩 속도 대폭 개선 (오프라인 지원)",
+        "지도 조작 반응 속도 향상",
+        "구역 등록 페이지 개선",
+        "법령 정보 페이지 최적화",
+        "버전 정보 화면 개선",
+        "전반적인 성능 최적화",
+      ],
+    },
     {
       version: "0.2.0",
       date: "2024.12",
@@ -50,12 +63,12 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-lg"
+        className="flex w-full max-w-lg flex-col max-h-[90vh]"
       >
-        <Card className="border-0 shadow-2xl">
-          <CardContent className="p-0">
+        <Card className="flex flex-col border-0 shadow-2xl overflow-hidden">
+          <CardContent className="flex flex-col p-0 overflow-hidden">
             {/* 헤더 */}
-            <div className="flex items-center justify-between border-b p-4">
+            <div className="flex shrink-0 items-center justify-between border-b p-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
                   <Code2 size={20} className="text-primary" />
@@ -78,7 +91,7 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
             </div>
 
             {/* 버전 목록 */}
-            <ScrollArea className="max-h-[60vh] p-4">
+            <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
                 {VERSION_INFO.versions.map((versionInfo, index) => (
                   <motion.div
@@ -167,7 +180,7 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
             </ScrollArea>
 
             {/* 하단 */}
-            <div className="border-t p-4 text-center">
+            <div className="shrink-0 border-t p-4 text-center">
               <p className="text-xs text-muted-foreground">
                 © 2024 BlueSky Team. All rights reserved.
               </p>

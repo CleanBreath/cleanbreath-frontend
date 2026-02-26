@@ -18,9 +18,27 @@ import { Badge } from "@/components/ui/badge";
 import { addSmokingArea } from "@/api";
 import type { AddressCategory } from "@/types";
 import { cn } from "@/lib/utils";
+import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
 
-const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_APP_KEY || "";
 const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
+
+// 구역 타입별 색상 상수
+const ZONE_COLORS = {
+  SMOKING: {
+    marker: "#EF4444",
+    polygon: {
+      stroke: "#DC2626",
+      fill: "#EF4444",
+    },
+  },
+  NON_SMOKING: {
+    marker: "#22C55E",
+    polygon: {
+      stroke: "#16A34A",
+      fill: "#22C55E",
+    },
+  },
+} as const;
 
 interface PathPoint {
   lat: number;
@@ -38,35 +56,16 @@ export default function RegisterPage() {
   const [centerPoint, setCenterPoint] = useState<PathPoint | null>(null);
 
   const mapRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mapInstanceRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const polygonRef = useRef<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const markersRef = useRef<any[]>([]);
   const isDrawingRef = useRef(false);
-  const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const isMapLoaded = useKakaoMapLoader({ libraries: ["services"] });
 
   // isDrawing 상태를 ref에 동기화
   useEffect(() => {
     isDrawingRef.current = isDrawing;
   }, [isDrawing]);
-
-  // 카카오맵 로드
-  useEffect(() => {
-    if (window.kakao?.maps) {
-      setIsMapLoaded(true);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false&libraries=services`;
-    script.async = true;
-    script.onload = () => {
-      window.kakao.maps.load(() => setIsMapLoaded(true));
-    };
-    document.head.appendChild(script);
-  }, []);
 
   // 지도 초기화
   useEffect(() => {
@@ -75,7 +74,7 @@ export default function RegisterPage() {
     const options = {
       center: new window.kakao.maps.LatLng(
         DEFAULT_CENTER.lat,
-        DEFAULT_CENTER.lng
+        DEFAULT_CENTER.lng,
       ),
       level: 3,
     };
@@ -84,7 +83,7 @@ export default function RegisterPage() {
     mapInstanceRef.current = map;
 
     // 클릭 이벤트 등록
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     window.kakao.maps.event.addListener(map, "click", (mouseEvent: any) => {
       if (!isDrawingRef.current) return;
       const lat = mouseEvent.latLng.getLat();
@@ -113,11 +112,10 @@ export default function RegisterPage() {
 
     // 마커 생성
     pathPoints.forEach((point, index) => {
+      const colors = ZONE_COLORS[category];
       const marker = new window.kakao.maps.CustomOverlay({
         position: new window.kakao.maps.LatLng(point.lat, point.lng),
-        content: `<div style="width:24px;height:24px;background:${
-          category === "SMOKING" ? "#EF4444" : "#22C55E"
-        };border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${
+        content: `<div style="width:24px;height:24px;background:${colors.marker};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${
           index + 1
         }</div>`,
         yAnchor: 0.5,
@@ -130,15 +128,16 @@ export default function RegisterPage() {
     // 폴리곤 생성 (3개 이상의 점이 있을 때)
     if (pathPoints.length >= 3) {
       const polygonPath = pathPoints.map(
-        (point) => new window.kakao.maps.LatLng(point.lat, point.lng)
+        (point) => new window.kakao.maps.LatLng(point.lat, point.lng),
       );
 
+      const colors = ZONE_COLORS[category];
       const polygon = new window.kakao.maps.Polygon({
         path: polygonPath,
         strokeWeight: 3,
-        strokeColor: category === "SMOKING" ? "#DC2626" : "#16A34A",
+        strokeColor: colors.polygon.stroke,
         strokeOpacity: 0.9,
-        fillColor: category === "SMOKING" ? "#EF4444" : "#22C55E",
+        fillColor: colors.polygon.fill,
         fillOpacity: 0.4,
       });
 
@@ -261,7 +260,7 @@ export default function RegisterPage() {
                         "flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all",
                         category === "NON_SMOKING"
                           ? "border-green-500 bg-green-50 dark:bg-green-950/30"
-                          : "border-muted hover:border-green-300"
+                          : "border-muted hover:border-green-300",
                       )}
                     >
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500">
@@ -276,7 +275,7 @@ export default function RegisterPage() {
                         "flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all",
                         category === "SMOKING"
                           ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                          : "border-muted hover:border-red-300"
+                          : "border-muted hover:border-red-300",
                       )}
                     >
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500">

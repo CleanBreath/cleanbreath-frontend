@@ -1,19 +1,23 @@
 /**
- * 지도 관련 글로벌 상태 스토어
+ * 지도 관련 전역 상태 관리 (Zustand)
  *
- * 글로벌 상태로 추출한 이유:
- * - showNonSmoking / showSmoking / showApartments: AreaToggle(변경)과 KakaoMap(소비)이 동시에 사용
- * - selectedAddress / selectedApartment: Sidebar(클릭 발생)와 page.tsx(카드 표시)가 공유
+ * 전역 상태로 이동한 이유:
+ * - showNonSmoking/showSmoking/showApartments: AreaToggle(변경)과 KakaoMap(소비)이 동시에 사용
+ * - selectedAddress/selectedApartment: Sidebar(클릭 발생)와 page.tsx(카드 표시)가 공유
  * - center: Sidebar 목록 클릭과 KakaoMap 렌더링이 공유
  *
- * 글로벌 상태에서 제외한 것:
+ * 로컬 상태로 유지한 것:
  * - isCollapsed: page.tsx + Sidebar만 사용하는 로컬 UI 상태
- * - isFeedbackOpen / isVersionOpen: 각 모달이 자체 관리 가능한 로컬 상태
+ * - isFeedbackOpen/isVersionOpen: 각 모달이 자체 관리 가능한 로컬 상태
  * - mapKey: KakaoMap 내부 구현 세부사항
+ *
+ * 렌더링 영향:
+ * - prop drilling 제거로 중간 컴포넌트 불필요한 리렌더링 방지
+ * - 각 컴포넌트가 필요한 상태만 구독하여 최적화
  */
 
-import { create } from 'zustand';
-import type { AddressItem, ApartmentItem } from '@/types';
+import { create } from "zustand";
+import type { AddressItem, ApartmentItem } from "@/types";
 
 const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
 
@@ -54,8 +58,7 @@ export const useMapStore = create<MapState & MapActions>((set) => ({
   toggleNonSmoking: () =>
     set((state) => ({ showNonSmoking: !state.showNonSmoking })),
 
-  toggleSmoking: () =>
-    set((state) => ({ showSmoking: !state.showSmoking })),
+  toggleSmoking: () => set((state) => ({ showSmoking: !state.showSmoking })),
 
   toggleApartments: () =>
     set((state) => ({ showApartments: !state.showApartments })),
@@ -75,10 +78,12 @@ export const useMapStore = create<MapState & MapActions>((set) => ({
       selectedAddress: null,
       center:
         apartment.path.length > 0
-          ? { lat: apartment.path[0].latitude, lng: apartment.path[0].longitude }
+          ? {
+              lat: apartment.path[0].latitude,
+              lng: apartment.path[0].longitude,
+            }
           : DEFAULT_CENTER,
     }),
 
-  clearSelection: () =>
-    set({ selectedAddress: null, selectedApartment: null }),
+  clearSelection: () => set({ selectedAddress: null, selectedApartment: null }),
 }));
