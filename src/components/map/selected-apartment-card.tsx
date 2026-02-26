@@ -9,9 +9,7 @@ import { useMapStore } from "@/store/map-store";
 
 export function SelectedApartmentCard() {
   const selectedApartment = useMapStore((state) => state.selectedApartment);
-  const setSelectedApartment = useMapStore(
-    (state) => state.setSelectedApartment,
-  );
+  const clearSelection = useMapStore((state) => state.clearSelection);
 
   if (!selectedApartment) return null;
 
@@ -37,7 +35,7 @@ export function SelectedApartmentCard() {
                   variant="ghost"
                   size="icon"
                   className="h-6 w-6 shrink-0 rounded-full"
-                  onClick={() => setSelectedApartment(null)}
+                  onClick={clearSelection}
                 >
                   <X size={14} />
                 </Button>
