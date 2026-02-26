@@ -35,13 +35,12 @@ import {
 import type { AddressItem, ApartmentItem } from "@/types";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { useMapStore } from "@/store/map-store";
 
 interface SidebarProps {
   addresses: AddressItem[];
   apartments: ApartmentItem[];
   isLoading: boolean;
-  onItemClick: (address: AddressItem) => void;
-  onApartmentClick: (apartment: ApartmentItem) => void;
   isCollapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
   onFeedbackClick: () => void;
@@ -51,13 +50,13 @@ export function Sidebar({
   addresses,
   apartments,
   isLoading,
-  onItemClick,
-  onApartmentClick,
   isCollapsed,
   onCollapsedChange,
   onFeedbackClick,
 }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const selectAddress = useMapStore((state) => state.selectAddress);
+  const selectApartment = useMapStore((state) => state.selectApartment);
 
   const sidebarContent = (
     <div className="flex h-full flex-col bg-linear-to-b from-background to-muted/30">
@@ -120,7 +119,7 @@ export function Sidebar({
             addresses={addresses}
             isLoading={isLoading}
             onItemClick={(address) => {
-              onItemClick(address);
+              selectAddress(address);
               setIsOpen(false);
             }}
           />
@@ -131,7 +130,7 @@ export function Sidebar({
             apartments={apartments}
             isLoading={isLoading}
             onItemClick={(apartment) => {
-              onApartmentClick(apartment);
+              selectApartment(apartment);
               setIsOpen(false);
             }}
           />
@@ -415,7 +414,7 @@ function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
             <div
               className={cn(
                 "flex h-8 w-8 shrink-0 items-center justify-center rounded-full",
-                address.category === "SMOKING" ? "bg-red-500" : "bg-green-500"
+                address.category === "SMOKING" ? "bg-red-500" : "bg-green-500",
               )}
             >
               {address.category === "SMOKING" ? (
@@ -438,7 +437,7 @@ function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
                 "shrink-0 px-1.5 py-0.5 text-[10px]",
                 address.category === "SMOKING"
                   ? "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300"
-                  : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
+                  : "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
               )}
             >
               {address.category === "SMOKING" ? "흡연" : "금연"}

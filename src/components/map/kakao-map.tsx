@@ -4,20 +4,14 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { renderToString } from "react-dom/server";
 import { Cigarette, CigaretteOff, Building2 } from "lucide-react";
 import type { AddressItem, ApartmentItem } from "@/types";
+import { useMapStore } from "@/store/map-store";
+import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
 
 interface KakaoMapProps {
-  center: { lat: number; lng: number };
   level?: number;
   addresses?: AddressItem[];
   apartments?: ApartmentItem[];
-  showNonSmoking?: boolean;
-  showSmoking?: boolean;
-  showApartments?: boolean;
-  onMarkerClick?: (address: AddressItem) => void;
-  onApartmentClick?: (apartment: ApartmentItem) => void;
 }
-
-const KAKAO_APP_KEY = process.env.NEXT_PUBLIC_KAKAO_APP_KEY || "";
 
 // 구역 타입별 색상 정의
 const ZONE_COLORS = {
@@ -92,40 +86,27 @@ function createMarkerContent(divisionArea: string): string {
 }
 
 export function KakaoMap({
-  center,
   level = 3,
   addresses = [],
   apartments = [],
-  showNonSmoking = true,
-  showSmoking = false,
-  showApartments = true,
-  onMarkerClick,
-  onApartmentClick,
 }: KakaoMapProps) {
+  const center = useMapStore((state) => state.center);
+  const showNonSmoking = useMapStore((state) => state.showNonSmoking);
+  const showSmoking = useMapStore((state) => state.showSmoking);
+  const showApartments = useMapStore((state) => state.showApartments);
+  const setSelectedAddress = useMapStore((state) => state.setSelectedAddress);
+  const setSelectedApartment = useMapStore(
+    (state) => state.setSelectedApartment,
+  );
+
   const mapRef = useRef<HTMLDivElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [map, setMap] = useState<any>(null);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const isLoaded = useKakaoMapLoader();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const overlaysRef = useRef<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const polygonsRef = useRef<any[]>([]);
-
-  // 카카오맵 스크립트 로드
-  useEffect(() => {
-    if (window.kakao?.maps) {
-      setIsLoaded(true);
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_APP_KEY}&autoload=false&libraries=services,clusterer`;
-    script.async = true;
-    script.onload = () => {
-      window.kakao.maps.load(() => setIsLoaded(true));
-    };
-    document.head.appendChild(script);
-  }, []);
 
   // 지도 초기화
   useEffect(() => {
@@ -167,10 +148,10 @@ export function KakaoMap({
       addresses.forEach((address) => {
         // 각 path의 divisionArea를 확인하여 흡연/금연 구역 판단
         const hasSmokingZone = address.path.some((p) =>
-          isSmokingZone(p.divisionArea)
+          isSmokingZone(p.divisionArea),
         );
         const hasNonSmokingZone = address.path.some(
-          (p) => p.divisionArea === "NON_SMOKING_ZONE"
+          (p) => p.divisionArea === "NON_SMOKING_ZONE",
         );
 
         // 토글 상태에 따라 필터링
@@ -195,7 +176,7 @@ export function KakaoMap({
           if (lats.length !== lngs.length || lats.length < 3) return;
 
           const polygonPath = lats.map(
-            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i])
+            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i]),
           );
 
           const colors = getZoneColor(pathItem.divisionArea);
@@ -213,7 +194,7 @@ export function KakaoMap({
           window.kakao.maps.event.addListener(polygon, "click", () => {
             // 클릭된 폴리곤의 divisionArea를 기반으로 카테고리 결정
             const category = isSmoking ? "SMOKING" : "NON_SMOKING";
-            onMarkerClick?.({
+            setSelectedAddress({
               ...address,
               category: category as "SMOKING" | "NON_SMOKING",
             });
@@ -226,7 +207,7 @@ export function KakaoMap({
           const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
           const markerPosition = new window.kakao.maps.LatLng(
             centerLat,
-            centerLng
+            centerLng,
           );
 
           const content = document.createElement("div");
@@ -235,7 +216,7 @@ export function KakaoMap({
           content.onclick = () => {
             // 클릭된 마커의 divisionArea를 기반으로 카테고리 결정
             const category = isSmoking ? "SMOKING" : "NON_SMOKING";
-            onMarkerClick?.({
+            setSelectedAddress({
               ...address,
               category: category as "SMOKING" | "NON_SMOKING",
             });
@@ -269,7 +250,7 @@ export function KakaoMap({
           if (lats.length !== lngs.length || lats.length < 3) return;
 
           const polygonPath = lats.map(
-            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i])
+            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i]),
           );
 
           // 아파트는 파란색 계열로 표시
@@ -284,7 +265,7 @@ export function KakaoMap({
           });
 
           window.kakao.maps.event.addListener(polygon, "click", () => {
-            onApartmentClick?.(apartment);
+            setSelectedApartment(apartment);
           });
 
           polygonsRef.current.push(polygon);
@@ -294,17 +275,17 @@ export function KakaoMap({
           const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
           const markerPosition = new window.kakao.maps.LatLng(
             centerLat,
-            centerLng
+            centerLng,
           );
 
           const content = document.createElement("div");
           content.innerHTML = renderToString(
             <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-lg">
               <Building2 size={20} className="text-white" />
-            </div>
+            </div>,
           );
           content.style.cursor = "pointer";
-          content.onclick = () => onApartmentClick?.(apartment);
+          content.onclick = () => setSelectedApartment(apartment);
 
           const overlay = new window.kakao.maps.CustomOverlay({
             position: markerPosition,
@@ -325,8 +306,8 @@ export function KakaoMap({
     showNonSmoking,
     showSmoking,
     showApartments,
-    onMarkerClick,
-    onApartmentClick,
+    setSelectedAddress,
+    setSelectedApartment,
   ]);
 
   useEffect(() => {
