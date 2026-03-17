@@ -32,5 +32,12 @@ export {
   addSmokingArea,
 } from "./pending-address";
 
+// Smoking Area API (게시판)
+export {
+  getSmokingAreaList,
+  getSmokingAreaDetail,
+  voteSmokingArea,
+} from "./smoking-area";
+
 // Health Check API
 export { checkServerHealth } from "./health";

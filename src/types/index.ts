@@ -36,4 +36,12 @@ export type {
   SmokingAreaAddRequest,
 } from "./pending-address";
 
+export type {
+  SmokingAreaPath,
+  SmokingAreaItem,
+  SmokingAreaPageResponse,
+  SmokingAreaDetail,
+  SmokingAreaVoteRequest,
+} from "./smoking-area";
+
 export type { MessageResponse, ApiErrorResponse } from "./api";
