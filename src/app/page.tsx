@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Info } from "lucide-react";
+import { Info, ClipboardList } from "lucide-react";
+import Link from "next/link";
 import { Sidebar } from "@/components/sidebar/sidebar";
 import { KakaoMap } from "@/components/map/kakao-map";
 import { AreaToggle } from "@/components/map/area-toggle";
@@ -53,6 +54,18 @@ export default function Home() {
         <SelectedAddressCard />
         <SelectedApartmentCard />
       </main>
+
+      {/* 게시판 버튼 - 아이콘 오른쪽에 텍스트 표시 */}
+      <Button
+        variant="outline"
+        asChild
+        className="fixed bottom-4 right-18 z-30 h-12 rounded-full bg-background/90 px-4 shadow-lg backdrop-blur-sm gap-2"
+      >
+        <Link href="/board">
+          <ClipboardList size={20} />
+          <span className="text-sm font-medium">등록된 흡연/금연구역 보기</span>
+        </Link>
+      </Button>
 
       {/* 버전 정보 버튼 */}
       <Button

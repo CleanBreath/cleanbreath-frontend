@@ -11,6 +11,7 @@ import {
   CheckCircle,
   Trash2,
   MousePointer2,
+  MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,6 +53,7 @@ export default function RegisterPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isPinMode, setIsPinMode] = useState(false);
   const [pathPoints, setPathPoints] = useState<PathPoint[]>([]);
   const [centerPoint, setCenterPoint] = useState<PathPoint | null>(null);
 
@@ -60,12 +62,48 @@ export default function RegisterPage() {
   const polygonRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
   const isDrawingRef = useRef(false);
+  const isPinModeRef = useRef(false);
   const isMapLoaded = useKakaoMapLoader({ libraries: ["services"] });
 
   // isDrawing 상태를 ref에 동기화
   useEffect(() => {
     isDrawingRef.current = isDrawing;
   }, [isDrawing]);
+
+  // isPinMode 상태를 ref에 동기화
+  useEffect(() => {
+    isPinModeRef.current = isPinMode;
+  }, [isPinMode]);
+
+  // 역지오코딩으로 주소/건물명 자동 입력
+  const reverseGeocode = (lat: number, lng: number) => {
+    if (!window.kakao?.maps?.services) return;
+
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    const coord = new window.kakao.maps.LatLng(lat, lng);
+
+    geocoder.coord2Address(
+      coord.getLng(),
+      coord.getLat(),
+      (result: any, status: any) => {
+        if (status !== window.kakao.maps.services.Status.OK || !result[0])
+          return;
+
+        const addressInfo = result[0];
+        // 도로명 주소 우선, 없으면 지번 주소
+        const roadAddr = addressInfo.road_address;
+        const jibunAddr = addressInfo.address;
+
+        if (roadAddr) {
+          setAddressName(roadAddr.address_name || "");
+          setBuildingName(roadAddr.building_name || "");
+        } else if (jibunAddr) {
+          setAddressName(jibunAddr.address_name || "");
+          setBuildingName("");
+        }
+      },
+    );
+  };
 
   // 지도 초기화
   useEffect(() => {
@@ -83,12 +121,25 @@ export default function RegisterPage() {
     mapInstanceRef.current = map;
 
     // 클릭 이벤트 등록
-
     window.kakao.maps.event.addListener(map, "click", (mouseEvent: any) => {
-      if (!isDrawingRef.current) return;
       const lat = mouseEvent.latLng.getLat();
       const lng = mouseEvent.latLng.getLng();
-      setPathPoints((prev) => [...prev, { lat, lng }]);
+
+      // 핀 모드: 주소/건물명만 자동 입력 후 모드 종료
+      if (isPinModeRef.current) {
+        reverseGeocode(lat, lng);
+        setIsPinMode(false);
+        return;
+      }
+
+      if (!isDrawingRef.current) return;
+      setPathPoints((prev) => {
+        // 첫 번째 핀을 찍을 때 역지오코딩으로 주소 자동 입력
+        if (prev.length === 0) {
+          reverseGeocode(lat, lng);
+        }
+        return [...prev, { lat, lng }];
+      });
     });
   }, [isMapLoaded]);
 
@@ -290,7 +341,22 @@ export default function RegisterPage() {
               {/* 위치 정보 */}
               <Card>
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-base">위치 정보</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-base">위치 정보</CardTitle>
+                    <Button
+                      type="button"
+                      variant={isPinMode ? "default" : "outline"}
+                      size="icon"
+                      className="h-7 w-7"
+                      title="지도를 클릭하여 위치 자동 입력"
+                      onClick={() => {
+                        setIsPinMode((prev) => !prev);
+                        if (isDrawing) setIsDrawing(false);
+                      }}
+                    >
+                      <MapPin size={14} />
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
@@ -395,6 +461,11 @@ export default function RegisterPage() {
         {isDrawing && (
           <div className="absolute left-4 top-4 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-lg">
             지도를 클릭하여 영역을 지정하세요
+          </div>
+        )}
+        {isPinMode && (
+          <div className="absolute left-4 top-4 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-lg">
+            지도를 클릭하면 주소가 자동 입력됩니다
           </div>
         )}
       </div>

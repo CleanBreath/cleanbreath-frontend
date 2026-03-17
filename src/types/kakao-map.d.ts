@@ -123,16 +123,37 @@ declare namespace kakao.maps {
     function addListener(
       target: Map | Marker | Polygon | CustomOverlay,
       type: string,
-      callback: (...args: unknown[]) => void
+      callback: (...args: unknown[]) => void,
     ): void;
     function removeListener(
       target: Map | Marker | Polygon | CustomOverlay,
       type: string,
-      callback: (...args: unknown[]) => void
+      callback: (...args: unknown[]) => void,
     ): void;
   }
 
   function load(callback: () => void): void;
+
+  // Geocoder 서비스 (역지오코딩 등)
+  namespace services {
+    const Status: {
+      OK: string;
+      ZERO_RESULT: string;
+      ERROR: string;
+    };
+
+    class Geocoder {
+      coord2Address(
+        lng: number,
+        lat: number,
+        callback: (result: any[], status: string) => void,
+      ): void;
+      addressSearch(
+        addr: string,
+        callback: (result: any[], status: string) => void,
+      ): void;
+    }
+  }
 }
 
 export {};
