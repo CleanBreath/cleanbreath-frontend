@@ -2,6 +2,8 @@
 
 안양시 금연구역 및 흡연구역 정보를 제공하는 지도 서비스입니다.
 
+- backend: [https://github.com/CleanBreath/cleanbreath-backend]
+
 ## 주요 기능
 
 - 🗺️ 카카오맵 기반 금연/흡연구역 지도
