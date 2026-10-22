@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "../../styles/global.css";
-import Head from "next/head";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { SchedulerProvider } from "@/components/providers/scheduler-provider";
 
@@ -11,6 +10,7 @@ const APP_DESCRIPTION =
   "금연구역과 흡연구역을 지도에서 쉽게 확인하세요. 공동주택, 아파트, 공공장소의 금연구역 정보를 제공하는 무료 지도 서비스입니다. 국민건강증진법 기반 금연구역 안내.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://cleanbreath.cmu02-studio.com"),
   applicationName: APP_NAME,
   title: {
     default: APP_DEFAULT_TITLE,
@@ -41,6 +41,10 @@ export const metadata: Metadata = {
     },
   ],
   manifest: "/manifest.json",
+  // 홈(클라이언트 페이지) 기준값. 하위 세그먼트는 alternates.canonical·openGraph.url을 각자 덮어써야 함
+  alternates: {
+    canonical: "/",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -58,7 +62,7 @@ export const metadata: Metadata = {
       template: APP_TITLE_TEMPLATE,
     },
     description: APP_DESCRIPTION,
-    url: "https://cleanbreath.cmu02-studio.com/",
+    url: "/",
     images: [
       {
         url: "https://cleanbreath.cmu02-studio.com/OGImage.png",
@@ -68,13 +72,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  // title/description을 비워두면 Next가 경로별 openGraph 값으로 채운다
   twitter: {
     card: "summary",
-    title: {
-      default: APP_DEFAULT_TITLE,
-      template: APP_TITLE_TEMPLATE,
-    },
-    description: APP_DESCRIPTION,
   },
   robots: {
     index: true,
@@ -90,14 +90,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: APP_NAME,
-  url: "https://cleanbreath.cmu02-studio.com/",
-  description: APP_DESCRIPTION,
-};
-
 export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
@@ -109,19 +101,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <Head>
-        <link rel="canonical" href="https://cleanbreath.cmu02-studio.com/" />
-        <link rel="manifest" href="/manifest.json" />
-      </Head>
       <body>
         <QueryProvider>
           <SchedulerProvider>{children}</SchedulerProvider>
         </QueryProvider>
-        <script
-          type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: 정적 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
       </body>
     </html>
   );
