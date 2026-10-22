@@ -9,9 +9,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllAddress } from "@/api";
 import {
   getAddresses,
-  saveAddresses,
   getMetadata,
   isDataExpired,
+  saveAddresses,
 } from "@/lib/indexeddb";
 import type { AllAddressResponse } from "@/types";
 

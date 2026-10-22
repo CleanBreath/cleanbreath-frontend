@@ -2,13 +2,13 @@
  * Pending Address API (신규 구역 제안)
  */
 
-import { apiGet, apiPost } from "./client";
 import type {
+  MessageResponse,
   PendingAddressListResponse,
   PendingAddressPageResponse,
   SmokingAreaAddRequest,
-  MessageResponse,
 } from "@/types";
+import { apiGet, apiPost } from "./client";
 
 /** 제안된 구역 전체 조회 */
 export async function getAllPendingAddresses(): Promise<PendingAddressListResponse> {
@@ -18,7 +18,7 @@ export async function getAllPendingAddresses(): Promise<PendingAddressListRespon
 /** 제안된 구역 페이징 조회 */
 export async function getPendingAddressesPage(
   page = 0,
-  size = 20
+  size = 20,
 ): Promise<PendingAddressPageResponse> {
   return apiGet<PendingAddressPageResponse>("/allRequestAddressPage", {
     params: { page, size },
@@ -27,10 +27,10 @@ export async function getPendingAddressesPage(
 
 /** 신규 흡연구역 제안 */
 export async function addSmokingArea(
-  data: SmokingAreaAddRequest
+  data: SmokingAreaAddRequest,
 ): Promise<MessageResponse> {
   return apiPost<MessageResponse, SmokingAreaAddRequest>(
     "/smokingArea/add",
-    data
+    data,
   );
 }

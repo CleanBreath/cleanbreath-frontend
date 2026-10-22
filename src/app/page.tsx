@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Info, ClipboardList } from "lucide-react";
+import { ClipboardList, Info } from "lucide-react";
 import Link from "next/link";
-import { Sidebar } from "@/components/sidebar/sidebar";
-import { KakaoMap } from "@/components/map/kakao-map";
+import { useEffect, useState } from "react";
+import { DisclaimerModal } from "@/components/disclaimer/disclaimer-modal";
+import { FeedbackModal } from "@/components/feedback/feedback-modal";
 import { AreaToggle } from "@/components/map/area-toggle";
+import { NaverMap } from "@/components/map/naver-map";
 import { SelectedAddressCard } from "@/components/map/selected-address-card";
 import { SelectedApartmentCard } from "@/components/map/selected-apartment-card";
-import { FeedbackModal } from "@/components/feedback/feedback-modal";
+import { Sidebar } from "@/components/sidebar/sidebar";
+import { Button } from "@/components/ui/button";
 import { VersionModal } from "@/components/version/version-modal";
-import { DisclaimerModal } from "@/components/disclaimer/disclaimer-modal";
 import { useAddressList } from "@/hooks/use-address";
 import { useApartmentList } from "@/hooks/use-apartment";
-import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -28,6 +28,7 @@ export default function Home() {
   const apartments = apartmentData ?? [];
 
   // 사이드바 접힘 상태 변경 시 지도 리사이즈
+  // biome-ignore lint/correctness/useExhaustiveDependencies: isCollapsed 변경을 트리거로 쓰는 의도적인 의존성
   useEffect(() => {
     const timer = setTimeout(() => {
       setMapKey((prev) => prev + 1);
@@ -49,7 +50,7 @@ export default function Home() {
       <main className="relative flex-1">
         <AreaToggle />
 
-        <KakaoMap key={mapKey} addresses={addresses} apartments={apartments} />
+        <NaverMap key={mapKey} addresses={addresses} apartments={apartments} />
 
         <SelectedAddressCard />
         <SelectedApartmentCard />

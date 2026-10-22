@@ -1,23 +1,23 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import * as motion from "motion/react-client";
 import {
-  ArrowLeft,
   Activity,
-  Server,
+  AlertCircle,
+  ArrowLeft,
   CheckCircle2,
-  XCircle,
   Clock,
   RefreshCw,
-  AlertCircle,
+  Server,
+  XCircle,
 } from "lucide-react";
+import * as motion from "motion/react-client";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { checkServerHealth } from "@/api";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { checkServerHealth } from "@/api";
 
 interface ServiceStatus {
   name: string;
@@ -38,42 +38,42 @@ export default function HealthPage() {
   const [lastChecked, setLastChecked] = useState<Date>(new Date());
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const checkHealth = async () => {
-    setIsRefreshing(true);
-    const startTime = Date.now();
-
-    try {
-      const health = await checkServerHealth();
-      const responseTime = Date.now() - startTime;
-
-      // API 서버 상태만 표시
-      setServices([
-        {
-          name: "API 서버",
-          status: health.status === "UP" ? "healthy" : "unhealthy",
-          message: health.status,
-          responseTime,
-          icon: <Server size={20} />,
-        },
-      ]);
-    } catch (error) {
-      const responseTime = Date.now() - startTime;
-      setServices([
-        {
-          name: "API 서버",
-          status: "unhealthy",
-          message: "연결 실패",
-          responseTime,
-          icon: <Server size={20} />,
-        },
-      ]);
-    }
-
-    setLastChecked(new Date());
-    setIsRefreshing(false);
-  };
-
   useEffect(() => {
+    const checkHealth = async () => {
+      setIsRefreshing(true);
+      const startTime = Date.now();
+
+      try {
+        const health = await checkServerHealth();
+        const responseTime = Date.now() - startTime;
+
+        // API 서버 상태만 표시
+        setServices([
+          {
+            name: "API 서버",
+            status: health.status === "UP" ? "healthy" : "unhealthy",
+            message: health.status,
+            responseTime,
+            icon: <Server size={20} />,
+          },
+        ]);
+      } catch (error) {
+        const responseTime = Date.now() - startTime;
+        setServices([
+          {
+            name: "API 서버",
+            status: "unhealthy",
+            message: "연결 실패",
+            responseTime,
+            icon: <Server size={20} />,
+          },
+        ]);
+      }
+
+      setLastChecked(new Date());
+      setIsRefreshing(false);
+    };
+
     checkHealth();
 
     // 30초마다 자동으로 헬스 체크
@@ -122,8 +122,8 @@ export default function HealthPage() {
               allHealthy
                 ? "bg-linear-to-br from-green-500/10 to-green-500/5"
                 : anyUnhealthy
-                ? "bg-linear-to-br from-red-500/10 to-red-500/5"
-                : "bg-linear-to-br from-yellow-500/10 to-yellow-500/5"
+                  ? "bg-linear-to-br from-red-500/10 to-red-500/5"
+                  : "bg-linear-to-br from-yellow-500/10 to-yellow-500/5"
             }`}
           >
             <CardContent className="p-6">
@@ -133,8 +133,8 @@ export default function HealthPage() {
                     allHealthy
                       ? "bg-green-500"
                       : anyUnhealthy
-                      ? "bg-red-500"
-                      : "bg-yellow-500"
+                        ? "bg-red-500"
+                        : "bg-yellow-500"
                   }`}
                 >
                   {allHealthy ? (
@@ -150,15 +150,15 @@ export default function HealthPage() {
                     {allHealthy
                       ? "모든 시스템 정상"
                       : anyUnhealthy
-                      ? "시스템 오류 발생"
-                      : "시스템 확인 중"}
+                        ? "시스템 오류 발생"
+                        : "시스템 확인 중"}
                   </h2>
                   <p className="text-sm text-muted-foreground">
                     {allHealthy
                       ? "모든 서비스가 정상적으로 작동하고 있습니다."
                       : anyUnhealthy
-                      ? "일부 서비스에 문제가 발생했습니다."
-                      : "시스템 상태를 확인하고 있습니다."}
+                        ? "일부 서비스에 문제가 발생했습니다."
+                        : "시스템 상태를 확인하고 있습니다."}
                   </p>
                   <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
                     <Clock size={12} />
@@ -189,8 +189,8 @@ export default function HealthPage() {
                         service.status === "healthy"
                           ? "bg-green-500/10 text-green-600 dark:text-green-400"
                           : service.status === "unhealthy"
-                          ? "bg-red-500/10 text-red-600 dark:text-red-400"
-                          : "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
+                            ? "bg-red-500/10 text-red-600 dark:text-red-400"
+                            : "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400"
                       }`}
                     >
                       {service.icon}
@@ -203,15 +203,15 @@ export default function HealthPage() {
                             service.status === "healthy"
                               ? "bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-300"
                               : service.status === "unhealthy"
-                              ? "bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-300"
-                              : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-950 dark:text-yellow-300"
+                                ? "bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-300"
+                                : "bg-yellow-100 text-yellow-700 hover:bg-yellow-100 dark:bg-yellow-950 dark:text-yellow-300"
                           }
                         >
                           {service.status === "healthy"
                             ? "정상"
                             : service.status === "unhealthy"
-                            ? "오류"
-                            : "확인 중"}
+                              ? "오류"
+                              : "확인 중"}
                         </Badge>
                       </div>
                       {service.message && (

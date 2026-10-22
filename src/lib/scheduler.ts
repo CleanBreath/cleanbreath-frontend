@@ -3,15 +3,14 @@
  * 매월 말 자동으로 최신 데이터를 확인하고 업데이트
  */
 
-import { checkUpdateDate, isUpdateNeeded } from "@/api/address";
-import { getAllAddress } from "@/api/address";
+import { checkUpdateDate, getAllAddress, isUpdateNeeded } from "@/api/address";
 import { getAllApartments } from "@/api/apartment";
 import {
+  clearExpiredData,
   getMetadata,
-  setMetadata,
   saveAddresses,
   saveApartments,
-  clearExpiredData,
+  setMetadata,
 } from "./indexeddb";
 
 /**

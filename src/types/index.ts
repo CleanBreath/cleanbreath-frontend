@@ -3,9 +3,9 @@
  */
 
 export type {
-  AddressPath,
   AddressCategory,
   AddressItem,
+  AddressPath,
   AllAddressResponse,
   UpdateDateRequest,
   UpdateDateResponse,
@@ -13,35 +13,31 @@ export type {
 } from "./address";
 
 export type {
-  DesignationStatus,
-  ApartmentPath,
   ApartmentItem,
   ApartmentListResponse,
+  ApartmentPath,
+  DesignationStatus,
 } from "./apartment";
-
+export type { ApiErrorResponse, MessageResponse } from "./api";
 export type {
-  FeedbackListItem,
-  FeedbackDetail,
   FeedbackAddRequest,
-  FeedbackUpdateRequest,
+  FeedbackDetail,
+  FeedbackListItem,
   FeedbackListResponse,
+  FeedbackUpdateRequest,
 } from "./feedback";
-
 export type {
-  PendingAddressPath,
+  PageInfo,
   PendingAddressItem,
   PendingAddressListResponse,
-  PageInfo,
   PendingAddressPageResponse,
+  PendingAddressPath,
   SmokingAreaAddRequest,
 } from "./pending-address";
-
 export type {
-  SmokingAreaPath,
+  SmokingAreaDetail,
   SmokingAreaItem,
   SmokingAreaPageResponse,
-  SmokingAreaDetail,
+  SmokingAreaPath,
   SmokingAreaVoteRequest,
 } from "./smoking-area";
-
-export type { MessageResponse, ApiErrorResponse } from "./api";

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import * as motion from "motion/react-client";
 import { AlertTriangle, Check } from "lucide-react";
+import * as motion from "motion/react-client";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";

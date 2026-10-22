@@ -1,10 +1,10 @@
 "use client";
 
+import { Code2, User, Users, X } from "lucide-react";
 import * as motion from "motion/react-client";
-import { X, Code2, Users, User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
@@ -161,9 +161,9 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
                             주요 변경사항
                           </p>
                           <ul className="space-y-1.5">
-                            {versionInfo.changes.map((change, i) => (
+                            {versionInfo.changes.map((change) => (
                               <li
-                                key={i}
+                                key={change}
                                 className="flex items-start gap-2 text-sm text-muted-foreground"
                               >
                                 <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-primary" />

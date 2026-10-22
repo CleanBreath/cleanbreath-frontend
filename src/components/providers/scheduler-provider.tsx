@@ -5,11 +5,11 @@
 
 "use client";
 
-import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { scheduleMonthlyUpdate, checkOnStartup } from "@/lib/scheduler";
+import { useEffect } from "react";
 import { addressKeys } from "@/hooks/use-address";
 import { apartmentKeys } from "@/hooks/use-apartment";
+import { checkOnStartup, scheduleMonthlyUpdate } from "@/lib/scheduler";
 
 export function SchedulerProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();

@@ -1,0 +1,11 @@
+{
+  "worktree": {
+    "baseRef": "head",
+    "bgIsolation": "worktree"
+  },
+  "enabledPlugins": {
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "claude-seo@agricidaniel-claude-seo": true,
+    "security-guidance@anthropic-plugin-directory": true
+  }
+}

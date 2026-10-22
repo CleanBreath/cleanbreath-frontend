@@ -1,33 +1,33 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import * as motion from "motion/react-client";
 import {
   ArrowLeft,
-  Scale,
-  Building2,
-  GraduationCap,
-  Stethoscope,
-  Users,
-  BookOpen,
   Baby,
-  Bus,
-  Factory,
-  Store,
-  Hotel,
-  Dumbbell,
-  Heart,
   Bath,
-  Gamepad2,
-  UtensilsCrossed,
   BookMarked,
+  BookOpen,
+  Building2,
+  Bus,
+  Dumbbell,
   ExternalLink,
+  Factory,
+  Gamepad2,
+  GraduationCap,
+  Heart,
+  Hotel,
+  Scale,
+  Stethoscope,
+  Store,
+  Users,
+  UtensilsCrossed,
 } from "lucide-react";
+import * as motion from "motion/react-client";
+import Link from "next/link";
+import { useState } from "react";
+import { StatuteCard } from "@/components/statute/statute-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { StatuteCard } from "@/components/statute/statute-card";
 import statuteData from "@/json/statute.json";
 
 const categoryIcons: Record<string, React.ReactNode> = {

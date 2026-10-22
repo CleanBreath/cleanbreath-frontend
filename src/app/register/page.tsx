@@ -1,25 +1,25 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import * as motion from "motion/react-client";
-import Link from "next/link";
 import {
   ArrowLeft,
+  CheckCircle,
   Cigarette,
   CigaretteOff,
-  Send,
-  CheckCircle,
-  Trash2,
-  MousePointer2,
   MapPin,
+  MousePointer2,
+  Send,
+  Trash2,
 } from "lucide-react";
+import * as motion from "motion/react-client";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { ApiError, addSmokingArea } from "@/api";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { addSmokingArea } from "@/api";
-import type { AddressCategory } from "@/types";
+import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
 import { cn } from "@/lib/utils";
-import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
+import type { AddressCategory } from "@/types";
 
 const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
 
@@ -52,18 +52,19 @@ export default function RegisterPage() {
   const [buildingName, setBuildingName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPinMode, setIsPinMode] = useState(false);
   const [pathPoints, setPathPoints] = useState<PathPoint[]>([]);
   const [centerPoint, setCenterPoint] = useState<PathPoint | null>(null);
 
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const polygonRef = useRef<any>(null);
-  const markersRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<naver.maps.Map | null>(null);
+  const polygonRef = useRef<naver.maps.Polygon | null>(null);
+  const markersRef = useRef<naver.maps.Marker[]>([]);
   const isDrawingRef = useRef(false);
   const isPinModeRef = useRef(false);
-  const isMapLoaded = useKakaoMapLoader({ libraries: ["services"] });
+  const isMapLoaded = useNaverMapLoader();
 
   // isDrawing 상태를 ref에 동기화
   useEffect(() => {
@@ -75,55 +76,52 @@ export default function RegisterPage() {
     isPinModeRef.current = isPinMode;
   }, [isPinMode]);
 
-  // 역지오코딩으로 주소/건물명 자동 입력
-  const reverseGeocode = (lat: number, lng: number) => {
-    if (!window.kakao?.maps?.services) return;
-
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    const coord = new window.kakao.maps.LatLng(lat, lng);
-
-    geocoder.coord2Address(
-      coord.getLng(),
-      coord.getLat(),
-      (result: any, status: any) => {
-        if (status !== window.kakao.maps.services.Status.OK || !result[0])
-          return;
-
-        const addressInfo = result[0];
-        // 도로명 주소 우선, 없으면 지번 주소
-        const roadAddr = addressInfo.road_address;
-        const jibunAddr = addressInfo.address;
-
-        if (roadAddr) {
-          setAddressName(roadAddr.address_name || "");
-          setBuildingName(roadAddr.building_name || "");
-        } else if (jibunAddr) {
-          setAddressName(jibunAddr.address_name || "");
-          setBuildingName("");
-        }
-      },
-    );
-  };
-
   // 지도 초기화
   useEffect(() => {
-    if (!isMapLoaded || !mapRef.current || mapInstanceRef.current) return;
+    // 역지오코딩으로 주소/건물명 자동 입력
+    const reverseGeocode = (lat: number, lng: number) => {
+      naver.maps.Service.reverseGeocode(
+        {
+          coords: new naver.maps.LatLng(lat, lng),
+          orders: [
+            naver.maps.Service.OrderType.ADDR,
+            naver.maps.Service.OrderType.ROAD_ADDR,
+          ].join(","),
+        },
+        (status, response) => {
+          if (status !== naver.maps.Service.Status.OK || !response) return;
 
-    const options = {
-      center: new window.kakao.maps.LatLng(
-        DEFAULT_CENTER.lat,
-        DEFAULT_CENTER.lng,
-      ),
-      level: 3,
+          // 도로명 주소 우선, 없으면 지번 주소
+          const { roadAddress, jibunAddress } = response.v2.address;
+          // 건물명은 도로명 결과의 addition0(building)에 담겨 옴
+          const roadResult = response.v2.results.find(
+            (r) => r.name === "roadaddr",
+          );
+
+          if (roadAddress) {
+            setAddressName(roadAddress);
+            setBuildingName(roadResult?.land?.addition0?.value || "");
+          } else if (jibunAddress) {
+            setAddressName(jibunAddress);
+            setBuildingName("");
+          }
+        },
+      );
     };
 
-    const map = new window.kakao.maps.Map(mapRef.current, options);
+    if (!isMapLoaded || !mapRef.current || mapInstanceRef.current) return;
+
+    const map = new naver.maps.Map(mapRef.current, {
+      center: new naver.maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
+      zoom: 17,
+    });
     mapInstanceRef.current = map;
 
     // 클릭 이벤트 등록
-    window.kakao.maps.event.addListener(map, "click", (mouseEvent: any) => {
-      const lat = mouseEvent.latLng.getLat();
-      const lng = mouseEvent.latLng.getLng();
+    naver.maps.Event.addListener(map, "click", (e: naver.maps.PointerEvent) => {
+      // coord는 위경도 좌표계라 y가 위도, x가 경도
+      const lat = e.coord.y;
+      const lng = e.coord.x;
 
       // 핀 모드: 주소/건물명만 자동 입력 후 모드 종료
       if (isPinModeRef.current) {
@@ -148,7 +146,9 @@ export default function RegisterPage() {
     if (!mapInstanceRef.current) return;
 
     // 기존 마커 제거
-    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current.forEach((marker) => {
+      marker.setMap(null);
+    });
     markersRef.current = [];
 
     // 기존 폴리곤 제거
@@ -164,13 +164,14 @@ export default function RegisterPage() {
     // 마커 생성
     pathPoints.forEach((point, index) => {
       const colors = ZONE_COLORS[category];
-      const marker = new window.kakao.maps.CustomOverlay({
-        position: new window.kakao.maps.LatLng(point.lat, point.lng),
-        content: `<div style="width:24px;height:24px;background:${colors.marker};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${
-          index + 1
-        }</div>`,
-        yAnchor: 0.5,
-        xAnchor: 0.5,
+      const marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(point.lat, point.lng),
+        icon: {
+          content: `<div style="width:24px;height:24px;background:${colors.marker};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${
+            index + 1
+          }</div>`,
+          anchor: new naver.maps.Point(12, 12),
+        },
       });
       marker.setMap(mapInstanceRef.current);
       markersRef.current.push(marker);
@@ -179,12 +180,12 @@ export default function RegisterPage() {
     // 폴리곤 생성 (3개 이상의 점이 있을 때)
     if (pathPoints.length >= 3) {
       const polygonPath = pathPoints.map(
-        (point) => new window.kakao.maps.LatLng(point.lat, point.lng),
+        (point) => new naver.maps.LatLng(point.lat, point.lng),
       );
 
       const colors = ZONE_COLORS[category];
-      const polygon = new window.kakao.maps.Polygon({
-        path: polygonPath,
+      const polygon = new naver.maps.Polygon({
+        paths: [polygonPath],
         strokeWeight: 3,
         strokeColor: colors.polygon.stroke,
         strokeOpacity: 0.9,
@@ -214,6 +215,7 @@ export default function RegisterPage() {
     if (!addressName || pathPoints.length < 3 || !centerPoint) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       await addSmokingArea({
         updateAt: new Date().toISOString().replace("T", " ").slice(0, 19),
@@ -234,6 +236,11 @@ export default function RegisterPage() {
       setIsSuccess(true);
     } catch (error) {
       console.error("구역 등록 실패:", error);
+      setSubmitError(
+        error instanceof ApiError
+          ? error.message
+          : "구역 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -360,10 +367,14 @@ export default function RegisterPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">
+                    <label
+                      htmlFor="register-address"
+                      className="mb-1.5 block text-sm font-medium"
+                    >
                       주소 <span className="text-destructive">*</span>
                     </label>
                     <input
+                      id="register-address"
                       type="text"
                       value={addressName}
                       onChange={(e) => setAddressName(e.target.value)}
@@ -373,10 +384,14 @@ export default function RegisterPage() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">
+                    <label
+                      htmlFor="register-building"
+                      className="mb-1.5 block text-sm font-medium"
+                    >
                       건물명
                     </label>
                     <input
+                      id="register-building"
                       type="text"
                       value={buildingName}
                       onChange={(e) => setBuildingName(e.target.value)}
@@ -450,6 +465,14 @@ export default function RegisterPage() {
                   </>
                 )}
               </Button>
+              {submitError && (
+                <p
+                  role="alert"
+                  className="text-center text-sm text-destructive"
+                >
+                  {submitError}
+                </p>
+              )}
             </form>
           </motion.div>
         </div>

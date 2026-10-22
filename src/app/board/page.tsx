@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
-import { useSmokingAreaList } from "@/hooks/use-smoking-area";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSmokingAreaList } from "@/hooks/use-smoking-area";
 
 /** 카테고리 한글 라벨 */
 function categoryLabel(category: string) {

@@ -23,29 +23,29 @@
 - Motion (Framer Motion)
 - Tanstack Query
 - Radix UI + shadcn/ui
-- Kakao Maps API
+- NAVER Maps API v3
 
 ## 시작하기
 
 ### 환경 변수 설정
 
-`.env.local` 파일에 카카오맵 API 키를 설정하세요:
+`.env.local` 파일에 네이버 지도 Client ID를 설정하세요:
 
 ```env
-NEXT_PUBLIC_KAKAO_MAP_API_KEY=your_kakao_map_api_key
+NEXT_PUBLIC_NAVER_MAP_CLIENT_ID=your_naver_map_client_id
 ```
 
 ### 설치 및 실행
 
 ```bash
 # 의존성 설치
-npm install
+bun install
 
 # 개발 서버 실행
-npm run dev
+bun dev
 
 # 빌드
-npm run build
+bun run build
 ```
 
 [http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.

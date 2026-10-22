@@ -2,12 +2,12 @@
  * 흡연구역 게시판 API
  */
 
-import { apiGet, apiPost } from "./client";
 import type {
-  SmokingAreaPageResponse,
   SmokingAreaDetail,
+  SmokingAreaPageResponse,
   SmokingAreaVoteRequest,
 } from "@/types";
+import { apiGet, apiPost } from "./client";
 
 /** 등록된 구역 페이징 목록 조회 */
 export async function getSmokingAreaList(
