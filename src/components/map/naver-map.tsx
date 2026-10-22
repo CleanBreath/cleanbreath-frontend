@@ -1,9 +1,9 @@
 "use client";
 
-import { Building2, Cigarette, CigaretteOff } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
+import { getZoneStyle, ZONE_STYLES, type ZoneStyle } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 import type { AddressItem, ApartmentItem } from "@/types";
 
@@ -13,76 +13,50 @@ interface NaverMapProps {
   apartments?: ApartmentItem[];
 }
 
-// 구역 타입별 색상 정의
-const ZONE_COLORS = {
-  NON_SMOKING_ZONE: {
-    fill: "#22C55E",
-    stroke: "#16A34A",
-    markerBg: "bg-green-500",
-  },
-  SMOKING_ZONE_OPEN: {
-    fill: "#F97316",
-    stroke: "#EA580C",
-    markerBg: "bg-orange-500",
-  },
-  SMOKING_ZONE_OPEN_IMPLICIT: {
-    fill: "#FB923C",
-    stroke: "#F97316",
-    markerBg: "bg-orange-400",
-  },
-  SMOKING_ZONE_CLOSE: {
-    fill: "#EF4444",
-    stroke: "#DC2626",
-    markerBg: "bg-red-500",
-  },
-  SMOKING_ZONE_CLOSE_IMPLICIT: {
-    fill: "#F87171",
-    stroke: "#EF4444",
-    markerBg: "bg-red-400",
-  },
-  SMOKING_ZONE_LINE: {
-    fill: "#A855F7",
-    stroke: "#9333EA",
-    markerBg: "bg-purple-500",
-  },
-  SMOKING_ZONE_LINE_IMPLICIT: {
-    fill: "#C084FC",
-    stroke: "#A855F7",
-    markerBg: "bg-purple-400",
-  },
-} as const;
-
-type ZoneType = keyof typeof ZONE_COLORS;
-
-function getZoneColor(divisionArea: string) {
-  return (
-    ZONE_COLORS[divisionArea as ZoneType] || ZONE_COLORS.SMOKING_ZONE_CLOSE
-  );
-}
-
 function isSmokingZone(divisionArea: string): boolean {
   return divisionArea.startsWith("SMOKING_ZONE");
 }
 
+// renderToString은 비싸므로 마커마다 호출하지 않고 구역 타입별로 한 번만 생성
+const markerContentCache = new Map<string, string>();
+
 function createMarkerContent(divisionArea: string): string {
-  const isSmoking = isSmokingZone(divisionArea);
-  const colors = getZoneColor(divisionArea);
+  const cached = markerContentCache.get(divisionArea);
+  if (cached) return cached;
 
-  const icon = isSmoking ? (
+  const { icon: Icon, stroke, dashed } = getZoneStyle(divisionArea);
+
+  // 배경은 stroke 색: 흰 아이콘 대비 3:1 이상 (fill 색은 초록·주황에서 미달). 비공식 구역은 점선 테두리
+  const content = renderToString(
     <div
-      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white ${colors.markerBg} shadow-lg`}
+      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-md ${dashed ? "border-dashed" : ""}`}
+      style={{ backgroundColor: stroke }}
     >
-      <Cigarette size={20} className="text-white" />
-    </div>
-  ) : (
-    <div
-      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white ${colors.markerBg} shadow-lg`}
-    >
-      <CigaretteOff size={20} className="text-white" />
-    </div>
+      <Icon size={20} className="text-white" aria-hidden />
+    </div>,
   );
+  markerContentCache.set(divisionArea, content);
+  return content;
+}
 
-  return renderToString(icon);
+// 지도 타일 위에서 테두리가 묻히지 않도록 불투명 + 굵게, 비공식 구역은 점선
+function polygonStroke({ stroke, dashed }: ZoneStyle) {
+  return {
+    strokeColor: stroke,
+    strokeOpacity: 1,
+    strokeWeight: 3,
+    strokeStyle: dashed ? "shortdash" : "solid",
+  } as const;
+}
+
+// 메인 스레드에 제어권을 넘겨 입력/페인트가 끼어들 수 있게 함
+function yieldToMain(): Promise<void> {
+  const { scheduler } = globalThis as {
+    scheduler?: { yield?: () => Promise<void> };
+  };
+  return scheduler?.yield
+    ? scheduler.yield()
+    : new Promise((resolve) => setTimeout(resolve, 0));
 }
 
 export function NaverMap({
@@ -100,8 +74,6 @@ export function NaverMap({
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
   const isLoaded = useNaverMapLoader();
-  const overlaysRef = useRef<naver.maps.Marker[]>([]);
-  const polygonsRef = useRef<naver.maps.Polygon[]>([]);
 
   // 지도 초기화
   // biome-ignore lint/correctness/useExhaustiveDependencies: 생성 시점 center/zoom만 사용, 이후 변경은 아래 panTo/setZoom effect가 처리
@@ -128,18 +100,12 @@ export function NaverMap({
   }, [map, zoom]);
 
   // 마커 및 폴리곤 렌더링
-  const renderMarkers = useCallback(() => {
+  // 수백 개를 한 번에 만들면 긴 작업(long task)이 되므로 경로별 작업으로 모아 ~10ms씩 나눠 실행
+  useEffect(() => {
     if (!map) return;
 
-    // 기존 오버레이/폴리곤 제거
-    overlaysRef.current.forEach((overlay) => {
-      overlay.setMap(null);
-    });
-    polygonsRef.current.forEach((polygon) => {
-      polygon.setMap(null);
-    });
-    overlaysRef.current = [];
-    polygonsRef.current = [];
+    const tasks: (() => void)[] = [];
+    const overlays: (naver.maps.Marker | naver.maps.Polygon)[] = [];
 
     // 주소 마커 렌더링
     if (addresses.length > 0) {
@@ -158,65 +124,65 @@ export function NaverMap({
 
         // 폴리곤 생성 (각 path별로)
         address.path.forEach((pathItem) => {
-          const isSmoking = isSmokingZone(pathItem.divisionArea);
+          tasks.push(() => {
+            const isSmoking = isSmokingZone(pathItem.divisionArea);
 
-          // 토글 상태에 따라 개별 폴리곤 필터링
-          if (isSmoking && !showSmoking) return;
-          if (!isSmoking && !showNonSmoking) return;
+            // 토글 상태에 따라 개별 폴리곤 필터링
+            if (isSmoking && !showSmoking) return;
+            if (!isSmoking && !showNonSmoking) return;
 
-          const lats = pathItem.pathsLatitude
-            .split(",")
-            .map((s) => parseFloat(s.trim()));
-          const lngs = pathItem.pathsLongitude
-            .split(",")
-            .map((s) => parseFloat(s.trim()));
+            const lats = pathItem.pathsLatitude
+              .split(",")
+              .map((s) => parseFloat(s.trim()));
+            const lngs = pathItem.pathsLongitude
+              .split(",")
+              .map((s) => parseFloat(s.trim()));
 
-          if (lats.length !== lngs.length || lats.length < 3) return;
+            if (lats.length !== lngs.length || lats.length < 3) return;
 
-          const polygonPath = lats.map(
-            (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
-          );
+            const polygonPath = lats.map(
+              (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
+            );
 
-          const colors = getZoneColor(pathItem.divisionArea);
+            const colors = getZoneStyle(pathItem.divisionArea);
 
-          // 클릭된 구역의 divisionArea를 기반으로 카테고리 결정
-          const handleClick = () =>
-            selectAddress({
-              ...address,
-              category: isSmoking ? "SMOKING" : "NON_SMOKING",
+            // 클릭된 구역의 divisionArea를 기반으로 카테고리 결정
+            const handleClick = () =>
+              selectAddress({
+                ...address,
+                category: isSmoking ? "SMOKING" : "NON_SMOKING",
+              });
+
+            const polygon = new naver.maps.Polygon({
+              paths: [polygonPath],
+              ...polygonStroke(colors),
+              fillColor: colors.fill,
+              fillOpacity: 0.4,
+              clickable: true,
+              map,
             });
 
-          const polygon = new naver.maps.Polygon({
-            paths: [polygonPath],
-            strokeWeight: 2,
-            strokeColor: colors.stroke,
-            strokeOpacity: 0.9,
-            fillColor: colors.fill,
-            fillOpacity: 0.4,
-            clickable: true,
-            map,
+            naver.maps.Event.addListener(polygon, "click", handleClick);
+
+            overlays.push(polygon);
+
+            // 마커 생성 (폴리곤 중심에)
+            const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+            const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
+
+            const overlay = new naver.maps.Marker({
+              position: new naver.maps.LatLng(centerLat, centerLng),
+              icon: {
+                content: createMarkerContent(pathItem.divisionArea),
+                anchor: new naver.maps.Point(20, 20),
+              },
+              map,
+            });
+
+            naver.maps.Event.addListener(overlay, "click", handleClick);
+
+            overlays.push(overlay);
           });
-
-          naver.maps.Event.addListener(polygon, "click", handleClick);
-
-          polygonsRef.current.push(polygon);
-
-          // 마커 생성 (폴리곤 중심에)
-          const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
-          const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-
-          const overlay = new naver.maps.Marker({
-            position: new naver.maps.LatLng(centerLat, centerLng),
-            icon: {
-              content: createMarkerContent(pathItem.divisionArea),
-              anchor: new naver.maps.Point(20, 20),
-            },
-            map,
-          });
-
-          naver.maps.Event.addListener(overlay, "click", handleClick);
-
-          overlaysRef.current.push(overlay);
         });
       });
     }
@@ -225,63 +191,77 @@ export function NaverMap({
     if (apartments.length > 0 && showApartments) {
       apartments.forEach((apartment) => {
         apartment.path.forEach((pathItem) => {
-          // pathsLat, pathsLng를 파싱
-          const lats = pathItem.pathsLat
-            .split(",")
-            .map((s) => parseFloat(s.trim()));
-          const lngs = pathItem.pathsLng
-            .split(",")
-            .map((s) => parseFloat(s.trim()));
+          tasks.push(() => {
+            // pathsLat, pathsLng를 파싱
+            const lats = pathItem.pathsLat
+              .split(",")
+              .map((s) => parseFloat(s.trim()));
+            const lngs = pathItem.pathsLng
+              .split(",")
+              .map((s) => parseFloat(s.trim()));
 
-          if (lats.length !== lngs.length || lats.length < 3) return;
+            if (lats.length !== lngs.length || lats.length < 3) return;
 
-          const polygonPath = lats.map(
-            (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
-          );
+            const polygonPath = lats.map(
+              (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
+            );
 
-          // 아파트는 파란색 계열로 표시
-          const polygon = new naver.maps.Polygon({
-            paths: [polygonPath],
-            strokeWeight: 2,
-            strokeColor: "#2563EB",
-            strokeOpacity: 0.9,
-            fillColor: "#3B82F6",
-            fillOpacity: 0.3,
-            clickable: true,
-            map,
+            const polygon = new naver.maps.Polygon({
+              paths: [polygonPath],
+              ...polygonStroke(ZONE_STYLES.APARTMENT),
+              fillColor: ZONE_STYLES.APARTMENT.fill,
+              fillOpacity: 0.3,
+              clickable: true,
+              map,
+            });
+
+            naver.maps.Event.addListener(polygon, "click", () =>
+              selectApartment(apartment),
+            );
+
+            overlays.push(polygon);
+
+            // 마커 생성 (폴리곤 중심에)
+            const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
+            const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
+
+            const overlay = new naver.maps.Marker({
+              position: new naver.maps.LatLng(centerLat, centerLng),
+              icon: {
+                content: createMarkerContent("APARTMENT"),
+                anchor: new naver.maps.Point(20, 20),
+              },
+              map,
+            });
+
+            naver.maps.Event.addListener(overlay, "click", () =>
+              selectApartment(apartment),
+            );
+
+            overlays.push(overlay);
           });
-
-          naver.maps.Event.addListener(polygon, "click", () =>
-            selectApartment(apartment),
-          );
-
-          polygonsRef.current.push(polygon);
-
-          // 마커 생성 (폴리곤 중심에)
-          const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
-          const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-
-          const overlay = new naver.maps.Marker({
-            position: new naver.maps.LatLng(centerLat, centerLng),
-            icon: {
-              content: renderToString(
-                <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-lg">
-                  <Building2 size={20} className="text-white" />
-                </div>,
-              ),
-              anchor: new naver.maps.Point(20, 20),
-            },
-            map,
-          });
-
-          naver.maps.Event.addListener(overlay, "click", () =>
-            selectApartment(apartment),
-          );
-
-          overlaysRef.current.push(overlay);
         });
       });
     }
+
+    let cancelled = false;
+    (async () => {
+      let deadline = performance.now() + 10;
+      for (const task of tasks) {
+        if (performance.now() > deadline) {
+          await yieldToMain();
+          if (cancelled) return;
+          deadline = performance.now() + 10;
+        }
+        task();
+      }
+    })();
+
+    // 토글 변경·언마운트(사이드바 접힘 시 key 리마운트 포함) 시 남은 작업 중단 및 오버레이 제거
+    return () => {
+      cancelled = true;
+      for (const overlay of overlays) overlay.setMap(null);
+    };
   }, [
     map,
     addresses,
@@ -293,10 +273,6 @@ export function NaverMap({
     selectApartment,
   ]);
 
-  useEffect(() => {
-    renderMarkers();
-  }, [renderMarkers]);
-
   if (!isLoaded) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-muted">
@@ -305,5 +281,6 @@ export function NaverMap({
     );
   }
 
-  return <div ref={mapRef} className="h-full w-full" />;
+  // NAVER 내부 컨트롤의 z-index가 시트·다이얼로그 위로 새지 않도록 쌓임 맥락을 가둔다
+  return <div ref={mapRef} className="isolate h-full w-full" />;
 }

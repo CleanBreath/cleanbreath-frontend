@@ -1,8 +1,6 @@
-import { Building2, ChevronDown, ChevronUp } from "lucide-react";
-import * as motion from "motion/react-client";
+import { Building2, ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -25,95 +23,108 @@ export function StatuteCard({
   onToggle,
   index,
 }: StatuteCardProps) {
+  const panelId = `statute-panel-${index}`;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 0.3,
-        delay: Math.min(index * 0.05, 0.5),
-      }}
+    <Card
+      className={cn(
+        "gap-0 py-0 shadow-none",
+        isExpanded && "border-primary/40",
+      )}
     >
-      <Card
+      {/* 카테고리 헤더: 아코디언 패턴(h2 > button[aria-expanded]) */}
+      <h2>
+        <button
+          type="button"
+          aria-expanded={isExpanded}
+          aria-controls={panelId}
+          onClick={onToggle}
+          className="flex min-h-11 w-full items-center gap-3 rounded-xl p-4 text-left transition-colors hover:bg-muted/50"
+        >
+          <span
+            aria-hidden
+            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
+          >
+            {icon || <Building2 size={20} />}
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold">{category}</span>
+            <span className="block text-sm font-normal text-muted-foreground tabular-nums">
+              {designatedNoSmokingAreas.length}개 항목
+            </span>
+          </span>
+          <ChevronDown
+            size={20}
+            aria-hidden
+            className={cn(
+              "shrink-0 text-muted-foreground transition-transform duration-200",
+              isExpanded && "rotate-180",
+            )}
+          />
+        </button>
+      </h2>
+
+      {/* 확장된 내용: 크롤러가 읽도록 항상 렌더링하고 접힘은 CSS로 처리 */}
+      <div
+        id={panelId}
+        inert={!isExpanded}
         className={cn(
-          "cursor-pointer border-0 shadow-sm transition-all hover:shadow-md",
-          isExpanded && "ring-2 ring-primary/20",
+          "grid transition-opacity duration-200",
+          isExpanded
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] opacity-0",
         )}
-        onClick={onToggle}
       >
-        <CardContent className="p-4">
-          {/* 카테고리 헤더 */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                {icon || <Building2 size={20} />}
-              </div>
-              <div>
-                <h2 className="font-semibold">{category}</h2>
-                <p className="text-xs text-muted-foreground">
-                  {designatedNoSmokingAreas.length}개 항목
-                </p>
+        <div className="overflow-hidden">
+          <div className="px-4 pb-4 sm:px-6 sm:pb-6">
+            <Separator className="mb-4" />
+
+            {/* 지정 금연구역 */}
+            <div className="mb-4">
+              <h3 className="mb-2 text-sm font-semibold text-primary">
+                지정 금연구역
+              </h3>
+              <div className="space-y-2">
+                {designatedNoSmokingAreas.map((area, i) => (
+                  <div
+                    key={area}
+                    className="flex items-start gap-2 rounded-lg bg-muted/60 p-3"
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="mt-0.5 shrink-0 bg-background tabular-nums"
+                    >
+                      {i + 1}
+                    </Badge>
+                    <p className="text-muted-foreground">{area}</p>
+                  </div>
+                ))}
               </div>
             </div>
-            <Button variant="ghost" size="icon" className="shrink-0">
-              {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-            </Button>
+
+            {/* 세부 내용 */}
+            <div>
+              <h3 className="mb-2 text-sm font-semibold text-primary">
+                세부 규정
+              </h3>
+              <div className="space-y-2">
+                {content.map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-2 rounded-lg bg-zone-non-smoking/10 p-3"
+                  >
+                    <span
+                      aria-hidden
+                      className="mt-2.5 size-1.5 shrink-0 rounded-full bg-zone-non-smoking-ink"
+                    />
+                    <p className="text-muted-foreground">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-
-          {/* 확장된 내용 */}
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-4"
-            >
-              <Separator className="mb-4" />
-
-              {/* 지정 금연구역 */}
-              <div className="mb-4">
-                <h3 className="mb-2 text-sm font-medium text-primary">
-                  지정 금연구역
-                </h3>
-                <div className="space-y-2">
-                  {designatedNoSmokingAreas.map((area, i) => (
-                    <div
-                      key={area}
-                      className="flex items-start gap-2 rounded-lg bg-muted/50 p-2"
-                    >
-                      <Badge
-                        variant="secondary"
-                        className="mt-0.5 shrink-0 px-1.5 py-0.5 text-[10px]"
-                      >
-                        {i + 1}
-                      </Badge>
-                      <p className="text-sm text-muted-foreground">{area}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* 세부 내용 */}
-              <div>
-                <h3 className="mb-2 text-sm font-medium text-primary">
-                  세부 규정
-                </h3>
-                <div className="space-y-2">
-                  {content.map((item) => (
-                    <div
-                      key={item}
-                      className="flex items-start gap-2 rounded-lg bg-green-50 p-2 dark:bg-green-950/30"
-                    >
-                      <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500" />
-                      <p className="text-sm text-muted-foreground">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
+        </div>
+      </div>
+    </Card>
   );
 }

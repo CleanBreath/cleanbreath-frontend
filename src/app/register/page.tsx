@@ -1,44 +1,33 @@
 "use client";
 
 import {
-  ArrowLeft,
   CheckCircle,
   Cigarette,
   CigaretteOff,
   MapPin,
   MousePointer2,
   Send,
+  SquarePlus,
   Trash2,
 } from "lucide-react";
-import * as motion from "motion/react-client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ApiError, addSmokingArea } from "@/api";
+import { PageHeader } from "@/components/layout/page-header";
+import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
 import { cn } from "@/lib/utils";
+import { ZONE_STYLES } from "@/lib/zone-style";
 import type { AddressCategory } from "@/types";
 
 const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
 
-// 구역 타입별 색상 상수
+// 그리는 중 미리보기 색. 흡연구역은 기존처럼 빨강(폐쇄형) 계열로 표시
 const ZONE_COLORS = {
-  SMOKING: {
-    marker: "#EF4444",
-    polygon: {
-      stroke: "#DC2626",
-      fill: "#EF4444",
-    },
-  },
-  NON_SMOKING: {
-    marker: "#22C55E",
-    polygon: {
-      stroke: "#16A34A",
-      fill: "#22C55E",
-    },
-  },
+  SMOKING: ZONE_STYLES.SMOKING_ZONE_CLOSE,
+  NON_SMOKING: ZONE_STYLES.NON_SMOKING_ZONE,
 } as const;
 
 interface PathPoint {
@@ -64,7 +53,7 @@ export default function RegisterPage() {
   const markersRef = useRef<naver.maps.Marker[]>([]);
   const isDrawingRef = useRef(false);
   const isPinModeRef = useRef(false);
-  const isMapLoaded = useNaverMapLoader();
+  const isMapLoaded = useNaverMapLoader({ geocoder: true });
 
   // isDrawing 상태를 ref에 동기화
   useEffect(() => {
@@ -167,7 +156,7 @@ export default function RegisterPage() {
       const marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(point.lat, point.lng),
         icon: {
-          content: `<div style="width:24px;height:24px;background:${colors.marker};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${
+          content: `<div style="width:24px;height:24px;background:${colors.fill};border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:bold;box-shadow:0 2px 4px rgba(0,0,0,0.2);">${
             index + 1
           }</div>`,
           anchor: new naver.maps.Point(12, 12),
@@ -187,9 +176,9 @@ export default function RegisterPage() {
       const polygon = new naver.maps.Polygon({
         paths: [polygonPath],
         strokeWeight: 3,
-        strokeColor: colors.polygon.stroke,
+        strokeColor: colors.stroke,
         strokeOpacity: 0.9,
-        fillColor: colors.polygon.fill,
+        fillColor: colors.fill,
         fillOpacity: 0.4,
       });
 
@@ -204,6 +193,18 @@ export default function RegisterPage() {
       setCenterPoint({ lat: centerLat, lng: centerLng });
     }
   }, [pathPoints, category]);
+
+  // lg 미만에서는 지도가 폼 위에 있어, 폼을 내려 본 상태에서 그리기/핀 모드를 켜면 지도를 다시 화면에 가져온다
+  const revealMap = () => {
+    if (window.matchMedia("(min-width: 1024px)").matches) return;
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    mapRef.current?.scrollIntoView({
+      block: "center",
+      behavior: reduce ? "auto" : "smooth",
+    });
+  };
 
   const handleClearPath = () => {
     setPathPoints([]);
@@ -248,124 +249,133 @@ export default function RegisterPage() {
 
   if (isSuccess) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-background p-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-        >
-          <Card className="w-full max-w-md text-center">
-            <CardContent className="py-12">
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-                <CheckCircle size={40} className="text-green-600" />
+      <div className="flex min-h-dvh flex-col bg-muted/40">
+        <PageHeader
+          title="새 구역 등록 요청"
+          description="지도에서 흡연·금연구역을 지정해 제안해주세요"
+          icon={<SquarePlus />}
+        />
+        <main className="mx-auto flex w-full max-w-3xl flex-1 items-center justify-center p-4">
+          <PageSection className="w-full max-w-md text-center">
+            <div className="py-6">
+              <div
+                aria-hidden
+                className="mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-primary/10 text-primary"
+              >
+                <CheckCircle size={40} />
               </div>
-              <h2 className="mb-2 text-xl font-bold">등록 요청 완료!</h2>
-              <p className="mb-6 text-muted-foreground">
-                제안해주신 구역은 검토 후 반영됩니다.
+              <h2 role="status" className="mb-2 text-xl font-bold">
+                등록 요청 완료!
+              </h2>
+              <p className="mb-6 text-base text-muted-foreground">
+                제안해주신 구역은 게시판에 공개됩니다. &lsquo;사실이에요&rsquo;
+                투표가 20표 이상 모이면 매일 새벽 3시에 지도에 자동 반영됩니다.
               </p>
-              <Button asChild>
-                <Link href="/">홈으로 돌아가기</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </motion.div>
+              <div className="flex flex-col gap-2">
+                <Button size="touch" asChild>
+                  <Link href="/board">게시판에서 확인하기</Link>
+                </Button>
+                <Button size="touch" variant="outline" asChild>
+                  <Link href="/">홈으로 돌아가기</Link>
+                </Button>
+              </div>
+            </div>
+          </PageSection>
+        </main>
       </div>
     );
   }
 
   return (
     <div className="flex min-h-dvh flex-col bg-background lg:flex-row">
-      {/* 사이드 패널 */}
-      <div className="w-full border-b lg:w-96 lg:border-b-0 lg:border-r">
-        {/* 헤더 */}
-        <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur-sm">
-          <div className="flex h-14 items-center gap-4 px-4">
-            <Button variant="ghost" size="icon" asChild>
-              <Link href="/">
-                <ArrowLeft size={20} />
-              </Link>
-            </Button>
-            <h1 className="font-semibold">새 구역 등록 요청</h1>
-          </div>
-        </header>
+      {/* 사이드 패널. lg 미만에서는 contents로 풀어 헤더 → 지도 → 폼 순서로 배치 */}
+      <div className="max-lg:contents lg:w-96 lg:border-r">
+        <PageHeader
+          title="새 구역 등록 요청"
+          description="지도에서 흡연·금연구역을 지정해 제안해주세요"
+          icon={<SquarePlus />}
+        />
 
-        <div className="p-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card className="mb-4 border-0 bg-primary/5">
-              <CardContent className="p-4">
-                <p className="text-sm text-muted-foreground">
-                  지도에서 영역을 클릭하여 구역을 지정해주세요. 최소 3개 이상의
-                  점을 찍어야 합니다.
-                </p>
-              </CardContent>
-            </Card>
+        <main className="p-4 text-base max-lg:order-1">
+          <div>
+            <div className="mb-4 space-y-2 rounded-xl border border-primary/20 bg-primary/5 p-4 text-muted-foreground">
+              <p>
+                &lsquo;영역 그리기&rsquo;를 누른 뒤 지도에서 3개 이상의 점을
+                찍어 구역을 지정해주세요.
+              </p>
+              <p className="text-sm">
+                등록한 구역은 게시판에 공개되고, &lsquo;사실이에요&rsquo; 투표가
+                20표 이상 모이면 매일 새벽 3시에 지도에 자동 반영됩니다.
+              </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* 구역 타입 선택 */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">구역 타입</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCategory("NON_SMOKING")}
-                      className={cn(
-                        "flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all",
-                        category === "NON_SMOKING"
-                          ? "border-green-500 bg-green-50 dark:bg-green-950/30"
-                          : "border-muted hover:border-green-300",
-                      )}
+              <PageSection title="구역 타입">
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    aria-pressed={category === "NON_SMOKING"}
+                    onClick={() => setCategory("NON_SMOKING")}
+                    className={cn(
+                      "flex min-h-11 flex-col items-center gap-2 rounded-xl border-2 p-3 transition-colors",
+                      category === "NON_SMOKING"
+                        ? "border-zone-non-smoking-ink bg-zone-non-smoking/10"
+                        : "border-border hover:border-zone-non-smoking",
+                    )}
+                  >
+                    <span
+                      aria-hidden
+                      className="flex size-10 items-center justify-center rounded-full bg-zone-non-smoking-ink text-white"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500">
-                        <CigaretteOff size={20} className="text-white" />
-                      </div>
-                      <span className="text-sm font-medium">금연구역</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setCategory("SMOKING")}
-                      className={cn(
-                        "flex flex-col items-center gap-2 rounded-xl border-2 p-3 transition-all",
-                        category === "SMOKING"
-                          ? "border-red-500 bg-red-50 dark:bg-red-950/30"
-                          : "border-muted hover:border-red-300",
-                      )}
+                      <CigaretteOff size={20} />
+                    </span>
+                    <span className="font-medium">금연구역</span>
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={category === "SMOKING"}
+                    onClick={() => setCategory("SMOKING")}
+                    className={cn(
+                      "flex min-h-11 flex-col items-center gap-2 rounded-xl border-2 p-3 transition-colors",
+                      category === "SMOKING"
+                        ? "border-zone-smoking-ink bg-zone-smoking/10"
+                        : "border-border hover:border-zone-smoking",
+                    )}
+                  >
+                    <span
+                      aria-hidden
+                      className="flex size-10 items-center justify-center rounded-full bg-zone-smoking-ink text-white"
                     >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500">
-                        <Cigarette size={20} className="text-white" />
-                      </div>
-                      <span className="text-sm font-medium">흡연구역</span>
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
+                      <Cigarette size={20} />
+                    </span>
+                    <span className="font-medium">흡연구역</span>
+                  </button>
+                </div>
+              </PageSection>
 
               {/* 위치 정보 */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">위치 정보</CardTitle>
-                    <Button
-                      type="button"
-                      variant={isPinMode ? "default" : "outline"}
-                      size="icon"
-                      className="h-7 w-7"
-                      title="지도를 클릭하여 위치 자동 입력"
-                      onClick={() => {
-                        setIsPinMode((prev) => !prev);
-                        if (isDrawing) setIsDrawing(false);
-                      }}
-                    >
-                      <MapPin size={14} />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
+              <PageSection
+                title="위치 정보"
+                action={
+                  <Button
+                    type="button"
+                    variant={isPinMode ? "default" : "outline"}
+                    size="icon-touch"
+                    aria-label="지도를 클릭하여 위치 자동 입력"
+                    aria-pressed={isPinMode}
+                    title="지도를 클릭하여 위치 자동 입력"
+                    onClick={() => {
+                      if (!isPinMode) revealMap();
+                      setIsPinMode((prev) => !prev);
+                      if (isDrawing) setIsDrawing(false);
+                    }}
+                  >
+                    <MapPin aria-hidden />
+                  </Button>
+                }
+              >
+                <div className="space-y-3">
                   <div>
                     <label
                       htmlFor="register-address"
@@ -379,7 +389,7 @@ export default function RegisterPage() {
                       value={addressName}
                       onChange={(e) => setAddressName(e.target.value)}
                       placeholder="예: 경기도 안양시 동안구 평촌동"
-                      className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+                      className="h-11 w-full rounded-lg border bg-background px-3 text-base"
                       required
                     />
                   </div>
@@ -396,71 +406,95 @@ export default function RegisterPage() {
                       value={buildingName}
                       onChange={(e) => setBuildingName(e.target.value)}
                       placeholder="예: 평촌역 광장"
-                      className="w-full rounded-lg border bg-background px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+                      className="h-11 w-full rounded-lg border bg-background px-3 text-base"
                     />
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </PageSection>
 
               {/* 영역 그리기 */}
-              <Card>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-base">영역 지정</CardTitle>
-                    <Badge variant="secondary">{pathPoints.length}개 점</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
+              <PageSection
+                title="영역 지정"
+                action={
+                  <Badge variant="secondary" className="tabular-nums">
+                    {pathPoints.length}개 점
+                  </Badge>
+                }
+              >
+                <div className="space-y-3">
                   <div className="flex gap-2">
                     <Button
                       type="button"
                       variant={isDrawing ? "default" : "outline"}
-                      size="sm"
-                      className="flex-1 gap-2"
-                      onClick={() => setIsDrawing(!isDrawing)}
+                      size="touch"
+                      className="flex-1"
+                      aria-pressed={isDrawing}
+                      onClick={() => {
+                        if (!isDrawing) revealMap();
+                        setIsDrawing(!isDrawing);
+                      }}
                     >
-                      <MousePointer2 size={14} />
+                      <MousePointer2 aria-hidden />
                       {isDrawing ? "그리기 중..." : "영역 그리기"}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
+                      size="icon-touch"
+                      aria-label="찍은 점 모두 지우기"
                       onClick={handleClearPath}
                       disabled={pathPoints.length === 0}
                     >
-                      <Trash2 size={14} />
+                      <Trash2 aria-hidden />
                     </Button>
                   </div>
-                  {pathPoints.length > 0 && pathPoints.length < 3 && (
-                    <p className="text-xs text-amber-600">
-                      최소 3개 이상의 점을 찍어주세요 ({3 - pathPoints.length}개
-                      더 필요)
-                    </p>
-                  )}
-                  {pathPoints.length >= 3 && (
-                    <p className="text-xs text-green-600">
-                      ✓ 영역이 지정되었습니다
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
+                  <div aria-live="polite">
+                    {pathPoints.length > 0 && pathPoints.length < 3 && (
+                      <p className="text-sm text-muted-foreground">
+                        최소 3개 이상의 점을 찍어주세요 ({3 - pathPoints.length}
+                        개 더 필요)
+                      </p>
+                    )}
+                    {pathPoints.length >= 3 && (
+                      <p className="flex items-center gap-1.5 text-sm font-medium text-zone-non-smoking-ink">
+                        <CheckCircle size={16} aria-hidden />
+                        영역이 지정되었습니다
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </PageSection>
+
+              <p className="text-sm text-muted-foreground">
+                등록 요청 시 구역 위치·주소·건물명·구역 구분 등 입력한 정보가
+                전송되며 게시판에 공개됩니다. 자세한 내용은{" "}
+                <Link
+                  href="/privacy"
+                  className="font-medium text-foreground underline underline-offset-4"
+                >
+                  개인정보처리방침
+                </Link>
+                을 확인해주세요.
+              </p>
 
               {/* 제출 버튼 */}
               <Button
                 type="submit"
-                size="lg"
-                className="w-full gap-2"
+                size="touch"
+                className="w-full"
                 disabled={isSubmitting || !addressName || pathPoints.length < 3}
               >
                 {isSubmitting ? (
                   <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                    <div
+                      aria-hidden
+                      className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"
+                    />
                     등록 중...
                   </>
                 ) : (
                   <>
-                    <Send size={18} />
+                    <Send aria-hidden />
                     구역 등록 요청
                   </>
                 )}
@@ -474,24 +508,24 @@ export default function RegisterPage() {
                 </p>
               )}
             </form>
-          </motion.div>
-        </div>
+          </div>
+        </main>
       </div>
 
       {/* 지도 영역 */}
-      <div className="relative flex-1">
-        <div ref={mapRef} className="h-[50vh] w-full lg:h-full" />
+      <section aria-label="위치 선택 지도" className="relative lg:flex-1">
+        <div ref={mapRef} className="h-[45svh] min-h-72 w-full lg:h-full" />
         {isDrawing && (
-          <div className="absolute left-4 top-4 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-lg">
+          <div className="absolute top-4 left-4 z-10 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-md">
             지도를 클릭하여 영역을 지정하세요
           </div>
         )}
         {isPinMode && (
-          <div className="absolute left-4 top-4 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-lg">
+          <div className="absolute top-4 left-4 z-10 rounded-lg bg-foreground px-3 py-1.5 text-sm font-medium text-background shadow-md">
             지도를 클릭하면 주소가 자동 입력됩니다
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
