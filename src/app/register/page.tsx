@@ -64,7 +64,7 @@ export default function RegisterPage() {
   const markersRef = useRef<naver.maps.Marker[]>([]);
   const isDrawingRef = useRef(false);
   const isPinModeRef = useRef(false);
-  const isMapLoaded = useNaverMapLoader();
+  const isMapLoaded = useNaverMapLoader({ geocoder: true });
 
   // isDrawing 상태를 ref에 동기화
   useEffect(() => {
