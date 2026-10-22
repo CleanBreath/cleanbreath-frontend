@@ -37,13 +37,13 @@ NEXT_PUBLIC_KAKAO_MAP_API_KEY=your_kakao_map_api_key
 
 ```bash
 # 의존성 설치
-npm install
+bun install
 
 # 개발 서버 실행
-npm run dev
+bun dev
 
 # 빌드
-npm run build
+bun run build
 ```
 
 [http://localhost:3000](http://localhost:3000)에서 확인할 수 있습니다.
