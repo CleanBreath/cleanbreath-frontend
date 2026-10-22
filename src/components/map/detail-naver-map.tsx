@@ -2,26 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
+import { getZoneStyle } from "@/lib/zone-style";
 import type { SmokingAreaPath } from "@/types";
-
-// 구역 타입별 색상 정의 (naver-map.tsx 패턴 동일)
-const ZONE_COLORS = {
-  NON_SMOKING_ZONE: { fill: "#22C55E", stroke: "#16A34A" },
-  SMOKING_ZONE_OPEN: { fill: "#F97316", stroke: "#EA580C" },
-  SMOKING_ZONE_OPEN_IMPLICIT: { fill: "#FB923C", stroke: "#F97316" },
-  SMOKING_ZONE_CLOSE: { fill: "#EF4444", stroke: "#DC2626" },
-  SMOKING_ZONE_CLOSE_IMPLICIT: { fill: "#F87171", stroke: "#EF4444" },
-  SMOKING_ZONE_LINE: { fill: "#A855F7", stroke: "#9333EA" },
-  SMOKING_ZONE_LINE_IMPLICIT: { fill: "#C084FC", stroke: "#A855F7" },
-} as const;
-
-type ZoneType = keyof typeof ZONE_COLORS;
-
-function getZoneColor(divisionArea: string) {
-  return (
-    ZONE_COLORS[divisionArea as ZoneType] || ZONE_COLORS.SMOKING_ZONE_CLOSE
-  );
-}
 
 interface DetailNaverMapProps {
   latitude: number;
@@ -65,13 +47,15 @@ export function DetailNaverMap({
         (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
       );
 
-      const colors = getZoneColor(pathItem.divisionArea);
+      const colors = getZoneStyle(pathItem.divisionArea);
 
       const polygon = new naver.maps.Polygon({
         paths: [polygonPath],
-        strokeWeight: 2,
+        // 메인 지도(naver-map)와 같은 테두리: 불투명 3px, 비공식 구역은 점선
+        strokeWeight: 3,
         strokeColor: colors.stroke,
-        strokeOpacity: 0.9,
+        strokeOpacity: 1,
+        strokeStyle: colors.dashed ? "shortdash" : "solid",
         fillColor: colors.fill,
         fillOpacity: 0.4,
         map,

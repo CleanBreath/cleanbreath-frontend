@@ -1,9 +1,9 @@
 "use client";
 
-import { Building2, Cigarette, CigaretteOff } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
+import { getZoneStyle, ZONE_STYLES, type ZoneStyle } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 import type { AddressItem, ApartmentItem } from "@/types";
 
@@ -11,53 +11,6 @@ interface NaverMapProps {
   zoom?: number;
   addresses?: AddressItem[];
   apartments?: ApartmentItem[];
-}
-
-// 구역 타입별 색상 정의
-const ZONE_COLORS = {
-  NON_SMOKING_ZONE: {
-    fill: "#22C55E",
-    stroke: "#16A34A",
-    markerBg: "bg-green-500",
-  },
-  SMOKING_ZONE_OPEN: {
-    fill: "#F97316",
-    stroke: "#EA580C",
-    markerBg: "bg-orange-500",
-  },
-  SMOKING_ZONE_OPEN_IMPLICIT: {
-    fill: "#FB923C",
-    stroke: "#F97316",
-    markerBg: "bg-orange-400",
-  },
-  SMOKING_ZONE_CLOSE: {
-    fill: "#EF4444",
-    stroke: "#DC2626",
-    markerBg: "bg-red-500",
-  },
-  SMOKING_ZONE_CLOSE_IMPLICIT: {
-    fill: "#F87171",
-    stroke: "#EF4444",
-    markerBg: "bg-red-400",
-  },
-  SMOKING_ZONE_LINE: {
-    fill: "#A855F7",
-    stroke: "#9333EA",
-    markerBg: "bg-purple-500",
-  },
-  SMOKING_ZONE_LINE_IMPLICIT: {
-    fill: "#C084FC",
-    stroke: "#A855F7",
-    markerBg: "bg-purple-400",
-  },
-} as const;
-
-type ZoneType = keyof typeof ZONE_COLORS;
-
-function getZoneColor(divisionArea: string) {
-  return (
-    ZONE_COLORS[divisionArea as ZoneType] || ZONE_COLORS.SMOKING_ZONE_CLOSE
-  );
 }
 
 function isSmokingZone(divisionArea: string): boolean {
@@ -71,37 +24,29 @@ function createMarkerContent(divisionArea: string): string {
   const cached = markerContentCache.get(divisionArea);
   if (cached) return cached;
 
-  const isSmoking = isSmokingZone(divisionArea);
-  const colors = getZoneColor(divisionArea);
+  const { icon: Icon, stroke, dashed } = getZoneStyle(divisionArea);
 
-  const icon = isSmoking ? (
+  // 배경은 stroke 색: 흰 아이콘 대비 3:1 이상 (fill 색은 초록·주황에서 미달). 비공식 구역은 점선 테두리
+  const content = renderToString(
     <div
-      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white ${colors.markerBg} shadow-lg`}
+      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-md ${dashed ? "border-dashed" : ""}`}
+      style={{ backgroundColor: stroke }}
     >
-      <Cigarette size={20} className="text-white" />
-    </div>
-  ) : (
-    <div
-      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white ${colors.markerBg} shadow-lg`}
-    >
-      <CigaretteOff size={20} className="text-white" />
-    </div>
+      <Icon size={20} className="text-white" aria-hidden />
+    </div>,
   );
-
-  const content = renderToString(icon);
   markerContentCache.set(divisionArea, content);
   return content;
 }
 
-let apartmentMarkerContent: string | undefined;
-
-function getApartmentMarkerContent(): string {
-  apartmentMarkerContent ??= renderToString(
-    <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-lg">
-      <Building2 size={20} className="text-white" />
-    </div>,
-  );
-  return apartmentMarkerContent;
+// 지도 타일 위에서 테두리가 묻히지 않도록 불투명 + 굵게, 비공식 구역은 점선
+function polygonStroke({ stroke, dashed }: ZoneStyle) {
+  return {
+    strokeColor: stroke,
+    strokeOpacity: 1,
+    strokeWeight: 3,
+    strokeStyle: dashed ? "shortdash" : "solid",
+  } as const;
 }
 
 // 메인 스레드에 제어권을 넘겨 입력/페인트가 끼어들 수 있게 함
@@ -199,7 +144,7 @@ export function NaverMap({
               (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
             );
 
-            const colors = getZoneColor(pathItem.divisionArea);
+            const colors = getZoneStyle(pathItem.divisionArea);
 
             // 클릭된 구역의 divisionArea를 기반으로 카테고리 결정
             const handleClick = () =>
@@ -210,9 +155,7 @@ export function NaverMap({
 
             const polygon = new naver.maps.Polygon({
               paths: [polygonPath],
-              strokeWeight: 2,
-              strokeColor: colors.stroke,
-              strokeOpacity: 0.9,
+              ...polygonStroke(colors),
               fillColor: colors.fill,
               fillOpacity: 0.4,
               clickable: true,
@@ -263,13 +206,10 @@ export function NaverMap({
               (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
             );
 
-            // 아파트는 파란색 계열로 표시
             const polygon = new naver.maps.Polygon({
               paths: [polygonPath],
-              strokeWeight: 2,
-              strokeColor: "#2563EB",
-              strokeOpacity: 0.9,
-              fillColor: "#3B82F6",
+              ...polygonStroke(ZONE_STYLES.APARTMENT),
+              fillColor: ZONE_STYLES.APARTMENT.fill,
               fillOpacity: 0.3,
               clickable: true,
               map,
@@ -288,7 +228,7 @@ export function NaverMap({
             const overlay = new naver.maps.Marker({
               position: new naver.maps.LatLng(centerLat, centerLng),
               icon: {
-                content: getApartmentMarkerContent(),
+                content: createMarkerContent("APARTMENT"),
                 anchor: new naver.maps.Point(20, 20),
               },
               map,
@@ -341,5 +281,6 @@ export function NaverMap({
     );
   }
 
-  return <div ref={mapRef} className="h-full w-full" />;
+  // NAVER 내부 컨트롤의 z-index가 시트·다이얼로그 위로 새지 않도록 쌓임 맥락을 가둔다
+  return <div ref={mapRef} className="isolate h-full w-full" />;
 }
