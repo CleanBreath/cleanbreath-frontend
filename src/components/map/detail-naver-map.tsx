@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
+import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
 import type { SmokingAreaPath } from "@/types";
 
-// 구역 타입별 색상 정의 (기존 kakao-map.tsx 패턴 동일)
+// 구역 타입별 색상 정의 (naver-map.tsx 패턴 동일)
 const ZONE_COLORS = {
   NON_SMOKING_ZONE: { fill: "#22C55E", stroke: "#16A34A" },
   SMOKING_ZONE_OPEN: { fill: "#F97316", stroke: "#EA580C" },
@@ -23,32 +23,29 @@ function getZoneColor(divisionArea: string) {
   );
 }
 
-interface DetailKakaoMapProps {
+interface DetailNaverMapProps {
   latitude: number;
   longitude: number;
   paths: SmokingAreaPath[];
 }
 
-export function DetailKakaoMap({
+export function DetailNaverMap({
   latitude,
   longitude,
   paths,
-}: DetailKakaoMapProps) {
+}: DetailNaverMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
-  const [map, setMap] = useState<any>(null);
-  const isLoaded = useKakaoMapLoader();
+  const [map, setMap] = useState<naver.maps.Map | null>(null);
+  const isLoaded = useNaverMapLoader();
 
   // 지도 초기화
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
 
-    const options = {
-      center: new window.kakao.maps.LatLng(latitude, longitude),
-      level: 2,
-    };
-
-    const newMap = new window.kakao.maps.Map(mapRef.current, options);
+    const newMap = new naver.maps.Map(mapRef.current, {
+      center: new naver.maps.LatLng(latitude, longitude),
+      zoom: 18,
+    });
     setMap(newMap);
   }, [isLoaded, latitude, longitude]);
 
@@ -56,8 +53,7 @@ export function DetailKakaoMap({
   useEffect(() => {
     if (!map || paths.length === 0) return;
 
-    // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
-    const polygons: any[] = [];
+    const polygons: naver.maps.Polygon[] = [];
 
     paths.forEach((pathItem) => {
       const lats = pathItem.pathLat.split(",").map((s) => parseFloat(s.trim()));
@@ -66,13 +62,13 @@ export function DetailKakaoMap({
       if (lats.length !== lngs.length || lats.length < 3) return;
 
       const polygonPath = lats.map(
-        (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i]),
+        (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
       );
 
       const colors = getZoneColor(pathItem.divisionArea);
 
-      const polygon = new window.kakao.maps.Polygon({
-        path: polygonPath,
+      const polygon = new naver.maps.Polygon({
+        paths: [polygonPath],
         strokeWeight: 2,
         strokeColor: colors.stroke,
         strokeOpacity: 0.9,

@@ -3,12 +3,12 @@
 import { Building2, Cigarette, CigaretteOff } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
-import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
+import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
 import { useMapStore } from "@/store/map-store";
 import type { AddressItem, ApartmentItem } from "@/types";
 
-interface KakaoMapProps {
-  level?: number;
+interface NaverMapProps {
+  zoom?: number;
   addresses?: AddressItem[];
   apartments?: ApartmentItem[];
 }
@@ -85,11 +85,11 @@ function createMarkerContent(divisionArea: string): string {
   return renderToString(icon);
 }
 
-export function KakaoMap({
-  level = 3,
+export function NaverMap({
+  zoom = 17,
   addresses = [],
   apartments = [],
-}: KakaoMapProps) {
+}: NaverMapProps) {
   const center = useMapStore((state) => state.center);
   const showNonSmoking = useMapStore((state) => state.showNonSmoking);
   const showSmoking = useMapStore((state) => state.showSmoking);
@@ -98,39 +98,34 @@ export function KakaoMap({
   const selectApartment = useMapStore((state) => state.selectApartment);
 
   const mapRef = useRef<HTMLDivElement>(null);
-  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
-  const [map, setMap] = useState<any>(null);
-  const isLoaded = useKakaoMapLoader();
-  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
-  const overlaysRef = useRef<any[]>([]);
-  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
-  const polygonsRef = useRef<any[]>([]);
+  const [map, setMap] = useState<naver.maps.Map | null>(null);
+  const isLoaded = useNaverMapLoader();
+  const overlaysRef = useRef<naver.maps.Marker[]>([]);
+  const polygonsRef = useRef<naver.maps.Polygon[]>([]);
 
   // 지도 초기화
-  // biome-ignore lint/correctness/useExhaustiveDependencies: 생성 시점 center/level만 사용, 이후 변경은 아래 panTo/setLevel effect가 처리
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 생성 시점 center/zoom만 사용, 이후 변경은 아래 panTo/setZoom effect가 처리
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
 
-    const options = {
-      center: new window.kakao.maps.LatLng(center.lat, center.lng),
-      level,
-    };
-
-    const newMap = new window.kakao.maps.Map(mapRef.current, options);
+    const newMap = new naver.maps.Map(mapRef.current, {
+      center: new naver.maps.LatLng(center.lat, center.lng),
+      zoom,
+    });
     setMap(newMap);
   }, [isLoaded]);
 
   // 중심 좌표 변경
   useEffect(() => {
     if (!map) return;
-    map.panTo(new window.kakao.maps.LatLng(center.lat, center.lng));
+    map.panTo(new naver.maps.LatLng(center.lat, center.lng));
   }, [map, center.lat, center.lng]);
 
-  // 레벨 변경
+  // 줌 변경
   useEffect(() => {
     if (!map) return;
-    map.setLevel(level);
-  }, [map, level]);
+    map.setZoom(zoom);
+  }, [map, zoom]);
 
   // 마커 및 폴리곤 렌더링
   const renderMarkers = useCallback(() => {
@@ -179,60 +174,48 @@ export function KakaoMap({
           if (lats.length !== lngs.length || lats.length < 3) return;
 
           const polygonPath = lats.map(
-            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i]),
+            (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
           );
 
           const colors = getZoneColor(pathItem.divisionArea);
 
-          const polygon = new window.kakao.maps.Polygon({
-            path: polygonPath,
+          // 클릭된 구역의 divisionArea를 기반으로 카테고리 결정
+          const handleClick = () =>
+            selectAddress({
+              ...address,
+              category: isSmoking ? "SMOKING" : "NON_SMOKING",
+            });
+
+          const polygon = new naver.maps.Polygon({
+            paths: [polygonPath],
             strokeWeight: 2,
             strokeColor: colors.stroke,
             strokeOpacity: 0.9,
             fillColor: colors.fill,
             fillOpacity: 0.4,
+            clickable: true,
             map,
           });
 
-          window.kakao.maps.event.addListener(polygon, "click", () => {
-            // 클릭된 폴리곤의 divisionArea를 기반으로 카테고리 결정
-            const category = isSmoking ? "SMOKING" : "NON_SMOKING";
-            selectAddress({
-              ...address,
-              category: category as "SMOKING" | "NON_SMOKING",
-            });
-          });
+          naver.maps.Event.addListener(polygon, "click", handleClick);
 
           polygonsRef.current.push(polygon);
 
           // 마커 생성 (폴리곤 중심에)
           const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
           const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-          const markerPosition = new window.kakao.maps.LatLng(
-            centerLat,
-            centerLng,
-          );
 
-          const content = document.createElement("div");
-          content.innerHTML = createMarkerContent(pathItem.divisionArea);
-          content.style.cursor = "pointer";
-          content.onclick = () => {
-            // 클릭된 마커의 divisionArea를 기반으로 카테고리 결정
-            const category = isSmoking ? "SMOKING" : "NON_SMOKING";
-            selectAddress({
-              ...address,
-              category: category as "SMOKING" | "NON_SMOKING",
-            });
-          };
-
-          const overlay = new window.kakao.maps.CustomOverlay({
-            position: markerPosition,
-            content,
-            yAnchor: 0.5,
-            xAnchor: 0.5,
+          const overlay = new naver.maps.Marker({
+            position: new naver.maps.LatLng(centerLat, centerLng),
+            icon: {
+              content: createMarkerContent(pathItem.divisionArea),
+              anchor: new naver.maps.Point(20, 20),
+            },
+            map,
           });
 
-          overlay.setMap(map);
+          naver.maps.Event.addListener(overlay, "click", handleClick);
+
           overlaysRef.current.push(overlay);
         });
       });
@@ -253,51 +236,48 @@ export function KakaoMap({
           if (lats.length !== lngs.length || lats.length < 3) return;
 
           const polygonPath = lats.map(
-            (lat, i) => new window.kakao.maps.LatLng(lat, lngs[i]),
+            (lat, i) => new naver.maps.LatLng(lat, lngs[i]),
           );
 
           // 아파트는 파란색 계열로 표시
-          const polygon = new window.kakao.maps.Polygon({
-            path: polygonPath,
+          const polygon = new naver.maps.Polygon({
+            paths: [polygonPath],
             strokeWeight: 2,
             strokeColor: "#2563EB",
             strokeOpacity: 0.9,
             fillColor: "#3B82F6",
             fillOpacity: 0.3,
+            clickable: true,
             map,
           });
 
-          window.kakao.maps.event.addListener(polygon, "click", () => {
-            selectApartment(apartment);
-          });
+          naver.maps.Event.addListener(polygon, "click", () =>
+            selectApartment(apartment),
+          );
 
           polygonsRef.current.push(polygon);
 
           // 마커 생성 (폴리곤 중심에)
           const centerLat = lats.reduce((a, b) => a + b, 0) / lats.length;
           const centerLng = lngs.reduce((a, b) => a + b, 0) / lngs.length;
-          const markerPosition = new window.kakao.maps.LatLng(
-            centerLat,
-            centerLng,
-          );
 
-          const content = document.createElement("div");
-          content.innerHTML = renderToString(
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-lg">
-              <Building2 size={20} className="text-white" />
-            </div>,
-          );
-          content.style.cursor = "pointer";
-          content.onclick = () => selectApartment(apartment);
-
-          const overlay = new window.kakao.maps.CustomOverlay({
-            position: markerPosition,
-            content,
-            yAnchor: 0.5,
-            xAnchor: 0.5,
+          const overlay = new naver.maps.Marker({
+            position: new naver.maps.LatLng(centerLat, centerLng),
+            icon: {
+              content: renderToString(
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-blue-500 shadow-lg">
+                  <Building2 size={20} className="text-white" />
+                </div>,
+              ),
+              anchor: new naver.maps.Point(20, 20),
+            },
+            map,
           });
 
-          overlay.setMap(map);
+          naver.maps.Event.addListener(overlay, "click", () =>
+            selectApartment(apartment),
+          );
+
           overlaysRef.current.push(overlay);
         });
       });

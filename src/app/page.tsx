@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { DisclaimerModal } from "@/components/disclaimer/disclaimer-modal";
 import { FeedbackModal } from "@/components/feedback/feedback-modal";
 import { AreaToggle } from "@/components/map/area-toggle";
-import { KakaoMap } from "@/components/map/kakao-map";
+import { NaverMap } from "@/components/map/naver-map";
 import { SelectedAddressCard } from "@/components/map/selected-address-card";
 import { SelectedApartmentCard } from "@/components/map/selected-apartment-card";
 import { Sidebar } from "@/components/sidebar/sidebar";
@@ -50,7 +50,7 @@ export default function Home() {
       <main className="relative flex-1">
         <AreaToggle />
 
-        <KakaoMap key={mapKey} addresses={addresses} apartments={apartments} />
+        <NaverMap key={mapKey} addresses={addresses} apartments={apartments} />
 
         <SelectedAddressCard />
         <SelectedApartmentCard />

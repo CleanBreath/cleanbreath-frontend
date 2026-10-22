@@ -3,7 +3,7 @@
 import { ArrowLeft, ThumbsDown, ThumbsUp } from "lucide-react";
 import Link from "next/link";
 import { use } from "react";
-import { DetailKakaoMap } from "@/components/map/detail-kakao-map";
+import { DetailNaverMap } from "@/components/map/detail-naver-map";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,7 +94,7 @@ export default function BoardDetailPage({
       <Card>
         <CardContent className="p-0 overflow-hidden rounded-xl">
           <div className="h-80 w-full">
-            <DetailKakaoMap
+            <DetailNaverMap
               latitude={data.latitude}
               longitude={data.longitude}
               paths={data.paths}
