@@ -194,7 +194,7 @@ export default function RegisterPage() {
     }
   }, [pathPoints, category]);
 
-  // lg 미만에서는 지도가 폼 아래에 있어, 그리기/핀 모드를 켜면 지도를 화면에 가져온다
+  // lg 미만에서는 지도가 폼 위에 있어, 폼을 내려 본 상태에서 그리기/핀 모드를 켜면 지도를 다시 화면에 가져온다
   const revealMap = () => {
     if (window.matchMedia("(min-width: 1024px)").matches) return;
     const reduce = window.matchMedia(
@@ -268,11 +268,17 @@ export default function RegisterPage() {
                 등록 요청 완료!
               </h2>
               <p className="mb-6 text-base text-muted-foreground">
-                제안해주신 구역은 검토 후 반영됩니다.
+                제안해주신 구역은 게시판에 공개됩니다. &lsquo;사실이에요&rsquo;
+                투표가 20표 이상 모이면 매일 새벽 3시에 지도에 자동 반영됩니다.
               </p>
-              <Button size="touch" asChild>
-                <Link href="/">홈으로 돌아가기</Link>
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button size="touch" asChild>
+                  <Link href="/board">게시판에서 확인하기</Link>
+                </Button>
+                <Button size="touch" variant="outline" asChild>
+                  <Link href="/">홈으로 돌아가기</Link>
+                </Button>
+              </div>
             </div>
           </PageSection>
         </main>
@@ -282,20 +288,26 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-dvh flex-col bg-background lg:flex-row">
-      {/* 사이드 패널 */}
-      <div className="w-full border-b lg:w-96 lg:border-b-0 lg:border-r">
+      {/* 사이드 패널. lg 미만에서는 contents로 풀어 헤더 → 지도 → 폼 순서로 배치 */}
+      <div className="max-lg:contents lg:w-96 lg:border-r">
         <PageHeader
           title="새 구역 등록 요청"
           description="지도에서 흡연·금연구역을 지정해 제안해주세요"
           icon={<SquarePlus />}
         />
 
-        <div className="p-4 text-base">
+        <main className="p-4 text-base max-lg:order-1">
           <div>
-            <p className="mb-4 rounded-xl border border-primary/20 bg-primary/5 p-4 text-muted-foreground">
-              지도에서 영역을 클릭하여 구역을 지정해주세요. 최소 3개 이상의 점을
-              찍어야 합니다.
-            </p>
+            <div className="mb-4 space-y-2 rounded-xl border border-primary/20 bg-primary/5 p-4 text-muted-foreground">
+              <p>
+                &lsquo;영역 그리기&rsquo;를 누른 뒤 지도에서 3개 이상의 점을
+                찍어 구역을 지정해주세요.
+              </p>
+              <p className="text-sm">
+                등록한 구역은 게시판에 공개되고, &lsquo;사실이에요&rsquo; 투표가
+                20표 이상 모이면 매일 새벽 3시에 지도에 자동 반영됩니다.
+              </p>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* 구역 타입 선택 */}
@@ -453,6 +465,18 @@ export default function RegisterPage() {
                 </div>
               </PageSection>
 
+              <p className="text-sm text-muted-foreground">
+                등록 요청 시 구역 위치·주소·건물명·구역 구분 등 입력한 정보가
+                전송되며 게시판에 공개됩니다. 자세한 내용은{" "}
+                <Link
+                  href="/privacy"
+                  className="font-medium text-foreground underline underline-offset-4"
+                >
+                  개인정보처리방침
+                </Link>
+                을 확인해주세요.
+              </p>
+
               {/* 제출 버튼 */}
               <Button
                 type="submit"
@@ -485,12 +509,12 @@ export default function RegisterPage() {
               )}
             </form>
           </div>
-        </div>
+        </main>
       </div>
 
       {/* 지도 영역 */}
-      <div className="relative flex-1">
-        <div ref={mapRef} className="h-[50vh] w-full lg:h-full" />
+      <section aria-label="위치 선택 지도" className="relative lg:flex-1">
+        <div ref={mapRef} className="h-[45svh] min-h-72 w-full lg:h-full" />
         {isDrawing && (
           <div className="absolute top-4 left-4 z-10 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-md">
             지도를 클릭하여 영역을 지정하세요
@@ -501,7 +525,7 @@ export default function RegisterPage() {
             지도를 클릭하면 주소가 자동 입력됩니다
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
