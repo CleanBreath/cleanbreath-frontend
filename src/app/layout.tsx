@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
 import "../../styles/global.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { SchedulerProvider } from "@/components/providers/scheduler-provider";
