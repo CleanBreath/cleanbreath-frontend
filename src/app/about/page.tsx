@@ -18,9 +18,10 @@ import { Button } from "@/components/ui/button";
 const SITE_URL = "https://cleanbreath.cmu02-studio.com";
 const PAGE_TITLE = "서비스 소개 및 운영 정보";
 const PAGE_DESCRIPTION =
-  "CleanBreath는 대림대학교 BlueSky 팀이 운영하는 금연구역·흡연구역 지도 서비스입니다. 운영 주체, 구역 데이터 관리 방식, 등록 요청 검토 절차, 잘못된 정보 신고 방법을 안내합니다.";
+  "CleanBreath는 대림대학교 BlueSky 팀이 운영하는 금연구역·흡연구역 지도 서비스입니다. 운영 주체, 구역 데이터 관리 방식, 등록 제안의 지도 반영 절차, 문의 방법을 안내합니다.";
 const LAST_UPDATED = "2026-10-22";
 const GITHUB_URL = "https://github.com/CleanBreath/cleanbreath-frontend";
+const ISSUES_URL = `${GITHUB_URL}/issues`;
 const LAW_URL =
   "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95";
 
@@ -142,7 +143,8 @@ export default function AboutPage() {
               국민건강증진법에 따른 금연구역 관련 법령 정보를 안내합니다.
             </Bullet>
             <Bullet>
-              이용자가 새 구역을 등록 요청하고, 피드백을 보낼 수 있습니다.
+              이용자가 새 구역을 제안하고, 제안된 구역에 투표하거나 피드백을
+              보낼 수 있습니다.
             </Bullet>
           </ul>
         </PageSection>
@@ -153,6 +155,7 @@ export default function AboutPage() {
             운영합니다. 2024년 11월 첫 버전(v0.1.0)을 출시했으며, 소스 코드는
             GitHub에 공개되어 있습니다.
           </p>
+          <p className="mb-2 text-sm font-semibold text-foreground">개발자</p>
           <div className="mb-3 flex flex-wrap gap-1.5">
             {DEVELOPERS.map((name) => (
               <Badge key={name} variant="secondary">
@@ -174,20 +177,24 @@ export default function AboutPage() {
               지도에 표시되는 구역 정보는 CleanBreath 서버에서 제공합니다.
             </Bullet>
             <Bullet>
-              이용자가{" "}
               <Link href="/register" className="text-primary underline">
-                구역 등록 요청
+                구역 등록
               </Link>
-              을 보내면 바로 지도에 반영되지 않고, 검토를 거친 뒤 반영됩니다.
-            </Bullet>
-            <Bullet>
-              제안된 구역은{" "}
+              에서 제안된 구역은 바로 지도에 반영되지 않고{" "}
               <Link href="/board" className="text-primary underline">
                 게시판
               </Link>
-              에 공개되며, 누구나 &lsquo;사실이에요&rsquo; 또는
-              &lsquo;아니에요&rsquo;로 투표해 정보의 정확성에 대한 의견을 남길
-              수 있습니다.
+              에 공개됩니다. 누구나 &lsquo;사실이에요&rsquo; 또는
+              &lsquo;아니에요&rsquo;로 투표할 수 있습니다.
+            </Bullet>
+            <Bullet>
+              &lsquo;사실이에요&rsquo; 투표가 20표 이상 모인 구역은 매일 새벽
+              3시에 자동으로 지도에 반영되며, 별도의 사람 검토는 거치지
+              않습니다.
+            </Bullet>
+            <Bullet>
+              투표는 로그인 없이 할 수 있으며, 중복 투표를 막기 위해 브라우저에
+              저장된 임의 식별값이 투표와 함께 기록됩니다.
             </Bullet>
             <Bullet>
               앱은 구역 데이터를 기기에 저장해 두고, 마지막 확인 후 24시간이
@@ -197,14 +204,26 @@ export default function AboutPage() {
           </ul>
         </PageSection>
 
-        <PageSection title="잘못된 정보 신고" icon={<MessageSquare />}>
+        <PageSection title="문의 및 잘못된 정보 신고" icon={<MessageSquare />}>
           <p className="mb-3">
-            구역 정보가 실제와 다르거나 변경이 필요한 경우, 홈 화면의 피드백
-            기능으로 알려주세요. 보내주신 의견은 서비스 개선에 활용됩니다.
+            구역 정보가 실제와 다르거나 서비스에 대해 문의할 내용이 있으면 홈
+            화면의 피드백 기능이나 GitHub Issues로 알려주세요. 보내주신 의견은
+            서비스 개선에 활용됩니다.
           </p>
-          <Button variant="outline" asChild>
-            <Link href="/">홈에서 피드백 보내기</Link>
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" asChild>
+              <Link href="/">홈에서 피드백 보내기</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <a href={ISSUES_URL} target="_blank" rel="noopener noreferrer">
+                GitHub Issues
+                <ExternalLink aria-hidden />
+              </a>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/privacy">개인정보처리방침</Link>
+            </Button>
+          </div>
         </PageSection>
 
         <PageSection

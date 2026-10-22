@@ -13,6 +13,7 @@ import {
   PanelLeft,
   PanelLeftClose,
   Scale,
+  ShieldCheck,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -330,13 +331,13 @@ function ServiceInfo() {
             <Link href="/register" className={linkClass}>
               구역 등록
             </Link>{" "}
-            페이지에서 제안할 수 있으며, 검토를 거친 뒤 지도에 반영됩니다.
-            제안된 구역은{" "}
+            페이지에서 제안할 수 있습니다. 제안된 구역은{" "}
             <Link href="/board" className={linkClass}>
               게시판
             </Link>
-            에 공개되어 &lsquo;사실이에요&rsquo;·&lsquo;아니에요&rsquo; 투표로
-            정확성에 대한 의견을 남길 수 있습니다.
+            에 공개되고, &lsquo;사실이에요&rsquo; 투표가 20표 이상 모이면 매일
+            새벽 3시에 자동으로 지도에 반영됩니다. 투표는 로그인 없이 할 수
+            있습니다(브라우저별 임의 식별값으로 중복 투표를 막습니다).
           </p>
           <p>
             금연구역은 국민건강증진법 제9조에 근거해 지정됩니다. 시설별 지정
@@ -397,6 +398,12 @@ function ServiceInfo() {
               icon: Activity,
               title: "서버 상태",
               desc: "API 서버와 데이터베이스의 실시간 상태를 확인할 수 있습니다.",
+            },
+            {
+              href: "/privacy",
+              icon: ShieldCheck,
+              title: "개인정보처리방침",
+              desc: "수집하는 정보와 보관 기간을 안내합니다.",
             },
           ].map(({ href, icon: Icon, title, desc }) => (
             <li key={href}>
