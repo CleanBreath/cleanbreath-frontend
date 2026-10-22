@@ -1,25 +1,25 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import * as motion from "motion/react-client";
-import Link from "next/link";
 import {
   ArrowLeft,
+  CheckCircle,
   Cigarette,
   CigaretteOff,
-  Send,
-  CheckCircle,
-  Trash2,
-  MousePointer2,
   MapPin,
+  MousePointer2,
+  Send,
+  Trash2,
 } from "lucide-react";
+import * as motion from "motion/react-client";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { addSmokingArea } from "@/api";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { addSmokingArea } from "@/api";
-import type { AddressCategory } from "@/types";
-import { cn } from "@/lib/utils";
 import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
+import { cn } from "@/lib/utils";
+import type { AddressCategory } from "@/types";
 
 const DEFAULT_CENTER = { lat: 37.394329, lng: 126.956939 };
 
@@ -75,38 +75,38 @@ export default function RegisterPage() {
     isPinModeRef.current = isPinMode;
   }, [isPinMode]);
 
-  // 역지오코딩으로 주소/건물명 자동 입력
-  const reverseGeocode = (lat: number, lng: number) => {
-    if (!window.kakao?.maps?.services) return;
-
-    const geocoder = new window.kakao.maps.services.Geocoder();
-    const coord = new window.kakao.maps.LatLng(lat, lng);
-
-    geocoder.coord2Address(
-      coord.getLng(),
-      coord.getLat(),
-      (result: any, status: any) => {
-        if (status !== window.kakao.maps.services.Status.OK || !result[0])
-          return;
-
-        const addressInfo = result[0];
-        // 도로명 주소 우선, 없으면 지번 주소
-        const roadAddr = addressInfo.road_address;
-        const jibunAddr = addressInfo.address;
-
-        if (roadAddr) {
-          setAddressName(roadAddr.address_name || "");
-          setBuildingName(roadAddr.building_name || "");
-        } else if (jibunAddr) {
-          setAddressName(jibunAddr.address_name || "");
-          setBuildingName("");
-        }
-      },
-    );
-  };
-
   // 지도 초기화
   useEffect(() => {
+    // 역지오코딩으로 주소/건물명 자동 입력
+    const reverseGeocode = (lat: number, lng: number) => {
+      if (!window.kakao?.maps?.services) return;
+
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      const coord = new window.kakao.maps.LatLng(lat, lng);
+
+      geocoder.coord2Address(
+        coord.getLng(),
+        coord.getLat(),
+        (result: any, status: any) => {
+          if (status !== window.kakao.maps.services.Status.OK || !result[0])
+            return;
+
+          const addressInfo = result[0];
+          // 도로명 주소 우선, 없으면 지번 주소
+          const roadAddr = addressInfo.road_address;
+          const jibunAddr = addressInfo.address;
+
+          if (roadAddr) {
+            setAddressName(roadAddr.address_name || "");
+            setBuildingName(roadAddr.building_name || "");
+          } else if (jibunAddr) {
+            setAddressName(jibunAddr.address_name || "");
+            setBuildingName("");
+          }
+        },
+      );
+    };
+
     if (!isMapLoaded || !mapRef.current || mapInstanceRef.current) return;
 
     const options = {
@@ -148,7 +148,9 @@ export default function RegisterPage() {
     if (!mapInstanceRef.current) return;
 
     // 기존 마커 제거
-    markersRef.current.forEach((marker) => marker.setMap(null));
+    markersRef.current.forEach((marker) => {
+      marker.setMap(null);
+    });
     markersRef.current = [];
 
     // 기존 폴리곤 제거
@@ -360,10 +362,14 @@ export default function RegisterPage() {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">
+                    <label
+                      htmlFor="register-address"
+                      className="mb-1.5 block text-sm font-medium"
+                    >
                       주소 <span className="text-destructive">*</span>
                     </label>
                     <input
+                      id="register-address"
                       type="text"
                       value={addressName}
                       onChange={(e) => setAddressName(e.target.value)}
@@ -373,10 +379,14 @@ export default function RegisterPage() {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">
+                    <label
+                      htmlFor="register-building"
+                      className="mb-1.5 block text-sm font-medium"
+                    >
                       건물명
                     </label>
                     <input
+                      id="register-building"
                       type="text"
                       value={buildingName}
                       onChange={(e) => setBuildingName(e.target.value)}

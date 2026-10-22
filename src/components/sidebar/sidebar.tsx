@@ -1,28 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
-import * as motion from "motion/react-client";
 import {
-  Menu,
-  Info,
-  List,
-  Cigarette,
-  CigaretteOff,
-  Sparkles,
-  PanelLeftClose,
-  PanelLeft,
-  MessageSquarePlus,
-  MapPinPlus,
-  Scale,
-  ExternalLink,
   Activity,
   Building2,
+  Cigarette,
+  CigaretteOff,
+  ExternalLink,
+  Info,
+  List,
+  MapPinPlus,
+  Menu,
+  MessageSquarePlus,
+  PanelLeft,
+  PanelLeftClose,
+  Scale,
+  Sparkles,
 } from "lucide-react";
+import * as motion from "motion/react-client";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -32,10 +32,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { AddressItem, ApartmentItem } from "@/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { useMapStore } from "@/store/map-store";
+import type { AddressItem, ApartmentItem } from "@/types";
 
 interface SidebarProps {
   addresses: AddressItem[];
@@ -257,7 +257,7 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                   "지도의 마커를 클릭하면 상세 정보를 볼 수 있습니다",
                   "목록에서 구역을 선택하면 해당 위치로 이동합니다",
                 ].map((text, i) => (
-                  <div key={i} className="flex items-start gap-3">
+                  <div key={text} className="flex items-start gap-3">
                     <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                       {i + 1}
                     </div>

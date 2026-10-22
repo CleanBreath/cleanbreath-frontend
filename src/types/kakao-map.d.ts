@@ -9,6 +9,7 @@ declare global {
 }
 
 declare namespace kakao.maps {
+  // biome-ignore lint/suspicious/noShadowRestrictedNames: Kakao SDK 실제 클래스명(kakao.maps.Map)을 그대로 선언
   class Map {
     constructor(container: HTMLElement, options: MapOptions);
     setCenter(latlng: LatLng): void;

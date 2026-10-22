@@ -1,8 +1,8 @@
+import { Building2, ChevronDown, ChevronUp } from "lucide-react";
 import * as motion from "motion/react-client";
-import { ChevronDown, ChevronUp, Building2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
@@ -78,7 +78,7 @@ export function StatuteCard({
                 <div className="space-y-2">
                   {designatedNoSmokingAreas.map((area, i) => (
                     <div
-                      key={i}
+                      key={area}
                       className="flex items-start gap-2 rounded-lg bg-muted/50 p-2"
                     >
                       <Badge
@@ -99,9 +99,9 @@ export function StatuteCard({
                   세부 규정
                 </h3>
                 <div className="space-y-2">
-                  {content.map((item, i) => (
+                  {content.map((item) => (
                     <div
-                      key={i}
+                      key={item}
                       className="flex items-start gap-2 rounded-lg bg-green-50 p-2 dark:bg-green-950/30"
                     >
                       <div className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500" />

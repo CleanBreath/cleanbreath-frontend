@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { Building2, Cigarette, CigaretteOff } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
-import { Cigarette, CigaretteOff, Building2 } from "lucide-react";
-import type { AddressItem, ApartmentItem } from "@/types";
-import { useMapStore } from "@/store/map-store";
 import { useKakaoMapLoader } from "@/hooks/use-kakao-map-loader";
+import { useMapStore } from "@/store/map-store";
+import type { AddressItem, ApartmentItem } from "@/types";
 
 interface KakaoMapProps {
   level?: number;
@@ -98,15 +98,16 @@ export function KakaoMap({
   const selectApartment = useMapStore((state) => state.selectApartment);
 
   const mapRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
   const [map, setMap] = useState<any>(null);
   const isLoaded = useKakaoMapLoader();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
   const overlaysRef = useRef<any[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
   const polygonsRef = useRef<any[]>([]);
 
   // 지도 초기화
+  // biome-ignore lint/correctness/useExhaustiveDependencies: 생성 시점 center/level만 사용, 이후 변경은 아래 panTo/setLevel effect가 처리
   useEffect(() => {
     if (!isLoaded || !mapRef.current) return;
 
@@ -136,8 +137,12 @@ export function KakaoMap({
     if (!map) return;
 
     // 기존 오버레이/폴리곤 제거
-    overlaysRef.current.forEach((overlay) => overlay.setMap(null));
-    polygonsRef.current.forEach((polygon) => polygon.setMap(null));
+    overlaysRef.current.forEach((overlay) => {
+      overlay.setMap(null);
+    });
+    polygonsRef.current.forEach((polygon) => {
+      polygon.setMap(null);
+    });
     overlaysRef.current = [];
     polygonsRef.current = [];
 

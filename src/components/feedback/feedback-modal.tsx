@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { MessageSquare, Send, X } from "lucide-react";
 import * as motion from "motion/react-client";
-import { X, Send, MessageSquare } from "lucide-react";
+import { useState } from "react";
+import { addFeedback } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { addFeedback } from "@/api";
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -97,10 +97,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="mb-2 block text-sm font-medium">
+                  <label
+                    htmlFor="feedback-title"
+                    className="mb-2 block text-sm font-medium"
+                  >
                     제목 <span className="text-destructive">*</span>
                   </label>
                   <input
+                    id="feedback-title"
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -110,10 +114,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   />
                 </div>
                 <div>
-                  <label className="mb-2 block text-sm font-medium">
+                  <label
+                    htmlFor="feedback-content"
+                    className="mb-2 block text-sm font-medium"
+                  >
                     내용 <span className="text-destructive">*</span>
                   </label>
                   <textarea
+                    id="feedback-content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="서비스 개선을 위한 의견을 자유롭게 작성해주세요.&#10;버그 신고, 기능 제안, 불편 사항 등 무엇이든 좋습니다."

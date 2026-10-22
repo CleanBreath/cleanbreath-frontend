@@ -35,7 +35,7 @@ export function DetailKakaoMap({
   paths,
 }: DetailKakaoMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
   const [map, setMap] = useState<any>(null);
   const isLoaded = useKakaoMapLoader();
 
@@ -56,7 +56,7 @@ export function DetailKakaoMap({
   useEffect(() => {
     if (!map || paths.length === 0) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: Kakao Maps SDK 객체 타입 미제공
     const polygons: any[] = [];
 
     paths.forEach((pathItem) => {
@@ -85,7 +85,9 @@ export function DetailKakaoMap({
     });
 
     return () => {
-      polygons.forEach((p) => p.setMap(null));
+      polygons.forEach((p) => {
+        p.setMap(null);
+      });
     };
   }, [map, paths]);
 

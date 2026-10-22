@@ -118,7 +118,8 @@ export default function RootLayout({
           <SchedulerProvider>{children}</SchedulerProvider>
         </QueryProvider>
         <script
-          type="application/json+ld"
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: 정적 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </body>
