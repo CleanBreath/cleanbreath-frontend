@@ -1,7 +1,6 @@
 "use client";
 
 import { AlertTriangle, Check, ChevronDown } from "lucide-react";
-import * as motion from "motion/react-client";
 import { useEffect, useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const DISCLAIMER_KEY = "cleanbreath-disclaimer-accepted";
 
-// 지도를 가리지 않는 하단 플로팅 안내 (하단 버튼 h-12 위, 상단 토글/햄버거와 겹치지 않음)
+// 위치는 셸이 정한다 (fixed/absolute 없음). 지도 위 카드로 표시
 export function DisclaimerModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -34,21 +33,17 @@ export function DisclaimerModal() {
   if (!isOpen) return null;
 
   return (
-    <motion.section
+    <section
+      // biome-ignore lint/a11y/noRedundantRoles: 랜드마크 역할을 명시적으로 유지 (기존 계약)
       role="region"
       aria-label="서비스 이용 안내"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="fixed inset-x-4 bottom-20 z-40 sm:left-auto sm:w-96"
+      className="animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
     >
-      <Card className="gap-0 py-0 shadow-2xl">
+      <Card className="gap-0 py-0 shadow-md">
         <CardContent className="space-y-3 p-4">
           <div className="flex items-start gap-3">
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/20">
-              <AlertTriangle
-                size={16}
-                className="text-amber-600 dark:text-amber-400"
-              />
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+              <AlertTriangle size={16} aria-hidden />
             </div>
             <p className="text-sm leading-relaxed">
               표시되는 금연·흡연구역 정보는 <strong>참고용</strong>이며 실제
@@ -59,7 +54,7 @@ export function DisclaimerModal() {
           <div
             id={detailsId}
             hidden={!isExpanded}
-            className="max-h-[40dvh] space-y-2 overflow-y-auto rounded-lg bg-muted/50 p-3 text-sm leading-relaxed text-muted-foreground"
+            className="max-h-[40dvh] space-y-2 overflow-y-auto overscroll-contain rounded-lg bg-muted p-3 text-sm leading-relaxed text-muted-foreground"
           >
             <p>
               본 서비스에서 제공하는 금연구역 및 흡연구역 정보는{" "}
@@ -83,27 +78,33 @@ export function DisclaimerModal() {
           <div className="flex gap-2">
             <Button
               variant="ghost"
+              size="touch"
               onClick={() => setIsExpanded((prev) => !prev)}
               aria-expanded={isExpanded}
               aria-controls={detailsId}
-              className="h-11 flex-1 gap-1"
+              className="flex-1 gap-1"
             >
               {isExpanded ? "접기" : "자세히"}
               <ChevronDown
                 size={16}
+                aria-hidden
                 className={cn(
-                  "transition-transform",
+                  "transition-transform duration-200",
                   isExpanded && "rotate-180",
                 )}
               />
             </Button>
-            <Button onClick={handleAccept} className="h-11 flex-1 gap-2">
-              <Check size={16} />
+            <Button
+              size="touch"
+              onClick={handleAccept}
+              className="flex-1 gap-2"
+            >
+              <Check size={16} aria-hidden />
               확인
             </Button>
           </div>
         </CardContent>
       </Card>
-    </motion.section>
+    </section>
   );
 }
