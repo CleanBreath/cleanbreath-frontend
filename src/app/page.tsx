@@ -15,6 +15,44 @@ import { VersionModal } from "@/components/version/version-modal";
 import { useAddressList } from "@/hooks/use-address";
 import { useApartmentList } from "@/hooks/use-apartment";
 
+const SITE_URL = "https://cleanbreath.cmu02-studio.com/";
+
+// 홈 전용 구조화 데이터
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}#organization`,
+      name: "CleanBreath",
+      url: SITE_URL,
+      logo: `${SITE_URL}logo.svg`,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}#website`,
+      name: "CleanBreath",
+      url: SITE_URL,
+      inLanguage: "ko-KR",
+      description:
+        "금연구역과 흡연구역을 지도에서 쉽게 확인하세요. 공동주택, 아파트, 공공장소의 금연구역 정보를 제공하는 무료 지도 서비스입니다. 국민건강증진법 기반 금연구역 안내.",
+      publisher: { "@id": `${SITE_URL}#organization` },
+    },
+    {
+      "@type": "WebApplication",
+      "@id": `${SITE_URL}#app`,
+      name: "CleanBreath",
+      url: SITE_URL,
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "Any",
+      browserRequirements: "Requires JavaScript",
+      inLanguage: "ko-KR",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
+      isPartOf: { "@id": `${SITE_URL}#website` },
+    },
+  ],
+};
+
 export default function Home() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -38,6 +76,13 @@ export default function Home() {
 
   return (
     <div className="flex h-dvh w-screen overflow-hidden">
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: 정적 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <Sidebar
         addresses={addresses}
         apartments={apartments}

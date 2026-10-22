@@ -73,12 +73,14 @@ export function Sidebar({
               className="relative rounded-xl"
             />
           </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">CleanBreath</h1>
-            <p className="text-xs text-muted-foreground">
-              맑은 공기를 위한 지도
-            </p>
-          </div>
+          <h1 className="flex flex-col">
+            <span className="text-xl font-bold tracking-tight">
+              CleanBreath
+            </span>
+            <span className="text-xs font-normal text-muted-foreground">
+              금연구역·흡연구역 지도
+            </span>
+          </h1>
         </div>
       </div>
 
@@ -111,7 +113,7 @@ export function Sidebar({
         </TabsList>
 
         <TabsContent value="info" className="flex-1 p-4">
-          <ServiceInfo onFeedbackClick={onFeedbackClick} />
+          <ServiceInfo />
         </TabsContent>
 
         <TabsContent value="list" className="flex-1 overflow-hidden p-4">
@@ -212,11 +214,7 @@ export function Sidebar({
   );
 }
 
-interface ServiceInfoProps {
-  onFeedbackClick: () => void;
-}
-
-function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
+function ServiceInfo() {
   return (
     <ScrollArea className="h-[calc(100vh-260px)]">
       <div className="space-y-4 pr-2">
@@ -232,12 +230,42 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/20">
                   <Sparkles size={16} className="text-primary" />
                 </div>
-                <h3 className="font-semibold">서비스 소개</h3>
+                <h2 className="font-semibold">서비스 소개</h2>
               </div>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                CleanBreath는 금연구역과 흡연구역 정보를 제공합니다. 지도에서
-                구역을 확인하고, 깨끗한 공기를 마실 수 있는 곳을 찾아보세요.
-              </p>
+              <div className="space-y-2 text-sm leading-relaxed text-muted-foreground">
+                <p>
+                  CleanBreath는 금연구역과 흡연구역을 지도에 표시하는 무료
+                  서비스입니다. 초록색은 금연구역, 주황·빨강·보라색은
+                  흡연구역이며, 아파트 탭에서는 공동주택의
+                  복도·계단·엘리베이터·지하주차장 금연구역 지정 여부를 확인할 수
+                  있습니다.
+                </p>
+                <p>
+                  새로운 구역은 누구나{" "}
+                  <Link href="/register" className="text-primary underline">
+                    구역 등록
+                  </Link>{" "}
+                  페이지에서 제안할 수 있으며, 검토를 거친 뒤 지도에 반영됩니다.
+                  제안된 구역은{" "}
+                  <Link href="/board" className="text-primary underline">
+                    게시판
+                  </Link>
+                  에 공개되어 &lsquo;사실이에요&rsquo;·&lsquo;아니에요&rsquo;
+                  투표로 정확성에 대한 의견을 남길 수 있습니다.
+                </p>
+                <p>
+                  금연구역은 국민건강증진법 제9조에 근거해 지정됩니다. 시설별
+                  지정 기준은{" "}
+                  <Link href="/statute" className="text-primary underline">
+                    금연구역 관련 법령
+                  </Link>
+                  에서, 운영 주체와 데이터 관리 방식은{" "}
+                  <Link href="/about" className="text-primary underline">
+                    서비스 소개 및 운영 정보
+                  </Link>
+                  에서 확인하세요.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -250,7 +278,7 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
         >
           <Card className="border-0 bg-card/50 shadow-sm">
             <CardContent className="p-4">
-              <h3 className="mb-3 font-semibold">사용 방법</h3>
+              <h2 className="mb-3 font-semibold">사용 방법</h2>
               <div className="space-y-3">
                 {[
                   "상단 토글로 금연/흡연구역을 ON/OFF 하세요",
@@ -277,7 +305,7 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
         >
           <Card className="border-0 bg-card/50 shadow-sm">
             <CardContent className="p-4">
-              <h3 className="mb-3 font-semibold">범례</h3>
+              <h2 className="mb-3 font-semibold">범례</h2>
               <div className="grid grid-cols-2 gap-3">
                 <div className="flex items-center gap-2 rounded-lg bg-green-50 p-2 dark:bg-green-950/30">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 shadow-sm">
@@ -311,7 +339,7 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                     className="text-amber-600 dark:text-amber-400"
                   />
                 </div>
-                <h3 className="font-semibold">금연구역 관련 법령</h3>
+                <h2 className="font-semibold">금연구역 관련 법령</h2>
               </div>
               <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
                 국민건강증진법에 따른 금연구역 지정 시설 및 관련 규정을
@@ -348,7 +376,7 @@ function ServiceInfo({ onFeedbackClick }: ServiceInfoProps) {
                     className="text-blue-600 dark:text-blue-400"
                   />
                 </div>
-                <h3 className="font-semibold">서버 상태</h3>
+                <h2 className="font-semibold">서버 상태</h2>
               </div>
               <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
                 API 서버와 데이터베이스의 실시간 상태를 확인할 수 있습니다.
