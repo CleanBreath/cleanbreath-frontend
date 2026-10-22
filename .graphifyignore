@@ -1,0 +1,6 @@
+# Claude Code skills/settings, not project source
+.claude/
+
+# PWA icons are the same image at different sizes; keep one for vision extraction
+public/images/icons/*
+!public/images/icons/icon-512x512.png

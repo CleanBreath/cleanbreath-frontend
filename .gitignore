@@ -45,3 +45,5 @@ public/sw.js.map
 # Claude
 .omc
 .claude/settings.local.json
+
+graphify-out/*
