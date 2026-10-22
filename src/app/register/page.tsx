@@ -13,7 +13,7 @@ import {
 import * as motion from "motion/react-client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { addSmokingArea } from "@/api";
+import { ApiError, addSmokingArea } from "@/api";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,6 +52,7 @@ export default function RegisterPage() {
   const [buildingName, setBuildingName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isPinMode, setIsPinMode] = useState(false);
   const [pathPoints, setPathPoints] = useState<PathPoint[]>([]);
@@ -216,6 +217,7 @@ export default function RegisterPage() {
     if (!addressName || pathPoints.length < 3 || !centerPoint) return;
 
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       await addSmokingArea({
         updateAt: new Date().toISOString().replace("T", " ").slice(0, 19),
@@ -236,6 +238,11 @@ export default function RegisterPage() {
       setIsSuccess(true);
     } catch (error) {
       console.error("구역 등록 실패:", error);
+      setSubmitError(
+        error instanceof ApiError
+          ? error.message
+          : "구역 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -460,6 +467,14 @@ export default function RegisterPage() {
                   </>
                 )}
               </Button>
+              {submitError && (
+                <p
+                  role="alert"
+                  className="text-center text-sm text-destructive"
+                >
+                  {submitError}
+                </p>
+              )}
             </form>
           </motion.div>
         </div>
