@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowLeft,
   Baby,
   Bath,
   BookMarked,
@@ -21,13 +20,11 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react";
-import * as motion from "motion/react-client";
-import Link from "next/link";
 import { useState } from "react";
+import { PageHeader } from "@/components/layout/page-header";
+import { PageSection } from "@/components/layout/page-section";
 import { StatuteCard } from "@/components/statute/statute-card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import statuteData from "@/json/statute.json";
 import statuteFaq from "@/json/statute-faq.json";
 
@@ -61,146 +58,106 @@ export default function StatutePage() {
   };
 
   return (
-    <div className="flex min-h-dvh flex-col bg-linear-to-b from-background to-muted/30">
-      {/* 헤더 */}
-      <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-3xl items-center gap-3 p-4">
-          <Button variant="ghost" size="icon" asChild className="shrink-0">
-            <Link href="/">
-              <ArrowLeft size={20} />
-            </Link>
-          </Button>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <Scale size={20} className="text-primary" />
-            </div>
-            <div>
-              <h1 className="font-bold">금연구역 관련 법령</h1>
-              <p className="text-xs text-muted-foreground">
-                국민건강증진법 시행규칙
-              </p>
-            </div>
-          </div>
+    <div className="flex min-h-dvh flex-col bg-muted/40">
+      <PageHeader
+        title="금연구역 관련 법령"
+        description="국민건강증진법 시행규칙"
+        icon={<Scale />}
+      />
+
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 p-4 pb-8 text-base leading-relaxed">
+        <PageSection className="border-primary/20 bg-primary/5">
+          <p className="text-muted-foreground">
+            아래는 <strong className="text-foreground">국민건강증진법</strong>에
+            따른 금연구역 지정 시설 및 관련 규정입니다. 각 시설 유형별로
+            금연구역 지정 범위와 흡연실 설치 가능 여부를 확인할 수 있습니다.
+          </p>
+        </PageSection>
+
+        {/* 법률 목록 */}
+        <div className="space-y-3">
+          {statuteData.map((statute, index) => (
+            <StatuteCard
+              key={statute.category}
+              category={statute.category}
+              designatedNoSmokingAreas={statute.designated_no_smoking_areas}
+              content={statute.content}
+              icon={categoryIcons[statute.category]}
+              isExpanded={expandedIndex === index}
+              onToggle={() => toggleExpand(index)}
+              index={index}
+            />
+          ))}
         </div>
-      </header>
 
-      {/* 메인 컨텐츠 */}
-      <ScrollArea className="flex-1">
-        <main className="mx-auto max-w-3xl p-4">
-          {/* 안내 카드 */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card className="mb-6 border-0 bg-linear-to-br from-primary/10 to-primary/5 shadow-sm">
-              <CardContent className="p-4">
-                <p className="text-sm leading-relaxed text-muted-foreground">
-                  아래는 <strong>국민건강증진법</strong>에 따른 금연구역 지정
-                  시설 및 관련 규정입니다. 각 시설 유형별로 금연구역 지정 범위와
-                  흡연실 설치 가능 여부를 확인할 수 있습니다.
-                </p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* 법률 목록 */}
-          <div className="space-y-3">
-            {statuteData.map((statute, index) => (
-              <StatuteCard
-                key={statute.category}
-                category={statute.category}
-                designatedNoSmokingAreas={statute.designated_no_smoking_areas}
-                content={statute.content}
-                icon={categoryIcons[statute.category]}
-                isExpanded={expandedIndex === index}
-                onToggle={() => toggleExpand(index)}
-                index={index}
-              />
-            ))}
+        {/* 자주 묻는 질문 */}
+        <section className="space-y-3">
+          <div className="px-1 text-sm text-muted-foreground">
+            <p>
+              법령 기준일:{" "}
+              <span className="tabular-nums">{statuteFaq.lawBaseDate}</span> ·
+              최종 검토일:{" "}
+              <span className="tabular-nums">{statuteFaq.reviewedAt}</span>
+            </p>
+            <p>{statuteFaq.lawBaseNote}</p>
           </div>
+          {statuteFaq.items.map((item) => (
+            <PageSection key={item.question} title={item.question}>
+              <p className="text-muted-foreground">{item.answer.join(" ")}</p>
+              <div className="mt-2 flex flex-wrap gap-x-4">
+                {item.sources.map((source) => (
+                  <a
+                    key={source.url}
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center gap-1 text-sm text-primary underline underline-offset-2"
+                  >
+                    {source.label}
+                    <ExternalLink size={14} aria-hidden />
+                  </a>
+                ))}
+              </div>
+            </PageSection>
+          ))}
+        </section>
 
-          {/* 자주 묻는 질문 */}
-          <section className="mt-6 space-y-3">
-            <div className="px-1 text-xs text-muted-foreground">
-              <p>
-                법령 기준일: {statuteFaq.lawBaseDate} · 최종 검토일:{" "}
-                {statuteFaq.reviewedAt}
-              </p>
-              <p>{statuteFaq.lawBaseNote}</p>
-            </div>
-            {statuteFaq.items.map((item) => (
-              <Card key={item.question} className="border-0 shadow-sm">
-                <CardContent className="p-4">
-                  <h2 className="mb-2 font-semibold">{item.question}</h2>
-                  <p className="text-sm leading-relaxed text-muted-foreground">
-                    {item.answer.join(" ")}
-                  </p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {item.sources.map((source) => (
-                      <a
-                        key={source.url}
-                        href={source.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-primary underline underline-offset-2"
-                      >
-                        {source.label}
-                        <ExternalLink size={10} />
-                      </a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </section>
+        {/* 하단 안내 */}
+        <div className="space-y-3">
+          <p className="rounded-xl bg-muted px-4 py-3 text-center text-sm text-muted-foreground">
+            본 내용은 참고용이며, 정확한 법령 내용은 관련 법령을 확인해주세요.
+          </p>
 
-          {/* 하단 안내 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.5 }}
-            className="mt-6 space-y-3"
-          >
-            <Card className="border-0 bg-muted/50 shadow-sm">
-              <CardContent className="p-4 text-center">
-                <p className="text-xs text-muted-foreground">
-                  본 내용은 참고용이며, 정확한 법령 내용은 관련 법령을
-                  확인해주세요.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 bg-linear-to-br from-primary/10 to-primary/5 shadow-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20">
-                      <Scale size={20} className="text-primary" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">국민건강증진법</h3>
-                      <p className="text-xs text-muted-foreground">
-                        법제처 국가법령정보센터
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm" className="gap-2" asChild>
-                    <a
-                      href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      법령 보기
-                      <ExternalLink size={12} />
-                    </a>
-                  </Button>
+          <PageSection className="border-primary/20 bg-primary/5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div
+                  aria-hidden
+                  className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary"
+                >
+                  <Scale size={20} />
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </main>
-      </ScrollArea>
+                <div>
+                  <h2 className="font-semibold">국민건강증진법</h2>
+                  <p className="text-sm text-muted-foreground">
+                    법제처 국가법령정보센터
+                  </p>
+                </div>
+              </div>
+              <Button variant="outline" size="touch" asChild>
+                <a
+                  href="https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  법령 보기
+                  <ExternalLink aria-hidden />
+                </a>
+              </Button>
+            </div>
+          </PageSection>
+        </div>
+      </main>
     </div>
   );
 }
