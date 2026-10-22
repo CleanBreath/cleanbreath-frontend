@@ -1,6 +1,17 @@
----
-inclusion: manual
----
+# CleanBreath 백엔드 API 상세 명세
+
+> 원본: 이전 `.kiro/steering/backend-api-document.md` (삭제됨, 이 파일로 대체) + 코드(`src/api`, `src/types`)에만 있던 엔드포인트 보강
+
+## 목차
+
+- Base URL
+- Address API (금연/흡연구역): `/allAddress`, `/address`, `/updateDate`
+- Apartment API (공동주택): `/apartment`, `/region`
+- Feedback API: `/feedback-list`, `/feedback/add`, `/feedback/{id}` (GET/PUT/DELETE)
+- Pending Address API (신규 구역 제안): `/allRequestAddress`, `/allRequestAddressPage`, `/smokingArea/add`
+- Smoking Area API (게시판/투표): `/smokingArea/{id}`, `/smokingArea/{id}/vote`
+- Health API: `/health`
+- 공통 응답 형식 / 에러 응답
 
 ## 📚 API 문서
 
@@ -353,50 +364,86 @@ POST /v1/smokingArea/add
 
 ---
 
-## 📊 공통 응답 형식
 
-### ApiResponse (목록 조회)
+### 🗳 Smoking Area API (게시판 / 투표)
+
+> 원본 문서에는 없고 `src/api/smoking-area.ts`, `src/types/smoking-area.d.ts` 기준으로 정리함.
+> 게시판 목록은 별도 엔드포인트가 아니라 `GET /v1/allRequestAddressPage`를 `size=10`으로 재사용한다 (`getSmokingAreaList`).
+
+#### 1. 흡연구역 상세 조회 (투표 수 포함)
+
+```http
+GET /v1/smokingArea/{id}
+```
+
+**Response** (`SmokingAreaDetail`)
 
 ```json
 {
-  "count": 100,
-  "updateAt": "2024-01-01T12:00:00",
-  "data": [...]
+  "id": 1,
+  "addressName": "평촌역 광장",
+  "buildingName": "평촌역",
+  "latitude": 37.401234,
+  "longitude": 126.921234,
+  "category": "SMOKING",
+  "paths": [
+    {
+      "divisionArea": "AREA_A",
+      "pathLat": "37.401234",
+      "pathLng": "126.921234"
+    }
+  ],
+  "truthCount": 12,
+  "untruthCount": 3
 }
 ```
 
-### MessageResponse (작업 결과)
+#### 2. 흡연구역 투표
+
+```http
+POST /v1/smokingArea/{id}/vote
+```
+
+**Request Body** (`SmokingAreaVoteRequest`)
 
 ```json
 {
-  "message": "작업 성공"
+  "clientToken": "브라우저별 익명 토큰 (src/lib의 getClientToken)",
+  "isTruth": true
 }
 ```
+
+**Response**: 프론트에서는 본문을 사용하지 않음 (`Promise<void>`). 성공 후 상세 쿼리를 invalidate 한다.
 
 ---
 
+### ❤️ Health API
+
+> 원본 문서에는 없고 `src/api/health.ts` 기준.
+
+```http
+GET /v1/health
+```
+
+**Response**
+
+```json
+{
+  "status": "<string>"
+}
+```
+
+`status` 값의 종류는 코드에서 `string`으로만 정의되어 있다. 정확한 값은 백엔드 확인 필요.
+
+---
+
+## 📊 공통 응답 형식
+
+- **ApiResponse (목록 조회)**: `{ "count": number, "updateAt": string, "data": [...] }` — `allAddress`, `updateDate`에서 사용
+- **MessageResponse (작업 결과)**: `{ "message": string }` — 등록/수정/삭제 결과
+- **Page 응답**: `{ "content": [...], "page": { size, number, totalElements, totalPages } }`
+
 ## 🔐 에러 응답
 
-### 400 Bad Request
-
-```json
-{
-  "message": "잘못된 요청입니다."
-}
-```
-
-### 404 Not Found
-
-```json
-{
-  "message": "해당 리소스를 찾을 수 없습니다."
-}
-```
-
-### 500 Internal Server Error
-
-```json
-{
-  "message": "서버 내부 오류가 발생했습니다."
-}
-```
+400 / 404 / 500 모두 `{ "message": string }` 형태. 예: `"잘못된 요청입니다."`, `"해당 리소스를 찾을 수 없습니다."`, `"서버 내부 오류가 발생했습니다."`
+프론트에서는 `src/api/client.ts`의 `handleError`가 이를 `ApiError(status, message)`로 변환해 throw 한다.
