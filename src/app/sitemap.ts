@@ -9,5 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/statute`, lastModified: "2026-10-22" },
     { url: `${baseUrl}/board`, lastModified: "2026-10-22" },
     { url: `${baseUrl}/about`, lastModified: "2026-10-22" },
+    { url: `${baseUrl}/privacy`, lastModified: "2026-10-22" },
   ];
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageSquare, Send } from "lucide-react";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { addFeedback } from "@/api";
 import { Button } from "@/components/ui/button";
@@ -131,6 +132,19 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   {error}
                 </p>
               )}
+              <p className="text-sm text-muted-foreground">
+                피드백 제목·내용과 작성 시각을 저장하며 1년 후 파기합니다.
+                개인정보는 적지 마세요.{" "}
+                {/* 새 탭: 같은 탭 이동 시 모달이 언마운트되어 작성 중인 내용이 사라짐 */}
+                <Link
+                  href="/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  개인정보처리방침
+                </Link>
+              </p>
               <Button
                 type="submit"
                 size="lg"
