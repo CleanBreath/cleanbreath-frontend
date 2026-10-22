@@ -1,74 +1,70 @@
 "use client";
 
-import { Cigarette, CigaretteOff, MapPin, X } from "lucide-react";
+import { MapPin, X } from "lucide-react";
 import * as motion from "motion/react-client";
+import { categoryGroup, ZONE_TONE } from "@/components/home/zone-tone";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { ZONE_GROUPS } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 
+// 위치는 page.tsx의 하단 스택이 정한다 (모바일: 시트 peek 위)
 export function SelectedAddressCard() {
   const selectedAddress = useMapStore((state) => state.selectedAddress);
   const clearSelection = useMapStore((state) => state.clearSelection);
 
   if (!selectedAddress) return null;
 
+  const group = categoryGroup(selectedAddress.category);
+  const { label, icon: Icon } = ZONE_GROUPS[group];
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
+    <motion.section
+      aria-label="선택한 구역"
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      className="absolute bottom-4 left-1/2 z-30 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2"
+      transition={{ duration: 0.2 }}
+      className="w-full sm:w-96"
     >
-      <Card className="border-0 bg-background/95 shadow-2xl backdrop-blur-md">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div
-              className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl shadow-sm ${
-                selectedAddress.category === "SMOKING"
-                  ? "bg-red-500"
-                  : "bg-green-500"
-              }`}
+      <Card className="gap-0 py-0 shadow-md">
+        <CardContent className="flex items-start gap-3 p-4">
+          <span
+            className={cn(
+              "flex size-11 shrink-0 items-center justify-center rounded-lg",
+              ZONE_TONE[group].solid,
+            )}
+          >
+            <Icon className="size-5" aria-hidden />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-semibold leading-snug">
+              {selectedAddress.addressName}
+            </h2>
+            <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="size-3.5 shrink-0" aria-hidden />
+              <span className="truncate">{selectedAddress.buildingName}</span>
+            </p>
+            <Badge
+              variant="outline"
+              className={cn("mt-2", ZONE_TONE[group].soft)}
             >
-              {selectedAddress.category === "SMOKING" ? (
-                <Cigarette size={22} className="text-white" />
-              ) : (
-                <CigaretteOff size={22} className="text-white" />
-              )}
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold leading-tight">
-                  {selectedAddress.addressName}
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 shrink-0 rounded-full"
-                  onClick={clearSelection}
-                >
-                  <X size={14} />
-                </Button>
-              </div>
-              <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <MapPin size={12} />
-                <span className="truncate">{selectedAddress.buildingName}</span>
-              </div>
-              <Badge
-                className={`mt-2 ${
-                  selectedAddress.category === "SMOKING"
-                    ? "bg-red-100 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-300"
-                    : "bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-950 dark:text-green-300"
-                }`}
-              >
-                {selectedAddress.category === "SMOKING"
-                  ? "흡연구역"
-                  : "금연구역"}
-              </Badge>
-            </div>
+              <Icon aria-hidden />
+              {label}
+            </Badge>
           </div>
+          <Button
+            variant="ghost"
+            size="icon-touch"
+            className="-mr-2 -mt-2 shrink-0 rounded-full"
+            onClick={clearSelection}
+            aria-label="선택 닫기"
+          >
+            <X aria-hidden />
+          </Button>
         </CardContent>
       </Card>
-    </motion.div>
+    </motion.section>
   );
 }

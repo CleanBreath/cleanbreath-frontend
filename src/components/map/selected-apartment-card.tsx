@@ -1,159 +1,112 @@
 "use client";
 
-import { Building2, MapPin, X } from "lucide-react";
+import { Check, MapPin, Minus, X } from "lucide-react";
 import * as motion from "motion/react-client";
+import { ZONE_TONE } from "@/components/home/zone-tone";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { ZONE_GROUPS } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 
+const DESIGNATION_AREAS = [
+  ["hallway", "복도"],
+  ["stairs", "계단"],
+  ["elevator", "엘리베이터"],
+  ["undergroundParkingLot", "지하주차장"],
+] as const;
+
+// 위치는 page.tsx의 하단 스택이 정한다 (모바일: 시트 peek 위)
 export function SelectedApartmentCard() {
   const selectedApartment = useMapStore((state) => state.selectedApartment);
   const clearSelection = useMapStore((state) => state.clearSelection);
 
   if (!selectedApartment) return null;
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 20 }}
-      className="absolute bottom-4 left-1/2 z-30 w-[calc(100%-2rem)] max-w-md -translate-x-1/2"
-    >
-      <Card className="border-0 bg-background/95 shadow-2xl backdrop-blur-md">
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500 shadow-sm">
-              <Building2 size={22} className="text-white" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-start justify-between gap-2">
-                <h3 className="font-semibold leading-tight">
-                  {selectedApartment.apartmentName}
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6 shrink-0 rounded-full"
-                  onClick={clearSelection}
-                >
-                  <X size={14} />
-                </Button>
-              </div>
-              <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
-                <MapPin size={12} />
-                <span className="truncate">{selectedApartment.address}</span>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300">
-                  {selectedApartment.numberOfBuilding}개 동
-                </Badge>
-                <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300">
-                  {selectedApartment.numberOfHouseholds}세대
-                </Badge>
-              </div>
+  const { icon: Icon } = ZONE_GROUPS.apartment;
+  const designation = selectedApartment.path[0];
 
-              {/* 금연구역 지정 범위 */}
-              {selectedApartment.path.length > 0 && (
-                <div className="mt-3 space-y-1.5 rounded-lg bg-muted/50 p-2.5">
-                  <p className="text-xs font-semibold text-muted-foreground">
-                    금연구역 지정 범위
-                  </p>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    <div
-                      className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
-                        selectedApartment.path[0].hallway === "YES"
-                          ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      <span>복도</span>
-                      <Badge
-                        variant="secondary"
-                        className={`h-4 px-1.5 text-[10px] ${
-                          selectedApartment.path[0].hallway === "YES"
-                            ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
-                            : "bg-background"
-                        }`}
-                      >
-                        {selectedApartment.path[0].hallway === "YES"
-                          ? "지정"
-                          : "미지정"}
-                      </Badge>
-                    </div>
-                    <div
-                      className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
-                        selectedApartment.path[0].stairs === "YES"
-                          ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      <span>계단</span>
-                      <Badge
-                        variant="secondary"
-                        className={`h-4 px-1.5 text-[10px] ${
-                          selectedApartment.path[0].stairs === "YES"
-                            ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
-                            : "bg-background"
-                        }`}
-                      >
-                        {selectedApartment.path[0].stairs === "YES"
-                          ? "지정"
-                          : "미지정"}
-                      </Badge>
-                    </div>
-                    <div
-                      className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
-                        selectedApartment.path[0].elevator === "YES"
-                          ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      <span>엘리베이터</span>
-                      <Badge
-                        variant="secondary"
-                        className={`h-4 px-1.5 text-[10px] ${
-                          selectedApartment.path[0].elevator === "YES"
-                            ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
-                            : "bg-background"
-                        }`}
-                      >
-                        {selectedApartment.path[0].elevator === "YES"
-                          ? "지정"
-                          : "미지정"}
-                      </Badge>
-                    </div>
-                    <div
-                      className={`flex items-center justify-between rounded-md px-2 py-1.5 text-xs ${
-                        selectedApartment.path[0].undergroundParkingLot ===
-                        "YES"
-                          ? "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300"
-                          : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      <span>지하주차장</span>
-                      <Badge
-                        variant="secondary"
-                        className={`h-4 px-1.5 text-[10px] ${
-                          selectedApartment.path[0].undergroundParkingLot ===
-                          "YES"
-                            ? "bg-green-200 text-green-800 dark:bg-green-900 dark:text-green-200"
-                            : "bg-background"
-                        }`}
-                      >
-                        {selectedApartment.path[0].undergroundParkingLot ===
-                        "YES"
-                          ? "지정"
-                          : "미지정"}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              )}
+  return (
+    <motion.section
+      aria-label="선택한 아파트"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2 }}
+      className="w-full sm:w-96"
+    >
+      <Card className="gap-0 py-0 shadow-md">
+        <CardContent className="flex items-start gap-3 p-4">
+          <span
+            className={cn(
+              "flex size-11 shrink-0 items-center justify-center rounded-lg",
+              ZONE_TONE.apartment.solid,
+            )}
+          >
+            <Icon className="size-5" aria-hidden />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2 className="text-base font-semibold leading-snug">
+              {selectedApartment.apartmentName}
+            </h2>
+            <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="size-3.5 shrink-0" aria-hidden />
+              <span className="truncate">{selectedApartment.address}</span>
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5 tabular-nums">
+              <Badge variant="outline" className={ZONE_TONE.apartment.soft}>
+                {selectedApartment.numberOfBuilding}개 동
+              </Badge>
+              <Badge variant="outline" className={ZONE_TONE.apartment.soft}>
+                {selectedApartment.numberOfHouseholds}세대
+              </Badge>
             </div>
+
+            {designation && (
+              <div className="mt-3 rounded-lg bg-muted p-3">
+                <p className="mb-2 text-xs font-medium text-muted-foreground">
+                  금연구역 지정 범위
+                </p>
+                <ul className="grid grid-cols-2 gap-1.5">
+                  {DESIGNATION_AREAS.map(([key, name]) => {
+                    const isDesignated = designation[key] === "YES";
+                    return (
+                      <li
+                        key={key}
+                        className={cn(
+                          "flex items-center justify-between gap-1 rounded-md border px-2 py-1.5 text-xs",
+                          isDesignated
+                            ? ZONE_TONE.nonSmoking.soft
+                            : "border-transparent bg-background text-muted-foreground",
+                        )}
+                      >
+                        <span>{name}</span>
+                        <span className="flex items-center gap-0.5 font-medium">
+                          {isDesignated ? (
+                            <Check className="size-3.5" aria-hidden />
+                          ) : (
+                            <Minus className="size-3.5" aria-hidden />
+                          )}
+                          {isDesignated ? "지정" : "미지정"}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
           </div>
+          <Button
+            variant="ghost"
+            size="icon-touch"
+            className="-mr-2 -mt-2 shrink-0 rounded-full"
+            onClick={clearSelection}
+            aria-label="선택 닫기"
+          >
+            <X aria-hidden />
+          </Button>
         </CardContent>
       </Card>
-    </motion.div>
+    </motion.section>
   );
 }
