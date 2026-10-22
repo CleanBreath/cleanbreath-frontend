@@ -47,3 +47,4 @@ public/sw.js.map
 .claude/settings.local.json
 
 graphify-out/*
+.env*
