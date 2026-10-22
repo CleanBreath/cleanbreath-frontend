@@ -1,16 +1,16 @@
 "use client";
 
-import { use } from "react";
+import { ArrowLeft, ThumbsDown, ThumbsUp } from "lucide-react";
 import Link from "next/link";
-import { ArrowLeft, ThumbsUp, ThumbsDown } from "lucide-react";
+import { use } from "react";
+import { DetailKakaoMap } from "@/components/map/detail-kakao-map";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   useSmokingAreaDetail,
   useSmokingAreaVote,
 } from "@/hooks/use-smoking-area";
-import { DetailKakaoMap } from "@/components/map/detail-kakao-map";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { getClientToken } from "@/lib/client-token";
 
 /** 카테고리 한글 라벨 */

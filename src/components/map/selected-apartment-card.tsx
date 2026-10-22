@@ -1,10 +1,10 @@
 "use client";
 
+import { Building2, MapPin, X } from "lucide-react";
 import * as motion from "motion/react-client";
-import { X, Building2, MapPin } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useMapStore } from "@/store/map-store";
 
 export function SelectedApartmentCard() {

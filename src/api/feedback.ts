@@ -9,7 +9,7 @@ import type {
   FeedbackUpdateRequest,
   MessageResponse,
 } from "@/types";
-import { apiGet, apiPost, apiPut, apiDelete } from "./client";
+import { apiDelete, apiGet, apiPost, apiPut } from "./client";
 
 /** 피드백 목록 조회 */
 export async function getFeedbackList(): Promise<FeedbackListResponse> {
@@ -23,7 +23,7 @@ export async function getFeedbackById(id: number): Promise<FeedbackDetail> {
 
 /** 피드백 등록 */
 export async function addFeedback(
-  data: FeedbackAddRequest
+  data: FeedbackAddRequest,
 ): Promise<MessageResponse> {
   return apiPost<MessageResponse, FeedbackAddRequest>("/feedback/add", data);
 }
@@ -31,11 +31,11 @@ export async function addFeedback(
 /** 피드백 수정 */
 export async function updateFeedback(
   id: number,
-  data: FeedbackUpdateRequest
+  data: FeedbackUpdateRequest,
 ): Promise<MessageResponse> {
   return apiPut<MessageResponse, FeedbackUpdateRequest>(
     `/feedback/${id}`,
-    data
+    data,
   );
 }
 

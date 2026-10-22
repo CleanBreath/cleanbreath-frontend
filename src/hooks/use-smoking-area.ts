@@ -4,15 +4,15 @@
 
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  getSmokingAreaList,
   getSmokingAreaDetail,
+  getSmokingAreaList,
   voteSmokingArea,
 } from "@/api";
 import type {
-  SmokingAreaPageResponse,
   SmokingAreaDetail,
+  SmokingAreaPageResponse,
   SmokingAreaVoteRequest,
 } from "@/types";
 

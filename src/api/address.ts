@@ -2,14 +2,14 @@
  * Address API (금연/흡연구역)
  */
 
-import { apiGet, apiPost } from "./client";
 import type {
-  AllAddressResponse,
   AddressItem,
+  AllAddressResponse,
   UpdateDateRequest,
   UpdateDateResponse,
   UpdateNotNeededResponse,
 } from "@/types";
+import { apiGet, apiPost } from "./client";
 
 /** 전체 구역 조회 */
 export async function getAllAddress(): Promise<AllAddressResponse> {
@@ -19,7 +19,7 @@ export async function getAllAddress(): Promise<AllAddressResponse> {
 /** 좌표로 구역 검색 */
 export async function getAddressByCoords(
   lat: number,
-  lng: number
+  lng: number,
 ): Promise<AddressItem> {
   return apiGet<AddressItem>("/address", {
     params: { lat, lng },
@@ -28,7 +28,7 @@ export async function getAddressByCoords(
 
 /** 데이터 업데이트 확인 */
 export async function checkUpdateDate(
-  updateDate: string
+  updateDate: string,
 ): Promise<UpdateDateResponse | UpdateNotNeededResponse> {
   const request: UpdateDateRequest = { updateDate };
   return apiPost<
@@ -39,7 +39,7 @@ export async function checkUpdateDate(
 
 /** 업데이트 응답 타입 가드 */
 export function isUpdateNeeded(
-  response: UpdateDateResponse | UpdateNotNeededResponse
+  response: UpdateDateResponse | UpdateNotNeededResponse,
 ): response is UpdateDateResponse {
   return "data" in response && Array.isArray(response.data);
 }

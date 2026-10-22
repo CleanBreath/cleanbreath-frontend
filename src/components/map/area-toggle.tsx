@@ -1,6 +1,6 @@
 "use client";
 
-import { Cigarette, CigaretteOff, Building2 } from "lucide-react";
+import { Building2, Cigarette, CigaretteOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useMapStore } from "@/store/map-store";

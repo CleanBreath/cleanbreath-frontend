@@ -7,7 +7,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getAllApartments } from "@/api";
-import { getApartments, saveApartments, isDataExpired } from "@/lib/indexeddb";
+import { getApartments, isDataExpired, saveApartments } from "@/lib/indexeddb";
 import type { ApartmentListResponse } from "@/types";
 
 export const apartmentKeys = {
