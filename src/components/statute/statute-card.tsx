@@ -60,15 +60,18 @@ export function StatuteCard({
             </Button>
           </div>
 
-          {/* 확장된 내용 */}
-          {isExpanded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-4"
-            >
-              <Separator className="mb-4" />
+          {/* 확장된 내용: 크롤러가 읽도록 항상 렌더링하고 접힘은 CSS로 처리 */}
+          <div
+            inert={!isExpanded}
+            className={cn(
+              "grid transition-[grid-template-rows,opacity] duration-300",
+              isExpanded
+                ? "grid-rows-[1fr] opacity-100"
+                : "grid-rows-[0fr] opacity-0",
+            )}
+          >
+            <div className="overflow-hidden">
+              <Separator className="mt-4 mb-4" />
 
               {/* 지정 금연구역 */}
               <div className="mb-4">
@@ -110,8 +113,8 @@ export function StatuteCard({
                   ))}
                 </div>
               </div>
-            </motion.div>
-          )}
+            </div>
+          </div>
         </CardContent>
       </Card>
     </motion.div>

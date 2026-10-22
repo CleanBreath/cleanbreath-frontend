@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import statuteData from "@/json/statute.json";
+import statuteFaq from "@/json/statute-faq.json";
 
 const categoryIcons: Record<string, React.ReactNode> = {
   "정부,지방청사": <Building2 size={20} />,
@@ -118,6 +119,41 @@ export default function StatutePage() {
               />
             ))}
           </div>
+
+          {/* 자주 묻는 질문 */}
+          <section className="mt-6 space-y-3">
+            <div className="px-1 text-xs text-muted-foreground">
+              <p>
+                법령 기준일: {statuteFaq.lawBaseDate} · 최종 검토일:{" "}
+                {statuteFaq.reviewedAt}
+              </p>
+              <p>{statuteFaq.lawBaseNote}</p>
+            </div>
+            {statuteFaq.items.map((item) => (
+              <Card key={item.question} className="border-0 shadow-sm">
+                <CardContent className="p-4">
+                  <h2 className="mb-2 font-semibold">{item.question}</h2>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {item.answer.join(" ")}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {item.sources.map((source) => (
+                      <a
+                        key={source.url}
+                        href={source.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-primary underline underline-offset-2"
+                      >
+                        {source.label}
+                        <ExternalLink size={10} />
+                      </a>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </section>
 
           {/* 하단 안내 */}
           <motion.div
