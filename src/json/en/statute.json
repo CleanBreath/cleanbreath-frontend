@@ -1,0 +1,186 @@
+[
+  {
+    "category": "Government and local government buildings",
+    "designated_no_smoking_areas": [
+      "Subparagraph 1: Buildings of the National Assembly",
+      "Subparagraph 2: Buildings of the government and local governments",
+      "Subparagraph 3: Court offices under the courts of legal bodies and buildings of other legal bodies",
+      "Subparagraph 4: Buildings of public institutions under the Act on the Operation of Central Administrative Agencies",
+      "Subparagraph 5: Buildings of local public enterprises under the Local Public Enterprises Act",
+      "Government Performance Evaluation Committee",
+      "Article 2 (Definitions): In addition, a “government building” means a building, its ancillary facilities, and its site that the State has decided to use for central administrative agencies and their affiliated agencies, local governments, and public institutions."
+    ],
+    "content": [
+      "Under the Regulation on the Management of Government Buildings, the entire premises is designated as a no-smoking zone; where individual laws or regulations apply, those are followed.",
+      "Government buildings not covered by the Regulation on the Management of Government Buildings post no-smoking signs and may install a separate smoking room on the rooftop or outdoors.",
+      "For local government buildings, the local government may install a smoking room, following the policy direction of Gyeonggi Province."
+    ]
+  },
+  {
+    "category": "Schools and kindergartens",
+    "designated_no_smoking_areas": [
+      "Subparagraph 7: School buildings of universities under the Higher Education Act",
+      "Subparagraph 6: Kindergartens, elementary schools, middle schools, and high schools under the Early Childhood Education Act and the Elementary and Secondary Education Act"
+    ],
+    "content": [
+      "The entire building is a no-smoking zone; however, a smoking room may be installed.",
+      "The entire premises is a no-smoking zone; however, a separate smoking room may not be installed inside the building, while a separate outdoor smoking room may be installed."
+    ]
+  },
+  {
+    "category": "Medical institutions",
+    "designated_no_smoking_areas": [
+      "Subparagraph 8: Entire hospital buildings of medical institutions under the Medical Service Act",
+      "Public health centers, health subcenters, and health and medical centers under the Regional Public Health Act"
+    ],
+    "content": [
+      "The entire facility is smoke-free, and separate indoor smoking rooms may not be installed.",
+      "Outdoor smoking facilities may be installed and operated, but smoking is not allowed within 10 meters of the building’s exterior walls or of spaces such as emergency exits."
+    ]
+  },
+  {
+    "category": "Youth facilities",
+    "designated_no_smoking_areas": [
+      "Subparagraph 10: Youth training centers under the Youth Activity Promotion Act",
+      "Youth welfare facilities under the Youth Welfare Support Act"
+    ],
+    "content": [
+      "The entire premises is a no-smoking zone, with no-smoking signs posted.",
+      "Smoking facilities may not be installed separately inside the building."
+    ]
+  },
+  {
+    "category": "Senior facilities",
+    "designated_no_smoking_areas": [
+      "Subparagraph 9: Senior welfare facilities under the Welfare of Older Persons Act"
+    ],
+    "content": [
+      "The entire premises is a no-smoking zone, with no-smoking signs posted."
+    ]
+  },
+  {
+    "category": "Libraries",
+    "designated_no_smoking_areas": [
+      "Subparagraph 11: Libraries under the Libraries Act"
+    ],
+    "content": ["The entire premises is a no-smoking zone."]
+  },
+  {
+    "category": "Children’s facilities",
+    "designated_no_smoking_areas": [
+      "Subparagraph 12: Children’s play facilities under the Children’s Play Facilities Safety Management Act"
+    ],
+    "content": ["The entire premises is a no-smoking zone."]
+  },
+  {
+    "category": "Private academies",
+    "designated_no_smoking_areas": [
+      "Subparagraph 13: Among academies under the Act on the Establishment and Operation of Private Teaching Institutes and Extracurricular Lessons, academies of 1,000 square meters or more and school-subject tutoring academies"
+    ],
+    "content": [
+      "Smoking is prohibited in public places such as the academy building, waiting rooms, platforms, and underground areas; however, a separate smoking room may be installed."
+    ]
+  },
+  {
+    "category": "Transportation facilities",
+    "designated_no_smoking_areas": [
+      "Subparagraph 14: Waiting rooms, platforms, and underground walkways of transportation facilities such as airports, passenger piers, railway stations, and bus terminals, and means of transportation with 16 or more seats that carry passengers or freight"
+    ],
+    "content": [
+      "Means of transportation with 16 or more seats that carry passengers or freight"
+    ]
+  },
+  {
+    "category": "Large buildings",
+    "designated_no_smoking_areas": [
+      "Subparagraph 15: Vans for transporting children under the Motor Vehicle Management Act",
+      "Factories with a total floor area of 1,000 square meters or more"
+    ],
+    "content": ["The vehicle is a no-smoking zone."]
+  },
+  {
+    "category": "Factories",
+    "designated_no_smoking_areas": [
+      "Factories with a total floor area of 1,000 square meters or more"
+    ],
+    "content": [
+      "The entire factory is a no-smoking zone, with no-smoking signs posted inside the building.",
+      "Outdoor smoking facilities may be installed and operated, but smoking is not allowed within 10 meters of the building’s exterior walls or of spaces such as emergency exits."
+    ]
+  },
+  {
+    "category": "Large retail stores",
+    "designated_no_smoking_areas": [
+      "Subparagraph 7: Building Act, factories with a total floor area of 300 square meters or more"
+    ],
+    "content": [
+      "The entire premises is a no-smoking zone, with no-smoking signs posted inside the building.",
+      "A smoking room may not be installed separately inside the building."
+    ]
+  },
+  {
+    "category": "Tourist accommodations",
+    "designated_no_smoking_areas": [
+      "Subparagraph 19: Tourist accommodation businesses under the Tourism Promotion Act"
+    ],
+    "content": [
+      "Smoking is prohibited in shared areas such as separate twin rooms or shared guest rooms, lobbies, hallways, and halls.",
+      "Guest rooms for which an individual’s age is the main criterion are not designated as no-smoking zones in their entirety; ancillary facilities such as bedrooms are subject to the law when they are within the business premises."
+    ]
+  },
+  {
+    "category": "Sports facilities",
+    "designated_no_smoking_areas": [
+      "Subparagraph 20: Sports facilities that can seat 1,000 or more spectators under the Installation and Utilization of Sports Facilities Act"
+    ],
+    "content": [
+      "The entire facility is a no-smoking zone, with no-smoking signs posted within the facility."
+    ]
+  },
+  {
+    "category": "Social welfare facilities",
+    "designated_no_smoking_areas": [
+      "Subparagraph 12: Social welfare facilities under the Social Welfare Services Act"
+    ],
+    "content": [
+      "The entire facility is a no-smoking zone, with no-smoking signs posted."
+    ]
+  },
+  {
+    "category": "Public bathhouses",
+    "designated_no_smoking_areas": [
+      "Subparagraph 22: Public bathhouses under the Public Health Act"
+    ],
+    "content": [
+      "The entire facility is a no-smoking zone, with no-smoking signs posted."
+    ]
+  },
+  {
+    "category": "Game arcades and PC cafés",
+    "designated_no_smoking_areas": [
+      "Subparagraph 23: Youth game arcades, general game arcades, and internet computer game facilities under the Game Industry Promotion Act"
+    ],
+    "content": [
+      "The entire premises is a no-smoking zone, with no-smoking signs posted.",
+      "Under the law, all game-related spaces may be designated as no-smoking zones."
+    ]
+  },
+  {
+    "category": "Restaurants",
+    "designated_no_smoking_areas": [
+      "Subparagraph 24: Among food businesses under the Food Sanitation Act, snack bars, general restaurants, and bakeries, food retailers under the same Act, and business premises of drinking water dealers under the Drinking Water Management Act"
+    ],
+    "content": [
+      "The entire business premises is a no-smoking zone, with no-smoking signs posted outside the premises."
+    ]
+  },
+  {
+    "category": "Comic book cafés",
+    "designated_no_smoking_areas": [
+      "Subparagraph 25: Comic book rental shops under the Juvenile Protection Act"
+    ],
+    "content": [
+      "The entire business premises is a no-smoking zone, with no-smoking signs posted inside the premises."
+    ]
+  }
+]

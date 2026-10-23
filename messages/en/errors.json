@@ -1,0 +1,14 @@
+{
+  "generic": "Something went wrong while processing your request.",
+  "badRequest": "Please check what you entered and try again.",
+  "unauthorized": "You don’t have permission to do this.",
+  "notFound": "We couldn’t find what you were looking for.",
+  "tooManyRequests": "Too many requests. Please wait a moment and try again.",
+  "server": "Something went wrong on our server. Please try again later.",
+  "network": "Can’t connect to the server. Please check your internet connection.",
+  "notFoundPage": {
+    "title": "Page not found",
+    "description": "The page you requested doesn’t exist or has been moved.",
+    "home": "Back to home"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "lawBaseDate": "2026-04-30",
+  "lawBaseNote": "Based on the National Health Promotion Act as in force · Enforcement Decree effective 2026-03-19, Enforcement Rule effective 2025-10-02, Tobacco Business Act effective 2026-04-24",
+  "reviewedAt": "2026-10-22",
+  "items": [
+    {
+      "question": "What is the fine for smoking in a no-smoking zone?",
+      "answer": [
+        "Under subparagraph 2 of Article 34 (3) of the National Health Promotion Act, a person who smokes in a no-smoking zone is subject to a fine of up to 100,000 won.",
+        "Under the imposition standards in Annex 5 of the Enforcement Decree, the fine is 100,000 won for no-smoking zones in public-use facilities (Article 9 (4) of the Act) and for no-smoking zones within 30 meters of the boundaries of kindergartens, daycare centers, and elementary, middle, and high schools (Article 9 (6) of the Act), and 50,000 won for no-smoking zones in apartment complexes (Article 9 (5) of the Act).",
+        "For no-smoking zones designated by local government ordinance (Article 9 (7) of the Act), the amount set by that ordinance applies, up to 100,000 won.",
+        "The fine may be reduced or waived if the person receives education or smoking cessation support services (Article 34 (5) of the Act)."
+      ],
+      "sources": [
+        {
+          "label": "National Health Promotion Act, Article 34",
+          "url": "https://www.law.go.kr/법령/국민건강증진법/제34조"
+        },
+        {
+          "label": "Enforcement Decree of the National Health Promotion Act, Article 33 · Annex 5",
+          "url": "https://www.law.go.kr/법령/국민건강증진법시행령/제33조"
+        }
+      ]
+    },
+    {
+      "question": "Are e-cigarettes also banned in no-smoking zones?",
+      "answer": [
+        "Article 9 (8) of the National Health Promotion Act provides that no one may smoke in a designated no-smoking zone, and it makes no exception based on the type of tobacco.",
+        "Subparagraph 1 of Article 2 of the Tobacco Business Act defines tobacco as a product made wholly or partly from leaf tobacco or nicotine and manufactured in a form suitable for smoking, sucking, inhaling as vapor, chewing, or sniffing.",
+        "Article 23 (1) of the National Health Promotion Act also classifies e-cigarettes as a type of tobacco."
+      ],
+      "sources": [
+        {
+          "label": "National Health Promotion Act, Article 9",
+          "url": "https://www.law.go.kr/법령/국민건강증진법/제9조"
+        },
+        {
+          "label": "Tobacco Business Act, Article 2",
+          "url": "https://www.law.go.kr/법령/담배사업법/제2조"
+        },
+        {
+          "label": "National Health Promotion Act, Article 23",
+          "url": "https://www.law.go.kr/법령/국민건강증진법/제23조"
+        }
+      ]
+    },
+    {
+      "question": "Can parts of an apartment complex (multi-unit housing) be designated as a no-smoking zone?",
+      "answer": [
+        "Yes. Under Article 9 (5) of the National Health Promotion Act, if at least half of the households in an apartment complex apply to have all or part of its hallways, stairways, elevators, and underground parking lots designated as no-smoking zones, the mayor, county head, or district head (including the Mayor of a Special Self-Governing City and the Governor of a Special Self-Governing Province) must designate those areas as no-smoking zones and put up signs.",
+        "The application must include documents proving that at least half of the heads of households have consented, and only consent given within three months before the application date is accepted (Article 6-2 (1) of the Enforcement Rule).",
+        "Smoking in a designated apartment no-smoking zone is subject to a fine of 50,000 won (Annex 5 of the Enforcement Decree)."
+      ],
+      "sources": [
+        {
+          "label": "National Health Promotion Act, Article 9",
+          "url": "https://www.law.go.kr/법령/국민건강증진법/제9조"
+        },
+        {
+          "label": "Enforcement Rule of the National Health Promotion Act, Article 6-2",
+          "url": "https://www.law.go.kr/법령/국민건강증진법시행규칙/제6조의2"
+        },
+        {
+          "label": "Enforcement Decree of the National Health Promotion Act, Article 33 · Annex 5",
+          "url": "https://www.law.go.kr/법령/국민건강증진법시행령/제33조"
+        }
+      ]
+    },
+    {
+      "question": "Can owners or managers of facilities designated as no-smoking zones be fined if they do not meet their obligations?",
+      "answer": [
+        "Owners, occupants, or managers of public-use facilities under Article 9 (4) of the National Health Promotion Act must designate the entire facility as a no-smoking zone and put up signs indicating the no-smoking zone.",
+        "If they fail to do so, the mayor, county head, or district head may order corrective action within a set period (Article 9 (9) of the Act), and failure to comply with that order is subject to a fine of up to 5,000,000 won (subparagraph 2 of Article 34 (1) of the Act).",
+        "Under the imposition standards in Annex 5 of the Enforcement Decree, the fine is 1,700,000 won for a first violation, 3,300,000 won for a second violation, and 5,000,000 won for a third or subsequent violation."
+      ],
+      "sources": [
+        {
+          "label": "National Health Promotion Act, Article 9",
+          "url": "https://www.law.go.kr/법령/국민건강증진법/제9조"
+        },
+        {
+          "label": "National Health Promotion Act, Article 34",
+          "url": "https://www.law.go.kr/법령/국민건강증진법/제34조"
+        },
+        {
+          "label": "Enforcement Decree of the National Health Promotion Act, Article 33 · Annex 5",
+          "url": "https://www.law.go.kr/법령/국민건강증진법시행령/제33조"
+        }
+      ]
+    }
+  ]
+}

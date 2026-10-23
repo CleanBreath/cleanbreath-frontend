@@ -1,0 +1,56 @@
+{
+  "version": {
+    "title": "Version info",
+    "latest": "Latest",
+    "developers": "{count, plural, one {Developer} other {Developers}}",
+    "changesTitle": "What’s new",
+    "changes": {
+      "v030": [
+        "Much faster data loading (with offline support)",
+        "More responsive map controls",
+        "Improved area suggestion page",
+        "Optimized law information page",
+        "Improved version info screen",
+        "Overall performance improvements"
+      ],
+      "v020": [
+        "Added apartment no-smoking zones to the map",
+        "Added law information page",
+        "Added server status page",
+        "UI/UX improvements and optimizations"
+      ],
+      "v010": [
+        "Map of no-smoking zones and smoking areas",
+        "Area list and search",
+        "Feedback and area suggestions",
+        "Initial release"
+      ]
+    }
+  },
+  "disclaimer": {
+    "label": "Service notice",
+    "summary": "No-smoking and smoking area information is shown <strong>for reference only</strong> and may differ from the actual situation on site.",
+    "details1": "The no-smoking zone and smoking area information in this service is provided <strong>for reference only</strong>. It may differ from conditions on site, and we do not guarantee its accuracy or accept legal liability for it.",
+    "details2": "For accurate no-smoking zone information, please contact the local authority responsible for the area.",
+    "details3": "The operator is not responsible for any problems arising from the use of this service.",
+    "details4": "If any information is inaccurate or needs updating, please let us know through Feedback.",
+    "collapse": "Show less",
+    "expand": "Show more",
+    "accept": "OK"
+  },
+  "feedback": {
+    "title": "Send feedback",
+    "description": "Tell us how we can improve the service",
+    "successTitle": "Feedback sent!",
+    "successMessage": "Thank you for your feedback.",
+    "titleLabel": "Title",
+    "titlePlaceholder": "Enter a title for your feedback",
+    "contentLabel": "Message",
+    "contentPlaceholder": "Share any ideas for improving the service.\nBug reports, feature requests, things that bother you: anything is welcome.",
+    "submitFailed": "Couldn’t send your feedback. Please try again later.",
+    "privacyNotice": "We store the feedback title, message and submission time, and delete them after one year. Please don’t include personal information.",
+    "privacyLink": "Privacy Policy",
+    "submitting": "Sending...",
+    "submit": "Send feedback"
+  }
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { Code2, User, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -18,6 +19,7 @@ interface VersionModalProps {
   onClose: () => void;
 }
 
+// 변경사항 문구는 messages의 overlays.version.changes.<changesKey>
 const VERSION_INFO = {
   current: "0.3.0",
   versions: [
@@ -25,41 +27,25 @@ const VERSION_INFO = {
       version: "0.3.0",
       date: "2025.02",
       developers: ["최현준"],
-      changes: [
-        "데이터 로딩 속도 대폭 개선 (오프라인 지원)",
-        "지도 조작 반응 속도 향상",
-        "구역 등록 페이지 개선",
-        "법령 정보 페이지 최적화",
-        "버전 정보 화면 개선",
-        "전반적인 성능 최적화",
-      ],
+      changesKey: "v030",
     },
     {
       version: "0.2.0",
       date: "2024.12",
       developers: ["최현준"],
-      changes: [
-        "아파트 금연구역 지도 표시 기능 추가",
-        "법령 정보 페이지 추가",
-        "서버 상태 확인 페이지 추가",
-        "UI/UX 개선 및 최적화",
-      ],
+      changesKey: "v020",
     },
     {
       version: "0.1.0",
       date: "2024.11",
       developers: ["최현준", "문찬수", "김건우", "유현목", "최시헌", "김장환"],
-      changes: [
-        "금연구역 및 흡연구역 지도 시각화",
-        "구역 목록 및 검색 기능",
-        "피드백 및 구역 등록 기능",
-        "초기 서비스 출시",
-      ],
+      changesKey: "v010",
     },
   ],
-};
+} as const;
 
 export function VersionModal({ isOpen, onClose }: VersionModalProps) {
+  const t = useTranslations("overlays.version");
   // Trigger 없이 열리므로 Radix가 포커스를 돌려주지 못한다 → 연 요소를 기억해 직접 복원
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
@@ -82,7 +68,7 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
             <Code2 size={20} aria-hidden />
           </div>
           <div className="space-y-0.5">
-            <SheetTitle className="text-lg">버전 정보</SheetTitle>
+            <SheetTitle className="text-lg">{t("title")}</SheetTitle>
             <SheetDescription className="tabular-nums">
               CleanBreath v{VERSION_INFO.current}
             </SheetDescription>
@@ -113,7 +99,7 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
                   </Badge>
                   {index === 0 && (
                     <Badge variant="secondary" className="text-xs">
-                      최신
+                      {t("latest")}
                     </Badge>
                   )}
                 </div>
@@ -132,11 +118,20 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
                   ) : (
                     <Users size={12} aria-hidden />
                   )}
-                  <span>개발자</span>
+                  <span>
+                    {t("developers", {
+                      count: versionInfo.developers.length,
+                    })}
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {versionInfo.developers.map((dev) => (
-                    <Badge key={dev} variant="secondary" className="text-xs">
+                    <Badge
+                      key={dev}
+                      variant="secondary"
+                      lang="ko"
+                      className="text-xs"
+                    >
                       {dev}
                     </Badge>
                   ))}
@@ -146,21 +141,23 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
               {/* 변경사항 */}
               <div>
                 <p className="mb-2 text-xs font-semibold text-muted-foreground">
-                  주요 변경사항
+                  {t("changesTitle")}
                 </p>
                 <ul className="space-y-1.5">
-                  {versionInfo.changes.map((change) => (
-                    <li
-                      key={change}
-                      className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"
-                    >
-                      <span
-                        aria-hidden
-                        className="mt-2 size-1 shrink-0 rounded-full bg-primary"
-                      />
-                      <span>{change}</span>
-                    </li>
-                  ))}
+                  {(t.raw(`changes.${versionInfo.changesKey}`) as string[]).map(
+                    (change) => (
+                      <li
+                        key={change}
+                        className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground"
+                      >
+                        <span
+                          aria-hidden
+                          className="mt-2 size-1 shrink-0 rounded-full bg-primary"
+                        />
+                        <span>{change}</span>
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             </section>

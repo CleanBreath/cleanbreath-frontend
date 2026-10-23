@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "title": "등록된 흡연·금연구역 목록",
+    "description": "CleanBreath에 등록된 흡연구역과 금연구역 목록을 확인하고 각 구역의 상세 정보를 볼 수 있습니다."
+  },
+  "detailMeta": {
+    "title": "흡연·금연구역 상세 정보",
+    "description": "CleanBreath에 등록된 흡연구역 또는 금연구역의 위치와 상세 정보를 확인할 수 있습니다."
+  },
+  "category": {
+    "SMOKING": "흡연구역",
+    "NON_SMOKING": "금연구역"
+  },
+  "list": {
+    "title": "등록된 흡연·금연구역",
+    "description": "이용자가 등록 요청한 구역 목록",
+    "sectionTitle": "구역 목록",
+    "empty": "등록된 구역이 없습니다.",
+    "columns": {
+      "id": "번호",
+      "title": "제목",
+      "category": "카테고리"
+    },
+    "pagination": "페이지 이동"
+  },
+  "detail": {
+    "title": "구역 상세 정보",
+    "description": "등록 요청된 구역의 위치와 투표 현황",
+    "notFound": "데이터를 찾을 수 없습니다.",
+    "voteTitle": "이 정보가 사실인가요?",
+    "voteTrue": "사실이에요",
+    "voteFalse": "아니에요"
+  },
+  "backToList": "목록으로"
+}

@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "title": "登録済みの喫煙所・禁煙エリア一覧",
+    "description": "CleanBreathに登録された喫煙所と禁煙エリアの一覧を確認し、各エリアの詳細情報を見ることができます。"
+  },
+  "detailMeta": {
+    "title": "喫煙所・禁煙エリアの詳細情報",
+    "description": "CleanBreathに登録された喫煙所または禁煙エリアの場所と詳細情報を確認できます。"
+  },
+  "category": {
+    "SMOKING": "喫煙所",
+    "NON_SMOKING": "禁煙エリア"
+  },
+  "list": {
+    "title": "登録済みの喫煙所・禁煙エリア",
+    "description": "ユーザーが登録をリクエストしたエリアの一覧",
+    "sectionTitle": "エリア一覧",
+    "empty": "登録されたエリアはありません。",
+    "columns": {
+      "id": "番号",
+      "title": "タイトル",
+      "category": "カテゴリー"
+    },
+    "pagination": "ページ移動"
+  },
+  "detail": {
+    "title": "エリアの詳細情報",
+    "description": "登録リクエストされたエリアの場所と投票状況",
+    "notFound": "データが見つかりません。",
+    "voteTitle": "この情報は正しいですか？",
+    "voteTrue": "正しい",
+    "voteFalse": "正しくない"
+  },
+  "backToList": "一覧へ"
+}

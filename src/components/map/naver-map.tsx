@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
@@ -74,6 +75,7 @@ export function NaverMap({
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
   const isLoaded = useNaverMapLoader();
+  const t = useTranslations("map");
 
   // 지도 초기화
   // biome-ignore lint/correctness/useExhaustiveDependencies: 생성 시점 center/zoom만 사용, 이후 변경은 아래 panTo/setZoom effect가 처리
@@ -276,7 +278,7 @@ export function NaverMap({
   if (!isLoaded) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-muted">
-        <p className="text-muted-foreground">지도를 불러오는 중...</p>
+        <p className="text-muted-foreground">{t("loading")}</p>
       </div>
     );
   }

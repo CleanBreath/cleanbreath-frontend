@@ -1,6 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ZONE_GROUPS } from "@/lib/zone-style";
@@ -23,6 +24,7 @@ const CHIP_CLASSES = {
 } as const;
 
 export function AreaToggle() {
+  const t = useTranslations("map");
   const showNonSmoking = useMapStore((state) => state.showNonSmoking);
   const showSmoking = useMapStore((state) => state.showSmoking);
   const showApartments = useMapStore((state) => state.showApartments);
@@ -39,11 +41,11 @@ export function AreaToggle() {
   return (
     // 칩이 넘치면 가로 스크롤. 칩 영역만 차지해 나머지 지도 드래그를 막지 않는다 (p-1은 그림자 잘림 방지)
     <fieldset
-      aria-label="지도 구역 필터"
+      aria-label={t("filterLabel")}
       className="absolute top-2 left-2 z-20 flex min-w-0 max-w-[calc(100%-1rem)] gap-2 overflow-x-auto p-1 [scrollbar-width:none]"
     >
       {chips.map(({ group, pressed, onClick }) => {
-        const { label, icon: Icon } = ZONE_GROUPS[group];
+        const { icon: Icon } = ZONE_GROUPS[group];
         const classes = CHIP_CLASSES[group];
         return (
           <Button
@@ -64,7 +66,7 @@ export function AreaToggle() {
             )}
           >
             <Icon aria-hidden className={pressed ? undefined : classes.icon} />
-            {label}
+            {t(`zoneGroups.${group}`)}
             {pressed && <Check aria-hidden />}
           </Button>
         );

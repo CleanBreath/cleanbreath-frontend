@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "title": "서버 상태",
+    "description": "CleanBreath 서비스의 서버 상태를 확인합니다."
+  },
+  "header": {
+    "title": "서버 상태",
+    "description": "시스템 헬스 체크"
+  },
+  "status": {
+    "healthy": "정상",
+    "unhealthy": "오류",
+    "checking": "확인 중"
+  },
+  "services": {
+    "api": "API 서버"
+  },
+  "overall": {
+    "healthy": {
+      "title": "모든 시스템 정상",
+      "description": "모든 서비스가 정상적으로 작동하고 있습니다."
+    },
+    "unhealthy": {
+      "title": "시스템 오류 발생",
+      "description": "일부 서비스에 문제가 발생했습니다."
+    },
+    "checking": {
+      "title": "시스템 확인 중",
+      "description": "시스템 상태를 확인하고 있습니다."
+    }
+  },
+  "lastChecked": "마지막 확인: {time}",
+  "statusLine": "상태: {message}",
+  "connectionFailed": "연결 실패",
+  "responseTime": "응답 시간: {ms}ms",
+  "guide": {
+    "title": "서버 상태 안내",
+    "healthy": "<b>정상:</b> 서비스가 정상적으로 작동하고 있습니다.",
+    "unhealthy": "<b>오류:</b> 서비스에 문제가 발생했습니다. 관리자에게 문의하세요.",
+    "checking": "<b>확인 중:</b> 서비스 상태를 확인하고 있습니다."
+  }
+}
