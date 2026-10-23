@@ -7,6 +7,8 @@ import type { AddressItem, ApartmentItem } from "@/types";
 
 const DB_NAME = "cleanbreath-cache";
 const DB_VERSION = 1;
+// 서버 데이터를 직접 고쳤을 때 올리면 기존 캐시를 30일 기다리지 않고 다시 받는다
+const CACHE_REVISION = "2026-10-23";
 
 // Store 이름 정의
 const STORES = {
@@ -78,6 +80,7 @@ export async function saveAddresses(
   const metadataStore = tx.objectStore(STORES.METADATA);
   metadataStore.put({ key: "addresses_updateAt", value: updateAt });
   metadataStore.put({ key: "addresses_cachedAt", value: Date.now() });
+  metadataStore.put({ key: "addresses_revision", value: CACHE_REVISION });
 
   await new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve();
@@ -221,6 +224,7 @@ export async function setMetadata(
 export async function isDataExpired(): Promise<boolean> {
   const cachedAt = await getMetadata("addresses_cachedAt");
   if (!cachedAt || typeof cachedAt !== "number") return true;
+  if ((await getMetadata("addresses_revision")) !== CACHE_REVISION) return true;
 
   const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000; // 30일
   return cachedAt < oneMonthAgo;
