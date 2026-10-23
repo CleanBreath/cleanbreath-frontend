@@ -1,0 +1,233 @@
+{
+  "meta": {
+    "title": "Privacy Policy",
+    "description": "Learn what personal information CleanBreath processes, why and for how long, which processors and overseas transfers are involved, and what rights you have and how to exercise them. No sign-up is required, and we do not collect names, contact details or email addresses."
+  },
+  "translationNotice": "This English version is a reference translation provided for your convenience. If there is any discrepancy between this translation and the Korean original, the Korean version prevails.",
+  "intro": {
+    "scope": "The Daelim University BlueSky Team (the “Team”) operates CleanBreath (the “Service”) and, in accordance with Article 30 of Korea’s Personal Information Protection Act, explains below how it processes users’ personal information.",
+    "noAccount": "The Service can be used without signing up or logging in. <strong>We do not collect names, phone numbers, email addresses or accounts (IDs and passwords).</strong>"
+  },
+  "purpose": {
+    "title": "1. Purposes of Processing Personal Information",
+    "lead": "The Team processes personal information only for the following purposes and will notify you in advance if these purposes change.",
+    "items": [
+      "Receiving feedback and improving the Service",
+      "Receiving area registration requests, publishing them on the board, and adding them to the map based on voting results",
+      "Checking to prevent duplicate votes on the same request from the same browser",
+      "Reviewing access logs to keep the Service stable, investigate errors and prevent misuse"
+    ]
+  },
+  "items": {
+    "title": "2. Personal Information Processed",
+    "tableLabel": "Personal information processed",
+    "columns": {
+      "kind": "Category",
+      "item": "Items",
+      "method": "How it is collected"
+    },
+    "rows": [
+      {
+        "kind": "Information entered by users",
+        "item": "Feedback: title, content, time submitted",
+        "method": "Entered directly in the feedback form"
+      },
+      {
+        "kind": "Information entered by users",
+        "item": "Area registration requests: address, building name, location coordinates (latitude and longitude), area type, area boundary coordinates, time registered",
+        "method": "Entered directly on the area registration screen or selected on the map"
+      },
+      {
+        "kind": "Automatically collected information",
+        "item": "Vote records: browser token (random value), the request voted on, vote value (Correct / Incorrect)",
+        "method": "Sent when you vote on the board"
+      },
+      {
+        "kind": "Automatically collected information",
+        "item": "Access logs: IP address, access time, User-Agent (browser and device information)",
+        "method": "Automatically recorded by web servers and network equipment when you access the Service"
+      },
+      {
+        "kind": "Device storage information",
+        "item": "localStorage: browser token, whether you have acknowledged the usage notice / IndexedDB: a copy of the map area data",
+        "method": "Stored only on your device (nothing is sent to the server except the browser token sent when you vote)"
+      }
+    ],
+    "noLocation": "We do not collect the current location of your device (such as GPS). The coordinates entered when registering an area are the location of the area being registered.",
+    "noSensitive": "We do not process sensitive information or unique identification information.",
+    "public": "The content of area registration requests and their vote counts are made public on the <board>board</board> for anyone to see.",
+    "noPersonalInput": "Please do not enter personal information such as your name or contact details in free-text fields such as the feedback title and content or the building name."
+  },
+  "retention": {
+    "title": "3. Processing and Retention Periods",
+    "tableLabel": "Retention period by item",
+    "columns": {
+      "item": "Item",
+      "period": "Retention period"
+    },
+    "rows": [
+      {
+        "item": "Feedback content",
+        "period": "Destroyed one year after receipt"
+      },
+      {
+        "item": "Area registration requests (address, coordinates, building name, area type, etc.)",
+        "period": "If approved and added to the map, kept as public map data for as long as the Service operates; requests that are not approved are destroyed six months after registration"
+      },
+      {
+        "item": "Vote records (browser token and vote value)",
+        "period": "Destroyed together with the registration request when it is approved or destroyed"
+      },
+      {
+        "item": "Web server access logs (IP address, access time, User-Agent)",
+        "period": "Three months (with reference to the three-month log retention period in the Enforcement Decree of the Protection of Communications Secrets Act)"
+      },
+      {
+        "item": "Device storage data (localStorage and IndexedDB)",
+        "period": "Until you delete your browser data (stored only on your device)"
+      }
+    ],
+    "note": "A registration request is added to the map automatically at 3 a.m. (Korea time) every day once it collects 20 or more “Correct” votes, at which point the request and its vote records are deleted."
+  },
+  "destruction": {
+    "title": "4. Procedures and Methods for Destroying Personal Information",
+    "items": [
+      "Personal information is destroyed without delay once its retention period ends or its processing purpose has been achieved.",
+      "Information in electronic form is deleted from databases and log files in a way that cannot be recovered.",
+      "We do not process personal information in paper documents.",
+      "Device storage data is erased immediately when you delete site data in your browser settings."
+    ]
+  },
+  "thirdParty": {
+    "title": "5. Provision of Personal Information to Third Parties",
+    "body": "The Team does not provide personal information to third parties, except where permitted under Articles 17 and 18 of the Personal Information Protection Act, such as where specifically required by law."
+  },
+  "outsourcing": {
+    "title": "6. Outsourcing and Overseas Transfer of Personal Information",
+    "processing": {
+      "heading": "Outsourcing of processing",
+      "lead": "To provide the Service, the Team entrusts personal information processing tasks to the following infrastructure providers.",
+      "tableLabel": "Processors",
+      "columns": {
+        "name": "Processor",
+        "task": "Outsourced task",
+        "location": "Location"
+      },
+      "rows": [
+        {
+          "task": "Website hosting and delivery",
+          "location": "United States"
+        },
+        {
+          "task": "Network security and content delivery (CDN)",
+          "location": "United States"
+        },
+        {
+          "task": "API server operation (cloud infrastructure)",
+          "location": "Republic of Korea (Seoul Region)"
+        }
+      ]
+    },
+    "map": {
+      "heading": "Map service",
+      "body": "The map screen loads map scripts and images directly from NAVER Cloud Platform Maps, operated by NAVER Cloud. Because your browser connects to NAVER servers in this process, access information such as your IP address is passed to NAVER, and the coordinates of a location you select on the map on the area registration screen are sent to NAVER for address conversion. This information is processed in accordance with the NAVER privacy policy."
+    },
+    "transfer": {
+      "heading": "Overseas transfer",
+      "lead": "In accordance with Article 28-8 of the Personal Information Protection Act, we disclose the personal information transferred overseas as follows.",
+      "tableLabel": "Overseas transfers of personal information",
+      "columns": {
+        "recipient": "Recipient",
+        "country": "Destination country",
+        "items": "Items transferred",
+        "timing": "When and how",
+        "purpose": "Purpose",
+        "retention": "Retention period"
+      },
+      "policyLink": "Privacy policy",
+      "country": "United States",
+      "timing": "Transmitted over the network when you use the Service",
+      "retention": "Until the purpose of outsourcing is achieved (access logs within the retention period in Section 3)",
+      "rows": [
+        {
+          "items": "Access logs (IP address, access time, User-Agent), page request information",
+          "purpose": "Providing the website"
+        },
+        {
+          "items": "Access logs (IP address, access time, User-Agent), API request data (feedback, area registration requests and votes)",
+          "purpose": "Network security and traffic delivery"
+        }
+      ],
+      "refuse": "If you do not want your personal information transferred overseas, you can stop using the Service. Because the Service is provided only through the infrastructure above, you cannot use the Service if you refuse the transfer."
+    }
+  },
+  "rights": {
+    "title": "7. Rights and Obligations of Data Subjects and How to Exercise Them",
+    "request": "You may at any time request access to, correction or deletion of, or suspension of processing of your personal information. You may also make these requests through a legal representative or an authorized agent.",
+    "how": "Please send your request through <issues>GitHub Issues</issues> or the feedback feature on the home screen. GitHub Issues is visible to everyone, so do not include personal information there.",
+    "identify": "Because there are no accounts, we have no way to verify your identity. Please include information that identifies the post in question (such as the request number in the board detail page address, or the feedback title and time submitted). We will process your request on that basis.",
+    "deleteLocal": "You can delete the browser token and device storage data yourself in your browser settings.",
+    "duty": "You must not enter other people’s personal information, and any problem caused by entering incorrect information is the responsibility of the user who entered it."
+  },
+  "storage": {
+    "title": "8. Installation, Operation and Refusal of Automatic Collection Tools",
+    "lead": "The Team does not use cookies or analytics tools for advertising or behavioral analysis. Instead, the following information is stored in your browser storage for Service features.",
+    "tableLabel": "Device storage usage",
+    "columns": {
+      "where": "Storage",
+      "name": "Name",
+      "purpose": "Content and purpose"
+    },
+    "rows": [
+      "A random browser token. Prevents duplicate votes on the same request.",
+      "Whether you have acknowledged the usage notice. Keeps the notice from appearing repeatedly.",
+      "A copy of no-smoking zone, smoking area and apartment complex data, and when it was last updated. Used to load the map quickly."
+    ],
+    "items": [
+      "The browser token is created the first time you vote and is sent to the server only when you vote. Other data is not sent to the server.",
+      "You can delete site data or block storage in your browser settings. If you do, some features such as voting may not work properly."
+    ]
+  },
+  "security": {
+    "title": "9. Measures to Ensure the Security of Personal Information",
+    "items": [
+      "Minimal collection: we do not collect information that directly identifies individuals, and we process only the information the Service needs.",
+      "Encryption in transit: communication with the Service and API is encrypted with HTTPS.",
+      "Network security: Cloudflare network security services are applied in front of the API server."
+    ]
+  },
+  "officer": {
+    "title": "10. Chief Privacy Officer",
+    "lead": "To oversee personal information processing and handle related inquiries and complaints, we have designated a chief privacy officer as follows.",
+    "name": "Chief privacy officer: <strong>Daelim University BlueSky Team</strong>",
+    "contact": "Contact: <issues>GitHub Issues</issues> or the feedback feature on the home screen"
+  },
+  "remedies": {
+    "title": "11. Remedies for Infringement of Rights",
+    "lead": "If you need to report or seek advice about an infringement of your personal information, you can contact the organizations below (services are mainly in Korean).",
+    "rows": [
+      {
+        "name": "Personal Information Dispute Mediation Committee",
+        "phone": "1833-6972"
+      },
+      {
+        "name": "Personal Information Infringement Report Center",
+        "phone": "118 (no area code)"
+      },
+      {
+        "name": "Supreme Prosecutors’ Office",
+        "phone": "1301 (no area code)"
+      },
+      {
+        "name": "Korean National Police Agency",
+        "phone": "182 (no area code)"
+      }
+    ]
+  },
+  "changes": {
+    "title": "12. Changes to This Privacy Policy",
+    "effective": "This privacy policy takes effect on <time>{date}</time>. If it changes, we will announce the changes on this page at least seven days before they take effect.",
+    "related": "Related:"
+  },
+  "effectiveDate": "Effective date:"
+}

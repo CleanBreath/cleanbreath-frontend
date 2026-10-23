@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "About CleanBreath",
+    "description": "CleanBreath is a map of no-smoking zones and smoking areas run by the Daelim University BlueSky Team. Learn who operates it, how area data is managed, how suggested areas are added to the map, and how to contact us.",
+    "breadcrumb": "About"
+  },
+  "intro": {
+    "title": "What is CleanBreath?",
+    "lead": "CleanBreath is a free map service that shows <strong>no-smoking zones</strong> and <strong>smoking areas</strong> in and around Anyang, Korea.",
+    "items": [
+      "A map showing no-smoking zones in green and smoking areas in orange, red or purple, depending on their type.",
+      "Whether apartment complexes have designated their hallways, stairs, elevators and underground parking garages as no-smoking zones.",
+      "A searchable list of areas.",
+      "Information on no-smoking zone rules under Korea’s National Health Promotion Act.",
+      "A way to suggest new areas, vote on suggested areas and send feedback."
+    ]
+  },
+  "operator": {
+    "title": "Who runs CleanBreath",
+    "lead": "CleanBreath is developed and operated by the <strong>Daelim University BlueSky Team</strong>. The first version (v0.1.0) was released in November 2024, and the source code is public on GitHub.",
+    "developers": "Developers",
+    "github": "GitHub repository"
+  },
+  "data": {
+    "title": "How area data is managed",
+    "source": "The area information shown on the map is provided by the CleanBreath server.",
+    "proposal": "Areas suggested on the <register>Suggest an area</register> page are not added to the map right away. They are posted publicly on the <board>board</board>, where anyone can vote “Correct” or “Incorrect”.",
+    "autoApply": "Areas that collect 20 or more “Correct” votes are added to the map automatically at 3 a.m. (Korea time) every day, without any separate human review.",
+    "voting": "You can vote without logging in. To prevent duplicate votes, a random identifier stored in your browser is recorded along with your vote.",
+    "cache": "The app keeps area data on your device. When you visit more than 24 hours after the last check, or at the end of each month, it checks the server for new data and updates it."
+  },
+  "contact": {
+    "title": "Contact and reporting incorrect information",
+    "body": "If area information does not match reality, or you have a question about the service, let us know through the feedback feature on the home screen or on GitHub Issues. Your feedback helps us improve the service.",
+    "feedback": "Send feedback on the home screen",
+    "privacy": "Privacy Policy"
+  },
+  "disclaimer": {
+    "title": "Disclaimer",
+    "lead": "The no-smoking zone and smoking area information provided by this service is <strong>for reference only</strong>. It may differ from actual conditions on site, and we do not guarantee its accuracy or accept legal responsibility for it.",
+    "items": [
+      "For accurate no-smoking zone information, please contact the local authority responsible for the area.",
+      "The operator is not responsible for any problems arising from the use of this service."
+    ]
+  },
+  "law": {
+    "title": "Related laws",
+    "body": "Which facilities are designated as no-smoking zones, and the standards for installing smoking rooms, are set by the National Health Promotion Act and its Enforcement Rule.",
+    "statute": "View no-smoking zone laws",
+    "external": "National Health Promotion Act (National Law Information Center, in Korean)"
+  },
+  "lastUpdated": "Last updated:"
+}
