@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "title": "No-Smoking Zone Facilities and Related Laws",
+    "description": "Learn which facilities are designated no-smoking zones under Korea’s National Health Promotion Act, the related laws, the fines for smoking in a no-smoking zone, and no-smoking zones in apartment complexes."
+  },
+  "title": "No-Smoking Zone Laws",
+  "subtitle": "Enforcement Rule of the National Health Promotion Act",
+  "intro": "Below are the facilities designated as no-smoking zones and the related rules under the <strong>National Health Promotion Act</strong>. For each type of facility, you can check how much of it is a no-smoking zone and whether a smoking room may be installed.",
+  "translationNotice": "This English version is a reference translation. If it differs from the Korean version, the Korean version prevails.",
+  "lawDates": "Law as of: <num>{lawBaseDate}</num> · Last reviewed: <num>{reviewedAt}</num>",
+  "disclaimer": "This information is for reference only. Please check the relevant laws for the exact legal text.",
+  "law": {
+    "name": "National Health Promotion Act",
+    "source": "Ministry of Government Legislation, National Law Information Center",
+    "view": "View the law (Korean)"
+  },
+  "card": {
+    "itemCount": "{count, plural, one {# item} other {# items}}",
+    "designatedAreas": "Designated no-smoking zones",
+    "details": "Detailed rules"
+  }
+}

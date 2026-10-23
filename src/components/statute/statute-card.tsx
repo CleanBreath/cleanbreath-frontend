@@ -1,4 +1,5 @@
 import { Building2, ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -23,6 +24,7 @@ export function StatuteCard({
   onToggle,
   index,
 }: StatuteCardProps) {
+  const t = useTranslations("statute.card");
   const panelId = `statute-panel-${index}`;
 
   return (
@@ -50,7 +52,7 @@ export function StatuteCard({
           <span className="min-w-0 flex-1">
             <span className="block font-semibold">{category}</span>
             <span className="block text-sm font-normal text-muted-foreground tabular-nums">
-              {designatedNoSmokingAreas.length}개 항목
+              {t("itemCount", { count: designatedNoSmokingAreas.length })}
             </span>
           </span>
           <ChevronDown
@@ -82,7 +84,7 @@ export function StatuteCard({
             {/* 지정 금연구역 */}
             <div className="mb-4">
               <h3 className="mb-2 text-sm font-semibold text-primary">
-                지정 금연구역
+                {t("designatedAreas")}
               </h3>
               <div className="space-y-2">
                 {designatedNoSmokingAreas.map((area, i) => (
@@ -105,7 +107,7 @@ export function StatuteCard({
             {/* 세부 내용 */}
             <div>
               <h3 className="mb-2 text-sm font-semibold text-primary">
-                세부 규정
+                {t("details")}
               </h3>
               <div className="space-y-2">
                 {content.map((item) => (
