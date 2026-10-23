@@ -15,13 +15,7 @@ export { getAllApartments, getApartmentsByRegion } from "./apartment";
 export { ApiError, apiDelete, apiGet, apiPost, apiPut } from "./client";
 
 // Feedback API
-export {
-  addFeedback,
-  deleteFeedback,
-  getFeedbackById,
-  getFeedbackList,
-  updateFeedback,
-} from "./feedback";
+export { addFeedback } from "./feedback";
 // Health Check API
 export { checkServerHealth } from "./health";
 // Pending Address API
