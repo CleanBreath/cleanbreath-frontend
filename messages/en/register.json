@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Suggest a Smoking Area or No-Smoking Zone",
+    "description": "Pick a spot on the map to request that a new smoking area or no-smoking zone be added."
+  },
+  "header": {
+    "title": "Suggest a new area",
+    "description": "Mark a smoking area or no-smoking zone on the map to suggest it"
+  },
+  "guide": {
+    "draw": "Tap “Draw area”, then place at least 3 points on the map to mark the area.",
+    "publish": "Areas you submit are posted on the board. Once an area gets 20 or more “Correct” votes, it is added to the map automatically at 3 a.m. (Korea time) every day."
+  },
+  "category": {
+    "title": "Area type",
+    "NON_SMOKING": "No-smoking zone",
+    "SMOKING": "Smoking area"
+  },
+  "location": {
+    "title": "Location",
+    "pinMode": "Tap the map to fill in the location automatically",
+    "address": "Address",
+    "addressPlaceholder": "e.g. Pyeongchon-dong, Dongan-gu, Anyang-si, Gyeonggi-do",
+    "building": "Building name",
+    "buildingPlaceholder": "e.g. Pyeongchon Station Plaza"
+  },
+  "area": {
+    "title": "Area",
+    "pointCount": "{count, plural, one {# point} other {# points}}",
+    "drawing": "Drawing...",
+    "draw": "Draw area",
+    "clear": "Clear all points",
+    "needMore": "Place at least 3 points ({remaining} more needed)",
+    "done": "Area marked"
+  },
+  "privacyNotice": "When you submit a request, the information you entered, such as the area’s location, address, building name and type, is sent and posted publicly on the board. For details, see our <link>Privacy Policy</link>.",
+  "submitting": "Submitting...",
+  "submit": "Submit area request",
+  "submitFailed": "Something went wrong while submitting the area. Please try again later.",
+  "success": {
+    "title": "Request submitted!",
+    "description": "The area you suggested will be posted on the board. Once it gets 20 or more “Correct” votes, it is added to the map automatically at 3 a.m. (Korea time) every day.",
+    "viewBoard": "View on the board"
+  },
+  "map": {
+    "label": "Map for choosing a location",
+    "drawingHint": "Tap the map to mark the area",
+    "pinHint": "Tap the map to fill in the address automatically"
+  }
+}

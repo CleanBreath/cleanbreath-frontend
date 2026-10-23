@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "title": "Server Status",
+    "description": "Check the server status of the CleanBreath service."
+  },
+  "header": {
+    "title": "Server status",
+    "description": "System health check"
+  },
+  "status": {
+    "healthy": "Operational",
+    "unhealthy": "Error",
+    "checking": "Checking"
+  },
+  "services": {
+    "api": "API server"
+  },
+  "overall": {
+    "healthy": {
+      "title": "All systems operational",
+      "description": "All services are running normally."
+    },
+    "unhealthy": {
+      "title": "System error",
+      "description": "Some services are experiencing problems."
+    },
+    "checking": {
+      "title": "Checking systems",
+      "description": "Checking the system status."
+    }
+  },
+  "lastChecked": "Last checked: {time}",
+  "statusLine": "Status: {message}",
+  "connectionFailed": "Connection failed",
+  "responseTime": "Response time: {ms} ms",
+  "guide": {
+    "title": "About server status",
+    "healthy": "<b>Operational:</b> The service is running normally.",
+    "unhealthy": "<b>Error:</b> The service is experiencing a problem. Please contact the administrator.",
+    "checking": "<b>Checking:</b> The service status is being checked."
+  }
+}

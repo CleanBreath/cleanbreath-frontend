@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "title": "サーバーステータス",
+    "description": "CleanBreathサービスのサーバーステータスを確認します。"
+  },
+  "header": {
+    "title": "サーバーステータス",
+    "description": "システムのヘルスチェック"
+  },
+  "status": {
+    "healthy": "正常",
+    "unhealthy": "エラー",
+    "checking": "確認中"
+  },
+  "services": {
+    "api": "APIサーバー"
+  },
+  "overall": {
+    "healthy": {
+      "title": "すべてのシステムが正常です",
+      "description": "すべてのサービスが正常に稼働しています。"
+    },
+    "unhealthy": {
+      "title": "システムエラーが発生しました",
+      "description": "一部のサービスで問題が発生しています。"
+    },
+    "checking": {
+      "title": "システムを確認中",
+      "description": "システムの状態を確認しています。"
+    }
+  },
+  "lastChecked": "最終確認：{time}",
+  "statusLine": "状態：{message}",
+  "connectionFailed": "接続失敗",
+  "responseTime": "応答時間：{ms}ms",
+  "guide": {
+    "title": "サーバーステータスについて",
+    "healthy": "<b>正常：</b>サービスは正常に稼働しています。",
+    "unhealthy": "<b>エラー：</b>サービスに問題が発生しています。管理者にお問い合わせください。",
+    "checking": "<b>確認中：</b>サービスの状態を確認しています。"
+  }
+}

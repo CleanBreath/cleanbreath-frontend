@@ -7,28 +7,18 @@ import {
   CigaretteOff,
   ClipboardList,
 } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSmokingAreaList } from "@/hooks/use-smoking-area";
-
-/** 카테고리 한글 라벨 */
-function categoryLabel(category: string) {
-  switch (category) {
-    case "NON_SMOKING":
-      return "금연구역";
-    case "SMOKING":
-      return "흡연구역";
-    default:
-      return category;
-  }
-}
+import { Link } from "@/i18n/navigation";
 
 /** 카테고리 뱃지: 색 + 아이콘 + 라벨 (zone ink 토큰은 흰 글자 대비 4.5:1 이상) */
 function CategoryBadge({ category }: { category: string }) {
+  const t = useTranslations("board.category");
   const isSmoking = category === "SMOKING";
   const Icon = isSmoking ? Cigarette : CigaretteOff;
   return (
@@ -40,12 +30,17 @@ function CategoryBadge({ category }: { category: string }) {
       }
     >
       <Icon aria-hidden />
-      {categoryLabel(category)}
+      {/* 모르는 카테고리 값은 원문 그대로 */}
+      {category === "SMOKING" || category === "NON_SMOKING"
+        ? t(category)
+        : category}
     </Badge>
   );
 }
 
 export default function BoardPage() {
+  const t = useTranslations("board");
+  const tc = useTranslations("common");
   const [page, setPage] = useState(0);
   const size = 10;
   const { data, isLoading } = useSmokingAreaList(page, size);
@@ -57,30 +52,34 @@ export default function BoardPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
       <PageHeader
-        title="등록된 흡연·금연구역"
-        description="이용자가 등록 요청한 구역 목록"
+        title={t("list.title")}
+        description={t("list.description")}
         icon={<ClipboardList />}
       />
 
       <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base">
-        <PageSection title="구역 목록">
+        <PageSection title={t("list.sectionTitle")}>
           {isLoading ? (
             <p role="status" className="py-8 text-center text-muted-foreground">
-              불러오는 중...
+              {tc("loading")}
             </p>
           ) : items.length === 0 ? (
             <p className="py-8 text-center text-muted-foreground">
-              등록된 구역이 없습니다.
+              {t("list.empty")}
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="border-b text-left text-sm text-muted-foreground">
-                    <th className="w-16 pr-4 pb-2 font-medium">번호</th>
-                    <th className="pr-4 pb-2 font-medium">제목</th>
+                    <th className="w-16 pr-4 pb-2 font-medium">
+                      {t("list.columns.id")}
+                    </th>
+                    <th className="pr-4 pb-2 font-medium">
+                      {t("list.columns.title")}
+                    </th>
                     <th className="w-28 pb-2 text-center font-medium">
-                      카테고리
+                      {t("list.columns.category")}
                     </th>
                   </tr>
                 </thead>
@@ -98,8 +97,11 @@ export default function BoardPage() {
                           href={`/board/${item.id}`}
                           className="flex min-h-12 items-center py-2 font-medium hover:underline"
                         >
-                          {item.addressName}
-                          {item.buildingName && ` ${item.buildingName}`}
+                          {/* 백엔드 원문 데이터라 en/ja 화면에서도 한국어로 읽히게 */}
+                          <span lang="ko">
+                            {item.addressName}
+                            {item.buildingName && ` ${item.buildingName}`}
+                          </span>
                         </Link>
                       </td>
                       <td className="text-center">
@@ -115,7 +117,7 @@ export default function BoardPage() {
           {/* 페이지네이션 */}
           {totalPages > 1 && (
             <nav
-              aria-label="페이지 이동"
+              aria-label={t("list.pagination")}
               className="flex items-center justify-center gap-3 pt-6"
             >
               <Button
@@ -125,7 +127,7 @@ export default function BoardPage() {
                 onClick={() => setPage((p) => Math.max(0, p - 1))}
               >
                 <ChevronLeft aria-hidden />
-                이전
+                {tc("previous")}
               </Button>
 
               <span className="px-2 text-sm text-muted-foreground tabular-nums">
@@ -138,7 +140,7 @@ export default function BoardPage() {
                 disabled={page >= totalPages - 1}
                 onClick={() => setPage((p) => p + 1)}
               >
-                다음
+                {tc("next")}
                 <ChevronRight aria-hidden />
               </Button>
             </nav>
@@ -148,7 +150,7 @@ export default function BoardPage() {
         {/* 홈으로 돌아가기 */}
         <div className="flex justify-center">
           <Button variant="ghost" size="touch" asChild>
-            <Link href="/">홈으로</Link>
+            <Link href="/">{tc("backHome")}</Link>
           </Button>
         </div>
       </main>

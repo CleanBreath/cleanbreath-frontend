@@ -8,6 +8,7 @@ import {
   Server,
   XCircle,
 } from "lucide-react";
+import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { checkServerHealth } from "@/api";
 import { PageHeader } from "@/components/layout/page-header";
@@ -18,34 +19,37 @@ import { cn } from "@/lib/utils";
 // 상태색은 토큰만 사용: 정상=primary, 오류=destructive, 확인 중=muted
 const STATUS_STYLE = {
   healthy: {
-    label: "정상",
     tone: "bg-primary/10 text-primary",
     dot: "bg-primary",
   },
   unhealthy: {
-    label: "오류",
     tone: "bg-destructive/10 text-destructive",
     dot: "bg-destructive",
   },
   checking: {
-    label: "확인 중",
     tone: "bg-muted text-muted-foreground",
     dot: "bg-muted-foreground",
   },
 } as const;
 
 interface ServiceStatus {
-  name: string;
+  /** health.services 아래 서비스 이름 키 */
+  name: "api";
   status: "healthy" | "unhealthy" | "checking";
+  /** 백엔드가 준 상태 값 (UP 등) */
   message?: string;
+  /** 연결 자체가 실패했는지. 문구는 화면 언어로 표시 */
+  failed?: boolean;
   responseTime?: number;
   icon: React.ReactNode;
 }
 
 export default function HealthPage() {
+  const t = useTranslations("health");
+  const format = useFormatter();
   const [services, setServices] = useState<ServiceStatus[]>([
     {
-      name: "API 서버",
+      name: "api",
       status: "checking",
       icon: <Server size={20} />,
     },
@@ -64,7 +68,7 @@ export default function HealthPage() {
         // API 서버 상태만 표시
         setServices([
           {
-            name: "API 서버",
+            name: "api",
             status: health.status === "UP" ? "healthy" : "unhealthy",
             message: health.status,
             responseTime,
@@ -75,9 +79,9 @@ export default function HealthPage() {
         const responseTime = Date.now() - startTime;
         setServices([
           {
-            name: "API 서버",
+            name: "api",
             status: "unhealthy",
-            message: "연결 실패",
+            failed: true,
             responseTime,
             icon: <Server size={20} />,
           },
@@ -109,8 +113,8 @@ export default function HealthPage() {
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
       <PageHeader
-        title="서버 상태"
-        description="시스템 헬스 체크"
+        title={t("header.title")}
+        description={t("header.description")}
         icon={<Activity />}
       />
 
@@ -137,24 +141,19 @@ export default function HealthPage() {
             </div>
             <div className="min-w-0 flex-1">
               <h2 className="text-xl font-bold">
-                {allHealthy
-                  ? "모든 시스템 정상"
-                  : anyUnhealthy
-                    ? "시스템 오류 발생"
-                    : "시스템 확인 중"}
+                {t(`overall.${overall}.title`)}
               </h2>
               <p className="text-muted-foreground">
-                {allHealthy
-                  ? "모든 서비스가 정상적으로 작동하고 있습니다."
-                  : anyUnhealthy
-                    ? "일부 서비스에 문제가 발생했습니다."
-                    : "시스템 상태를 확인하고 있습니다."}
+                {t(`overall.${overall}.description`)}
               </p>
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock size={14} aria-hidden />
                 <span className="tabular-nums">
-                  마지막 확인:{" "}
-                  {lastChecked ? lastChecked.toLocaleTimeString("ko-KR") : "-"}
+                  {t("lastChecked", {
+                    time: lastChecked
+                      ? format.dateTime(lastChecked, { timeStyle: "medium" })
+                      : "-",
+                  })}
                 </span>
               </div>
             </div>
@@ -165,6 +164,9 @@ export default function HealthPage() {
         <div className="space-y-3">
           {services.map((service) => {
             const style = STATUS_STYLE[service.status];
+            const message = service.failed
+              ? t("connectionFailed")
+              : service.message;
             return (
               <PageSection key={service.name}>
                 <div className="flex items-center gap-4">
@@ -179,19 +181,21 @@ export default function HealthPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold">{service.name}</h3>
+                      <h3 className="font-semibold">
+                        {t(`services.${service.name}`)}
+                      </h3>
                       <Badge className={cn("border-transparent", style.tone)}>
-                        {style.label}
+                        {t(`status.${service.status}`)}
                       </Badge>
                     </div>
-                    {service.message && (
+                    {message && (
                       <p className="mt-1 text-muted-foreground">
-                        상태: {service.message}
+                        {t("statusLine", { message })}
                       </p>
                     )}
                     {service.responseTime !== undefined && (
                       <p className="mt-1 text-sm text-muted-foreground tabular-nums">
-                        응답 시간: {service.responseTime}ms
+                        {t("responseTime", { ms: service.responseTime })}
                       </p>
                     )}
                   </div>
@@ -202,7 +206,7 @@ export default function HealthPage() {
         </div>
 
         {/* 안내 정보 */}
-        <PageSection title="서버 상태 안내" className="bg-muted/60">
+        <PageSection title={t("guide.title")} className="bg-muted/60">
           <ul className="space-y-1.5 text-muted-foreground">
             <li className="flex items-start gap-2">
               <span
@@ -213,7 +217,9 @@ export default function HealthPage() {
                 )}
               />
               <span>
-                <strong>정상:</strong> 서비스가 정상적으로 작동하고 있습니다.
+                {t.rich("guide.healthy", {
+                  b: (chunks) => <strong>{chunks}</strong>,
+                })}
               </span>
             </li>
             <li className="flex items-start gap-2">
@@ -225,8 +231,9 @@ export default function HealthPage() {
                 )}
               />
               <span>
-                <strong>오류:</strong> 서비스에 문제가 발생했습니다. 관리자에게
-                문의하세요.
+                {t.rich("guide.unhealthy", {
+                  b: (chunks) => <strong>{chunks}</strong>,
+                })}
               </span>
             </li>
             <li className="flex items-start gap-2">
@@ -238,7 +245,9 @@ export default function HealthPage() {
                 )}
               />
               <span>
-                <strong>확인 중:</strong> 서비스 상태를 확인하고 있습니다.
+                {t.rich("guide.checking", {
+                  b: (chunks) => <strong>{chunks}</strong>,
+                })}
               </span>
             </li>
           </ul>

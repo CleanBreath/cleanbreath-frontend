@@ -10,14 +10,16 @@ import {
   SquarePlus,
   Trash2,
 } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { ApiError, addSmokingArea } from "@/api";
+import { addSmokingArea } from "@/api";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
+import { Link } from "@/i18n/navigation";
+import { useApiErrorMessage } from "@/lib/api-error-message";
 import { cn } from "@/lib/utils";
 import { ZONE_STYLES } from "@/lib/zone-style";
 import type { AddressCategory } from "@/types";
@@ -36,6 +38,9 @@ interface PathPoint {
 }
 
 export default function RegisterPage() {
+  const t = useTranslations("register");
+  const tc = useTranslations("common");
+  const apiErrorMessage = useApiErrorMessage();
   const [category, setCategory] = useState<AddressCategory>("NON_SMOKING");
   const [addressName, setAddressName] = useState("");
   const [buildingName, setBuildingName] = useState("");
@@ -237,11 +242,7 @@ export default function RegisterPage() {
       setIsSuccess(true);
     } catch (error) {
       console.error("구역 등록 실패:", error);
-      setSubmitError(
-        error instanceof ApiError
-          ? error.message
-          : "구역 등록 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-      );
+      setSubmitError(apiErrorMessage(error, t("submitFailed")));
     } finally {
       setIsSubmitting(false);
     }
@@ -251,8 +252,8 @@ export default function RegisterPage() {
     return (
       <div className="flex min-h-dvh flex-col bg-muted/40">
         <PageHeader
-          title="새 구역 등록 요청"
-          description="지도에서 흡연·금연구역을 지정해 제안해주세요"
+          title={t("header.title")}
+          description={t("header.description")}
           icon={<SquarePlus />}
         />
         <main className="mx-auto flex w-full max-w-3xl flex-1 items-center justify-center p-4">
@@ -265,18 +266,17 @@ export default function RegisterPage() {
                 <CheckCircle size={40} />
               </div>
               <h2 role="status" className="mb-2 text-xl font-bold">
-                등록 요청 완료!
+                {t("success.title")}
               </h2>
               <p className="mb-6 text-base text-muted-foreground">
-                제안해주신 구역은 게시판에 공개됩니다. &lsquo;사실이에요&rsquo;
-                투표가 20표 이상 모이면 매일 새벽 3시에 지도에 자동 반영됩니다.
+                {t("success.description")}
               </p>
               <div className="flex flex-col gap-2">
                 <Button size="touch" asChild>
-                  <Link href="/board">게시판에서 확인하기</Link>
+                  <Link href="/board">{t("success.viewBoard")}</Link>
                 </Button>
                 <Button size="touch" variant="outline" asChild>
-                  <Link href="/">홈으로 돌아가기</Link>
+                  <Link href="/">{tc("goHome")}</Link>
                 </Button>
               </div>
             </div>
@@ -291,27 +291,21 @@ export default function RegisterPage() {
       {/* 사이드 패널. lg 미만에서는 contents로 풀어 헤더 → 지도 → 폼 순서로 배치 */}
       <div className="max-lg:contents lg:w-96 lg:border-r">
         <PageHeader
-          title="새 구역 등록 요청"
-          description="지도에서 흡연·금연구역을 지정해 제안해주세요"
+          title={t("header.title")}
+          description={t("header.description")}
           icon={<SquarePlus />}
         />
 
         <main className="p-4 text-base max-lg:order-1">
           <div>
             <div className="mb-4 space-y-2 rounded-xl border border-primary/20 bg-primary/5 p-4 text-muted-foreground">
-              <p>
-                &lsquo;영역 그리기&rsquo;를 누른 뒤 지도에서 3개 이상의 점을
-                찍어 구역을 지정해주세요.
-              </p>
-              <p className="text-sm">
-                등록한 구역은 게시판에 공개되고, &lsquo;사실이에요&rsquo; 투표가
-                20표 이상 모이면 매일 새벽 3시에 지도에 자동 반영됩니다.
-              </p>
+              <p>{t("guide.draw")}</p>
+              <p className="text-sm">{t("guide.publish")}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* 구역 타입 선택 */}
-              <PageSection title="구역 타입">
+              <PageSection title={t("category.title")}>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -330,7 +324,9 @@ export default function RegisterPage() {
                     >
                       <CigaretteOff size={20} />
                     </span>
-                    <span className="font-medium">금연구역</span>
+                    <span className="font-medium">
+                      {t("category.NON_SMOKING")}
+                    </span>
                   </button>
                   <button
                     type="button"
@@ -349,22 +345,22 @@ export default function RegisterPage() {
                     >
                       <Cigarette size={20} />
                     </span>
-                    <span className="font-medium">흡연구역</span>
+                    <span className="font-medium">{t("category.SMOKING")}</span>
                   </button>
                 </div>
               </PageSection>
 
               {/* 위치 정보 */}
               <PageSection
-                title="위치 정보"
+                title={t("location.title")}
                 action={
                   <Button
                     type="button"
                     variant={isPinMode ? "default" : "outline"}
                     size="icon-touch"
-                    aria-label="지도를 클릭하여 위치 자동 입력"
+                    aria-label={t("location.pinMode")}
                     aria-pressed={isPinMode}
-                    title="지도를 클릭하여 위치 자동 입력"
+                    title={t("location.pinMode")}
                     onClick={() => {
                       if (!isPinMode) revealMap();
                       setIsPinMode((prev) => !prev);
@@ -381,14 +377,15 @@ export default function RegisterPage() {
                       htmlFor="register-address"
                       className="mb-1.5 block text-sm font-medium"
                     >
-                      주소 <span className="text-destructive">*</span>
+                      {t("location.address")}{" "}
+                      <span className="text-destructive">*</span>
                     </label>
                     <input
                       id="register-address"
                       type="text"
                       value={addressName}
                       onChange={(e) => setAddressName(e.target.value)}
-                      placeholder="예: 경기도 안양시 동안구 평촌동"
+                      placeholder={t("location.addressPlaceholder")}
                       className="h-11 w-full rounded-lg border bg-background px-3 text-base"
                       required
                     />
@@ -398,14 +395,14 @@ export default function RegisterPage() {
                       htmlFor="register-building"
                       className="mb-1.5 block text-sm font-medium"
                     >
-                      건물명
+                      {t("location.building")}
                     </label>
                     <input
                       id="register-building"
                       type="text"
                       value={buildingName}
                       onChange={(e) => setBuildingName(e.target.value)}
-                      placeholder="예: 평촌역 광장"
+                      placeholder={t("location.buildingPlaceholder")}
                       className="h-11 w-full rounded-lg border bg-background px-3 text-base"
                     />
                   </div>
@@ -414,10 +411,10 @@ export default function RegisterPage() {
 
               {/* 영역 그리기 */}
               <PageSection
-                title="영역 지정"
+                title={t("area.title")}
                 action={
                   <Badge variant="secondary" className="tabular-nums">
-                    {pathPoints.length}개 점
+                    {t("area.pointCount", { count: pathPoints.length })}
                   </Badge>
                 }
               >
@@ -435,13 +432,13 @@ export default function RegisterPage() {
                       }}
                     >
                       <MousePointer2 aria-hidden />
-                      {isDrawing ? "그리기 중..." : "영역 그리기"}
+                      {isDrawing ? t("area.drawing") : t("area.draw")}
                     </Button>
                     <Button
                       type="button"
                       variant="outline"
                       size="icon-touch"
-                      aria-label="찍은 점 모두 지우기"
+                      aria-label={t("area.clear")}
                       onClick={handleClearPath}
                       disabled={pathPoints.length === 0}
                     >
@@ -451,14 +448,15 @@ export default function RegisterPage() {
                   <div aria-live="polite">
                     {pathPoints.length > 0 && pathPoints.length < 3 && (
                       <p className="text-sm text-muted-foreground">
-                        최소 3개 이상의 점을 찍어주세요 ({3 - pathPoints.length}
-                        개 더 필요)
+                        {t("area.needMore", {
+                          remaining: 3 - pathPoints.length,
+                        })}
                       </p>
                     )}
                     {pathPoints.length >= 3 && (
                       <p className="flex items-center gap-1.5 text-sm font-medium text-zone-non-smoking-ink">
                         <CheckCircle size={16} aria-hidden />
-                        영역이 지정되었습니다
+                        {t("area.done")}
                       </p>
                     )}
                   </div>
@@ -466,15 +464,16 @@ export default function RegisterPage() {
               </PageSection>
 
               <p className="text-sm text-muted-foreground">
-                등록 요청 시 구역 위치·주소·건물명·구역 구분 등 입력한 정보가
-                전송되며 게시판에 공개됩니다. 자세한 내용은{" "}
-                <Link
-                  href="/privacy"
-                  className="font-medium text-foreground underline underline-offset-4"
-                >
-                  개인정보처리방침
-                </Link>
-                을 확인해주세요.
+                {t.rich("privacyNotice", {
+                  link: (chunks) => (
+                    <Link
+                      href="/privacy"
+                      className="font-medium text-foreground underline underline-offset-4"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
 
               {/* 제출 버튼 */}
@@ -490,12 +489,12 @@ export default function RegisterPage() {
                       aria-hidden
                       className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"
                     />
-                    등록 중...
+                    {t("submitting")}
                   </>
                 ) : (
                   <>
                     <Send aria-hidden />
-                    구역 등록 요청
+                    {t("submit")}
                   </>
                 )}
               </Button>
@@ -513,16 +512,16 @@ export default function RegisterPage() {
       </div>
 
       {/* 지도 영역 */}
-      <section aria-label="위치 선택 지도" className="relative lg:flex-1">
+      <section aria-label={t("map.label")} className="relative lg:flex-1">
         <div ref={mapRef} className="h-[45svh] min-h-72 w-full lg:h-full" />
         {isDrawing && (
           <div className="absolute top-4 left-4 z-10 rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground shadow-md">
-            지도를 클릭하여 영역을 지정하세요
+            {t("map.drawingHint")}
           </div>
         )}
         {isPinMode && (
           <div className="absolute top-4 left-4 z-10 rounded-lg bg-foreground px-3 py-1.5 text-sm font-medium text-background shadow-md">
-            지도를 클릭하면 주소가 자동 입력됩니다
+            {t("map.pinHint")}
           </div>
         )}
       </section>

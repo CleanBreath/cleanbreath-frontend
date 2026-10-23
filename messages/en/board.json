@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "title": "Registered Smoking Areas & No-Smoking Zones",
+    "description": "Browse the smoking areas and no-smoking zones registered on CleanBreath and view the details of each one."
+  },
+  "detailMeta": {
+    "title": "Smoking Area & No-Smoking Zone Details",
+    "description": "See the location and details of a smoking area or no-smoking zone registered on CleanBreath."
+  },
+  "category": {
+    "SMOKING": "Smoking area",
+    "NON_SMOKING": "No-smoking zone"
+  },
+  "list": {
+    "title": "Registered areas",
+    "description": "Smoking areas and no-smoking zones suggested by users",
+    "sectionTitle": "Area list",
+    "empty": "No areas have been registered yet.",
+    "columns": {
+      "id": "No.",
+      "title": "Title",
+      "category": "Category"
+    },
+    "pagination": "Pagination"
+  },
+  "detail": {
+    "title": "Area details",
+    "description": "Location and votes for a suggested area",
+    "notFound": "We couldn’t find this area.",
+    "voteTitle": "Is this information correct?",
+    "voteTrue": "Correct",
+    "voteFalse": "Incorrect"
+  },
+  "backToList": "Back to list"
+}
