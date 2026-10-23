@@ -5,7 +5,7 @@
 ## 목차
 
 - Base URL
-- Address API (금연/흡연구역): `/allAddress`, `/address`, `/updateDate`
+- Address API (금연/흡연구역): `/allAddress`, `/address`, `/address/within`, `/address/contains`, `/updateDate`
 - Apartment API (공동주택): `/apartment`, `/region`
 - Feedback API: `/feedback/add` (공개), `/feedback-list`·`/feedback/{id}` (GET/PUT/DELETE, 관리자 토큰 필요)
 - Pending Address API (신규 구역 제안): `/allRequestAddress`, `/allRequestAddressPage`, `/smokingArea/add`
@@ -87,6 +87,22 @@ GET /v1/address?lat={latitude}&lng={longitude}
   ]
 }
 ```
+
+#### 2-1. 사각형 범위 안의 구역 (공간 인덱스)
+
+```http
+GET /v1/address/within?swLat={남서 위도}&swLng={남서 경도}&neLat={북동 위도}&neLng={북동 경도}
+```
+
+대표 좌표(`latitude`, `longitude`)가 사각형 안에 있는 구역을 반환한다. 지도 화면 영역만 불러올 때 쓴다. 응답 형식은 `/allAddress`와 같다(`count`, `updateAt`, `data[]`). 좌표가 범위를 벗어나거나 파라미터가 빠지면 `400`.
+
+#### 2-2. 이 좌표를 포함하는 구역 (공간 인덱스)
+
+```http
+GET /v1/address/contains?lat={latitude}&lng={longitude}
+```
+
+구역 다각형이 이 점을 포함하는 구역을 반환한다. "지금 위치가 금연·흡연 구역인가?"에 쓴다. 응답 형식은 `/allAddress`와 같고, 해당 구역이 없으면 `count: 0`, `data: []`. 좌표가 범위를 벗어나면 `400`.
 
 #### 3. 데이터 업데이트 확인
 
