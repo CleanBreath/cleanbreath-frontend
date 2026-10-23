@@ -1,0 +1,18 @@
+{
+  "close": "Close",
+  "back": "Back",
+  "backHome": "Back to home",
+  "goHome": "Back to home",
+  "home": "Home",
+  "loading": "Loading...",
+  "retry": "Try again",
+  "cancel": "Cancel",
+  "previous": "Previous",
+  "next": "Next",
+  "language": "Select language",
+  "languageNames": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語"
+  }
+}

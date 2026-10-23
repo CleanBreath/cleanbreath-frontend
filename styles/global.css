@@ -134,11 +134,14 @@
   * {
     @apply border-border outline-ring/50;
   }
-  /* 한글은 어절(공백) 단위로 줄바꿈, 긴 주소·URL은 어디서든 끊어 넘침 방지 */
+  /* 긴 주소·URL은 어디서든 끊어 넘침 방지 */
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    word-break: keep-all;
     overflow-wrap: anywhere;
+  }
+  /* 한글만 어절(공백) 단위로 줄바꿈. 일본어는 공백이 없어 keep-all이면 문장부호에서만 줄이 바뀜 */
+  body:lang(ko) {
+    word-break: keep-all;
   }
   /* 키보드 포커스 기준선. 컴포넌트에서 outline-none으로 지우지 말 것 */
   :focus-visible {

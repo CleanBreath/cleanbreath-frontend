@@ -1,0 +1,18 @@
+{
+  "close": "닫기",
+  "back": "뒤로",
+  "backHome": "홈으로",
+  "goHome": "홈으로 돌아가기",
+  "home": "홈",
+  "loading": "불러오는 중...",
+  "retry": "다시 시도",
+  "cancel": "취소",
+  "previous": "이전",
+  "next": "다음",
+  "language": "언어 선택",
+  "languageNames": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語"
+  }
+}

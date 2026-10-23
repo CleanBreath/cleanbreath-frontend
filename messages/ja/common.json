@@ -1,0 +1,18 @@
+{
+  "close": "閉じる",
+  "back": "戻る",
+  "backHome": "ホームへ",
+  "goHome": "ホームに戻る",
+  "home": "ホーム",
+  "loading": "読み込み中...",
+  "retry": "再試行",
+  "cancel": "キャンセル",
+  "previous": "前へ",
+  "next": "次へ",
+  "language": "言語を選択",
+  "languageNames": {
+    "ko": "한국어",
+    "en": "English",
+    "ja": "日本語"
+  }
+}

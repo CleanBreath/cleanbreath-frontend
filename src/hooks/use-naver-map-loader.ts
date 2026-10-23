@@ -1,9 +1,12 @@
+import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import { preconnect } from "react-dom";
 
 const NAVER_MAP_CLIENT_ID = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID || "";
 
-const MAP_SCRIPT_URL = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_CLIENT_ID}`;
+// language: 지도 라벨 언어. 공식 지원값 ko·en·ja·zh가 앱 언어 코드와 같아 그대로 넘긴다
+const mapScriptUrl = (language: string) =>
+  `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_CLIENT_ID}&language=${language}`;
 // maps.js가 submodules=geocoder일 때 본 스크립트 뒤에 붙여 로드하는 파일과 동일 (naver.maps 로드 후 실행돼야 함)
 const GEOCODER_SCRIPT_URL =
   "https://oapi.map.naver.com/openapi/v3/maps-geocoder.js";
@@ -37,6 +40,8 @@ function loadScript(src: string): Promise<void> {
  */
 export function useNaverMapLoader({ geocoder = false } = {}): boolean {
   const [isLoaded, setIsLoaded] = useState(false);
+  // 언어 전환은 전체 페이지 이동(locale-switcher)이라 한 페이지에서 locale이 바뀌지 않는다
+  const locale = useLocale();
 
   // 렌더 중 호출해 SSR HTML <head>에 연결 힌트만 넣음 (maps.js preload는 FCP를 늦춰서 제외)
   preconnect("https://oapi.map.naver.com");
@@ -44,11 +49,11 @@ export function useNaverMapLoader({ geocoder = false } = {}): boolean {
   preconnect("https://nrbe.pstatic.net", { crossOrigin: "anonymous" });
 
   useEffect(() => {
-    loadScript(MAP_SCRIPT_URL)
+    loadScript(mapScriptUrl(locale))
       .then(() => (geocoder ? loadScript(GEOCODER_SCRIPT_URL) : undefined))
       .then(() => setIsLoaded(true))
       .catch(console.error);
-  }, [geocoder]);
+  }, [geocoder, locale]);
 
   return isLoaded;
 }
