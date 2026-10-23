@@ -1,0 +1,38 @@
+{
+  "loading": "지도를 불러오는 중...",
+  "filterLabel": "지도 구역 필터",
+  "legendLabel": "지도 범례",
+  "zoneTypes": {
+    "NON_SMOKING_ZONE": "금연구역",
+    "SMOKING_ZONE_OPEN": "개방형 흡연구역",
+    "SMOKING_ZONE_OPEN_IMPLICIT": "개방형 흡연구역(비공식)",
+    "SMOKING_ZONE_CLOSE": "폐쇄형 흡연구역(흡연실)",
+    "SMOKING_ZONE_CLOSE_IMPLICIT": "폐쇄형 흡연구역(비공식)",
+    "SMOKING_ZONE_LINE": "라인형 흡연구역",
+    "SMOKING_ZONE_LINE_IMPLICIT": "라인형 흡연구역(비공식)",
+    "APARTMENT": "금연아파트(공동주택)"
+  },
+  "zoneGroups": {
+    "nonSmoking": "금연구역",
+    "smoking": "흡연구역",
+    "apartment": "아파트"
+  },
+  "closeSelection": "선택 닫기",
+  "selectedAddress": {
+    "label": "선택한 구역"
+  },
+  "selectedApartment": {
+    "label": "선택한 아파트",
+    "buildings": "{count, number, ::group-off}개 동",
+    "households": "{count, number, ::group-off}세대",
+    "designationTitle": "금연구역 지정 범위",
+    "areas": {
+      "hallway": "복도",
+      "stairs": "계단",
+      "elevator": "엘리베이터",
+      "undergroundParkingLot": "지하주차장"
+    },
+    "designated": "지정",
+    "notDesignated": "미지정"
+  }
+}

@@ -2,7 +2,7 @@
 
 import { ClipboardList } from "lucide-react";
 import { MotionConfig } from "motion/react";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { DisclaimerModal } from "@/components/disclaimer/disclaimer-modal";
 import { FeedbackModal } from "@/components/feedback/feedback-modal";
@@ -15,46 +15,61 @@ import { Button } from "@/components/ui/button";
 import { VersionModal } from "@/components/version/version-modal";
 import { useAddressList } from "@/hooks/use-address";
 import { useApartmentList } from "@/hooks/use-apartment";
+import { localizedPath } from "@/i18n/metadata";
+import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 
 const SITE_URL = "https://cleanbreath.cmu02-studio.com/";
 
-// 홈 전용 구조화 데이터
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": `${SITE_URL}#organization`,
-      name: "CleanBreath",
-      url: SITE_URL,
-      logo: `${SITE_URL}logo.svg`,
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}#website`,
-      name: "CleanBreath",
-      url: SITE_URL,
-      inLanguage: "ko-KR",
-      description:
-        "금연구역과 흡연구역을 지도에서 쉽게 확인하세요. 공동주택, 아파트, 공공장소의 금연구역 정보를 제공하는 무료 지도 서비스입니다. 국민건강증진법 기반 금연구역 안내.",
-      publisher: { "@id": `${SITE_URL}#organization` },
-    },
-    {
-      "@type": "WebApplication",
-      "@id": `${SITE_URL}#app`,
-      name: "CleanBreath",
-      url: SITE_URL,
-      applicationCategory: "UtilitiesApplication",
-      operatingSystem: "Any",
-      browserRequirements: "Requires JavaScript",
-      inLanguage: "ko-KR",
-      offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
-      isPartOf: { "@id": `${SITE_URL}#website` },
-    },
-  ],
+const IN_LANGUAGE: Record<Locale, string> = {
+  ko: "ko-KR",
+  en: "en-US",
+  ja: "ja-JP",
+};
+
+// 홈 전용 구조화 데이터. 한국어는 기존과 같은 SITE_URL, 영어·일본어는 /en·/ja
+const buildJsonLd = (locale: Locale, description: string) => {
+  const pageUrl = `https://cleanbreath.cmu02-studio.com${localizedPath(locale, "/")}`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}#organization`,
+        name: "CleanBreath",
+        url: SITE_URL,
+        logo: `${SITE_URL}logo.svg`,
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${pageUrl}#website`,
+        name: "CleanBreath",
+        url: pageUrl,
+        inLanguage: IN_LANGUAGE[locale],
+        description,
+        publisher: { "@id": `${SITE_URL}#organization` },
+      },
+      {
+        "@type": "WebApplication",
+        "@id": `${pageUrl}#app`,
+        name: "CleanBreath",
+        url: pageUrl,
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "Any",
+        browserRequirements: "Requires JavaScript",
+        inLanguage: IN_LANGUAGE[locale],
+        offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
+        isPartOf: { "@id": `${pageUrl}#website` },
+      },
+    ],
+  };
 };
 
 export default function Home() {
+  const t = useTranslations("home");
+  const tm = useTranslations("meta");
+  const locale = useLocale();
+  const jsonLd = buildJsonLd(locale, tm("description"));
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isVersionOpen, setIsVersionOpen] = useState(false);
@@ -71,7 +86,7 @@ export default function Home() {
       <div className="flex h-dvh w-screen overflow-hidden">
         <script
           type="application/ld+json"
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: 정적 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: 메시지 파일 문구로 만든 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
           }}
@@ -111,7 +126,7 @@ export default function Home() {
             <Button asChild size="touch" className="rounded-full shadow-md">
               <Link href="/board">
                 <ClipboardList aria-hidden />
-                등록된 흡연/금연구역 보기
+                {t("boardCta")}
               </Link>
             </Button>
           </div>

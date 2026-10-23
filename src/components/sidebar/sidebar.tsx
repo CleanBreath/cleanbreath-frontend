@@ -16,13 +16,15 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 import { categoryGroup, ZONE_TONE } from "@/components/home/zone-tone";
+import { LocaleSwitcher } from "@/components/i18n/locale-switcher";
 import { ZoneLegend } from "@/components/map/zone-legend";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { ZONE_GROUPS } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
@@ -64,6 +66,7 @@ export function Sidebar({
   onFeedbackClick,
   onVersionClick,
 }: SidebarProps) {
+  const t = useTranslations("sidebar");
   const [snap, setSnap] = useState<Snap>("peek");
   const [dragY, setDragY] = useState<number | null>(null);
   const dragStartY = useRef(0);
@@ -94,7 +97,7 @@ export function Sidebar({
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (window.matchMedia("(min-width: 1024px)").matches) return;
-    if ((e.target as HTMLElement).closest("button, a")) return;
+    if ((e.target as HTMLElement).closest("button, a, select")) return;
     dragStartY.current = e.clientY;
     e.currentTarget.setPointerCapture(e.pointerId);
     setDragY(0);
@@ -136,7 +139,7 @@ export function Sidebar({
     <>
       <aside
         ref={sheetRef}
-        aria-label="지도 정보 패널"
+        aria-label={t("panelLabel")}
         onKeyDown={(e) => {
           if (e.key === "Escape" && snap !== "peek") collapse();
         }}
@@ -186,10 +189,12 @@ export function Sidebar({
               <span className="text-lg font-bold leading-tight tracking-tight">
                 CleanBreath
               </span>
-              <span className="text-sm font-normal text-muted-foreground">
-                금연구역·흡연구역 지도
+              {/* peek 높이가 한 줄 기준이라 긴 번역도 한 줄로 자른다 */}
+              <span className="truncate text-sm font-normal text-muted-foreground">
+                {t("subtitle")}
               </span>
             </h1>
+            <LocaleSwitcher iconOnly />
             <Button
               ref={toggleRef}
               variant="ghost"
@@ -198,7 +203,9 @@ export function Sidebar({
               onClick={() => setSnap(NEXT_SNAP[snap])}
               aria-expanded={snap !== "peek"}
               aria-controls={bodyId}
-              aria-label={snap === "full" ? "패널 접기" : "패널 펼치기"}
+              aria-label={
+                snap === "full" ? t("collapsePanel") : t("expandPanel")
+              }
             >
               {snap === "full" ? (
                 <ChevronDown aria-hidden />
@@ -211,7 +218,7 @@ export function Sidebar({
               size="icon-touch"
               className="hidden shrink-0 lg:inline-flex"
               onClick={() => onCollapsedChange(true)}
-              aria-label="사이드바 접기"
+              aria-label={t("collapseSidebar")}
             >
               <PanelLeftClose aria-hidden />
             </Button>
@@ -227,15 +234,15 @@ export function Sidebar({
             <TabsList className="mx-4 mt-3 grid w-auto shrink-0 grid-cols-3">
               <TabsTrigger value="info">
                 <Info aria-hidden />
-                소개
+                {t("tabs.info")}
               </TabsTrigger>
               <TabsTrigger value="list">
                 <List aria-hidden />
-                구역
+                {t("tabs.list")}
               </TabsTrigger>
               <TabsTrigger value="apartments">
                 <Building2 aria-hidden />
-                아파트
+                {t("tabs.apartments")}
               </TabsTrigger>
             </TabsList>
 
@@ -265,7 +272,7 @@ export function Sidebar({
           {/* 보조 동작 메뉴 (피드백·버전 정보·구역 등록) */}
           <nav
             ref={navRef}
-            aria-label="보조 메뉴"
+            aria-label={t("nav.label")}
             className="grid shrink-0 grid-cols-3 gap-2 border-t p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] lg:pb-4"
           >
             <Button
@@ -275,12 +282,12 @@ export function Sidebar({
               onClick={onFeedbackClick}
             >
               <MessageSquarePlus aria-hidden />
-              피드백
+              {t("nav.feedback")}
             </Button>
             <Button variant="outline" size="touch" className="px-2" asChild>
               <Link href="/register">
                 <MapPinPlus aria-hidden />
-                구역 등록
+                {t("nav.register")}
               </Link>
             </Button>
             <Button
@@ -290,7 +297,7 @@ export function Sidebar({
               onClick={onVersionClick}
             >
               <Info aria-hidden />
-              버전 정보
+              {t("nav.version")}
             </Button>
           </nav>
         </div>
@@ -305,7 +312,7 @@ export function Sidebar({
           onClick={() => onCollapsedChange(false)}
         >
           <PanelLeft aria-hidden />
-          메뉴 열기
+          {t("openMenu")}
         </Button>
       )}
     </>
@@ -314,54 +321,46 @@ export function Sidebar({
 
 const linkClass = "text-primary underline underline-offset-2";
 
+const MORE_LINKS = [
+  { href: "/statute", icon: Scale, key: "statute" },
+  { href: "/about", icon: Info, key: "about" },
+  { href: "/health", icon: Activity, key: "health" },
+  { href: "/privacy", icon: ShieldCheck, key: "privacy" },
+] as const;
+
 function ServiceInfo() {
+  const t = useTranslations("sidebar.info");
+  const link = (href: string) => (chunks: React.ReactNode) => (
+    <Link href={href} className={linkClass}>
+      {chunks}
+    </Link>
+  );
+
   return (
     <div className="space-y-6 text-base leading-relaxed lg:text-sm">
       <section>
-        <h2 className="mb-2 text-base font-semibold">서비스 소개</h2>
+        <h2 className="mb-2 text-base font-semibold">{t("aboutTitle")}</h2>
         <div className="space-y-2 text-muted-foreground">
+          <p>{t("about1")}</p>
           <p>
-            CleanBreath는 금연구역과 흡연구역을 지도에 표시하는 무료
-            서비스입니다. 초록색은 금연구역, 주황·빨강·보라색은 흡연구역이며,
-            아파트 탭에서는 공동주택의 복도·계단·엘리베이터·지하주차장 금연구역
-            지정 여부를 확인할 수 있습니다.
+            {t.rich("about2", {
+              register: link("/register"),
+              board: link("/board"),
+            })}
           </p>
           <p>
-            새로운 구역은 누구나{" "}
-            <Link href="/register" className={linkClass}>
-              구역 등록
-            </Link>{" "}
-            페이지에서 제안할 수 있습니다. 제안된 구역은{" "}
-            <Link href="/board" className={linkClass}>
-              게시판
-            </Link>
-            에 공개되고, &lsquo;사실이에요&rsquo; 투표가 20표 이상 모이면 매일
-            새벽 3시에 자동으로 지도에 반영됩니다. 투표는 로그인 없이 할 수
-            있습니다(브라우저별 임의 식별값으로 중복 투표를 막습니다).
-          </p>
-          <p>
-            금연구역은 국민건강증진법 제9조에 근거해 지정됩니다. 시설별 지정
-            기준은{" "}
-            <Link href="/statute" className={linkClass}>
-              금연구역 관련 법령
-            </Link>
-            에서, 운영 주체와 데이터 관리 방식은{" "}
-            <Link href="/about" className={linkClass}>
-              서비스 소개 및 운영 정보
-            </Link>
-            에서 확인하세요.
+            {t.rich("about3", {
+              statute: link("/statute"),
+              about: link("/about"),
+            })}
           </p>
         </div>
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-semibold">사용 방법</h2>
+        <h2 className="mb-2 text-base font-semibold">{t("howToTitle")}</h2>
         <ol className="space-y-2">
-          {[
-            "상단 필터로 금연구역·흡연구역·아파트 표시를 켜고 끄세요",
-            "지도의 마커를 클릭하면 상세 정보를 볼 수 있습니다",
-            "목록에서 구역을 선택하면 해당 위치로 이동합니다",
-          ].map((text, i) => (
+          {(t.raw("howTo") as string[]).map((text, i) => (
             <li key={text} className="flex items-start gap-3">
               <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums text-foreground">
                 {i + 1}
@@ -373,39 +372,14 @@ function ServiceInfo() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-semibold">범례</h2>
+        <h2 className="mb-2 text-base font-semibold">{t("legendTitle")}</h2>
         <ZoneLegend />
       </section>
 
       <section>
-        <h2 className="mb-2 text-base font-semibold">더 알아보기</h2>
+        <h2 className="mb-2 text-base font-semibold">{t("moreTitle")}</h2>
         <ul className="divide-y rounded-lg border">
-          {[
-            {
-              href: "/statute",
-              icon: Scale,
-              title: "금연구역 관련 법령",
-              desc: "국민건강증진법에 따른 금연구역 지정 시설 및 관련 규정을 확인해보세요.",
-            },
-            {
-              href: "/about",
-              icon: Info,
-              title: "서비스 소개 및 운영 정보",
-              desc: "운영 주체와 데이터 관리 방식을 확인할 수 있습니다.",
-            },
-            {
-              href: "/health",
-              icon: Activity,
-              title: "서버 상태",
-              desc: "API 서버와 데이터베이스의 실시간 상태를 확인할 수 있습니다.",
-            },
-            {
-              href: "/privacy",
-              icon: ShieldCheck,
-              title: "개인정보처리방침",
-              desc: "수집하는 정보와 보관 기간을 안내합니다.",
-            },
-          ].map(({ href, icon: Icon, title, desc }) => (
+          {MORE_LINKS.map(({ href, icon: Icon, key }) => (
             <li key={href}>
               <Link
                 href={href}
@@ -413,9 +387,11 @@ function ServiceInfo() {
               >
                 <Icon className="size-5 shrink-0 text-primary" aria-hidden />
                 <span className="min-w-0 flex-1">
-                  <span className="block font-medium">{title}</span>
+                  <span className="block font-medium">
+                    {t(`more.${key}.title`)}
+                  </span>
                   <span className="block text-sm text-muted-foreground">
-                    {desc}
+                    {t(`more.${key}.desc`)}
                   </span>
                 </span>
                 <ChevronRight
@@ -432,15 +408,16 @@ function ServiceInfo() {
 }
 
 function ListStatus({ isLoading }: { isLoading: boolean }) {
+  const t = useTranslations();
   return (
     <div className="flex h-40 items-center justify-center" role="status">
       {isLoading ? (
         <div className="flex flex-col items-center gap-2">
           <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-reduce:animate-none" />
-          <p className="text-sm text-muted-foreground">불러오는 중...</p>
+          <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
         </div>
       ) : (
-        <p className="text-muted-foreground">데이터가 없습니다</p>
+        <p className="text-muted-foreground">{t("sidebar.empty")}</p>
       )}
     </div>
   );
@@ -456,6 +433,7 @@ interface AddressListProps {
 }
 
 function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
+  const t = useTranslations("sidebar.badge");
   if (isLoading || !addresses.length)
     return <ListStatus isLoading={isLoading} />;
 
@@ -479,7 +457,7 @@ function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
               >
                 <Icon className="size-4" aria-hidden />
               </span>
-              <span className="min-w-0 flex-1">
+              <span lang="ko" className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium">
                   {address.addressName}
                 </span>
@@ -488,7 +466,7 @@ function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
                 </span>
               </span>
               <Badge variant="outline" className={ZONE_TONE[group].soft}>
-                {group === "smoking" ? "흡연" : "금연"}
+                {group === "smoking" ? t("smoking") : t("nonSmoking")}
               </Badge>
             </button>
           </li>
@@ -509,6 +487,7 @@ function ApartmentList({
   isLoading,
   onItemClick,
 }: ApartmentListProps) {
+  const t = useTranslations("sidebar");
   if (isLoading || !apartments.length)
     return <ListStatus isLoading={isLoading} />;
 
@@ -531,7 +510,7 @@ function ApartmentList({
             >
               <Icon className="size-4" aria-hidden />
             </span>
-            <span className="min-w-0 flex-1">
+            <span lang="ko" className="min-w-0 flex-1">
               <span className="block truncate text-sm font-medium">
                 {apartment.apartmentName}
               </span>
@@ -543,7 +522,7 @@ function ApartmentList({
               variant="outline"
               className={cn("tabular-nums", ZONE_TONE.apartment.soft)}
             >
-              {apartment.numberOfBuilding}동
+              {t("buildingCount", { count: apartment.numberOfBuilding })}
             </Badge>
           </button>
         </li>

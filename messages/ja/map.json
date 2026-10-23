@@ -1,0 +1,38 @@
+{
+  "loading": "地図を読み込み中...",
+  "filterLabel": "地図のエリアフィルター",
+  "legendLabel": "地図の凡例",
+  "zoneTypes": {
+    "NON_SMOKING_ZONE": "禁煙エリア",
+    "SMOKING_ZONE_OPEN": "開放型喫煙所",
+    "SMOKING_ZONE_OPEN_IMPLICIT": "開放型喫煙所（非公式）",
+    "SMOKING_ZONE_CLOSE": "閉鎖型喫煙所（喫煙室）",
+    "SMOKING_ZONE_CLOSE_IMPLICIT": "閉鎖型喫煙所（非公式）",
+    "SMOKING_ZONE_LINE": "ライン区画型喫煙所",
+    "SMOKING_ZONE_LINE_IMPLICIT": "ライン区画型喫煙所（非公式）",
+    "APARTMENT": "禁煙マンション（集合住宅）"
+  },
+  "zoneGroups": {
+    "nonSmoking": "禁煙エリア",
+    "smoking": "喫煙所",
+    "apartment": "マンション"
+  },
+  "closeSelection": "選択を解除",
+  "selectedAddress": {
+    "label": "選択した区域"
+  },
+  "selectedApartment": {
+    "label": "選択したマンション",
+    "buildings": "{count}棟",
+    "households": "{count}世帯",
+    "designationTitle": "禁煙区域の指定範囲",
+    "areas": {
+      "hallway": "廊下",
+      "stairs": "階段",
+      "elevator": "エレベーター",
+      "undergroundParkingLot": "地下駐車場"
+    },
+    "designated": "指定",
+    "notDesignated": "未指定"
+  }
+}

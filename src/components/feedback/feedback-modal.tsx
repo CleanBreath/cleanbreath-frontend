@@ -1,7 +1,7 @@
 "use client";
 
 import { MessageSquare, Send } from "lucide-react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { addFeedback } from "@/api";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { Link } from "@/i18n/navigation";
 
 interface FeedbackModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ const fieldClass =
   "w-full rounded-lg border border-input bg-background px-4 py-3 text-base transition-shadow focus-visible:ring-2 focus-visible:ring-ring/50";
 
 export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
+  const t = useTranslations("overlays.feedback");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,7 +49,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       }, 1500);
     } catch (error) {
       console.error("피드백 전송 실패:", error);
-      setError("전송에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      setError(t("submitFailed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -72,10 +74,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             <MessageSquare size={20} aria-hidden />
           </div>
           <div className="space-y-0.5">
-            <SheetTitle className="text-lg">피드백 보내기</SheetTitle>
-            <SheetDescription>
-              서비스 개선을 위한 의견을 남겨주세요
-            </SheetDescription>
+            <SheetTitle className="text-lg">{t("title")}</SheetTitle>
+            <SheetDescription>{t("description")}</SheetDescription>
           </div>
         </SheetHeader>
 
@@ -88,8 +88,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                 <Send size={28} aria-hidden />
               </div>
-              <p className="text-lg font-semibold">피드백이 전송되었습니다!</p>
-              <p className="text-muted-foreground">소중한 의견 감사합니다.</p>
+              <p className="text-lg font-semibold">{t("successTitle")}</p>
+              <p className="text-muted-foreground">{t("successMessage")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -98,14 +98,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   htmlFor="feedback-title"
                   className="mb-2 block text-sm font-medium"
                 >
-                  제목 <span className="text-destructive">*</span>
+                  {t("titleLabel")} <span className="text-destructive">*</span>
                 </label>
                 <input
                   id="feedback-title"
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="피드백 제목을 입력하세요"
+                  placeholder={t("titlePlaceholder")}
                   className={fieldClass}
                   required
                 />
@@ -115,13 +115,14 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   htmlFor="feedback-content"
                   className="mb-2 block text-sm font-medium"
                 >
-                  내용 <span className="text-destructive">*</span>
+                  {t("contentLabel")}{" "}
+                  <span className="text-destructive">*</span>
                 </label>
                 <textarea
                   id="feedback-content"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="서비스 개선을 위한 의견을 자유롭게 작성해주세요.&#10;버그 신고, 기능 제안, 불편 사항 등 무엇이든 좋습니다."
+                  placeholder={t("contentPlaceholder")}
                   rows={6}
                   className={`${fieldClass} resize-none`}
                   required
@@ -133,8 +134,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 </p>
               )}
               <p className="text-sm text-muted-foreground">
-                피드백 제목·내용과 작성 시각을 저장하며 1년 후 파기합니다.
-                개인정보는 적지 마세요.{" "}
+                {t("privacyNotice")}{" "}
                 {/* 새 탭: 같은 탭 이동 시 모달이 언마운트되어 작성 중인 내용이 사라짐 */}
                 <Link
                   href="/privacy"
@@ -142,7 +142,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   rel="noopener noreferrer"
                   className="text-primary underline"
                 >
-                  개인정보처리방침
+                  {t("privacyLink")}
                 </Link>
               </p>
               <Button
@@ -157,12 +157,12 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                       aria-hidden
                       className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent"
                     />
-                    전송 중...
+                    {t("submitting")}
                   </>
                 ) : (
                   <>
                     <Send size={16} aria-hidden />
-                    피드백 보내기
+                    {t("submit")}
                   </>
                 )}
               </Button>

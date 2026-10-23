@@ -7,8 +7,8 @@ import {
 
 export type ZoneGroup = "nonSmoking" | "smoking" | "apartment";
 
+// 화면 라벨은 messages map.zoneTypes / map.zoneGroups (키는 ZoneType / ZoneGroup)
 export interface ZoneStyle {
-  label: string;
   group: ZoneGroup;
   /** 지도 폴리곤 fill (낮은 불투명도로 사용) */
   fill: string;
@@ -24,7 +24,6 @@ export interface ZoneStyle {
 // 지도·범례·칩이 함께 쓰는 구역 스타일. 색 값은 styles/global.css의 --zone-* 변수와 맞춘다
 export const ZONE_STYLES = {
   NON_SMOKING_ZONE: {
-    label: "금연구역",
     group: "nonSmoking",
     fill: "#22C55E",
     stroke: "#16A34A",
@@ -33,7 +32,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-green-500",
   },
   SMOKING_ZONE_OPEN: {
-    label: "개방형 흡연구역",
     group: "smoking",
     fill: "#F97316",
     stroke: "#EA580C",
@@ -42,7 +40,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-orange-500",
   },
   SMOKING_ZONE_OPEN_IMPLICIT: {
-    label: "개방형 흡연구역(비공식)",
     group: "smoking",
     fill: "#FB923C",
     // 기존 #F97316은 흰 지도 대비 2.8:1이라 같은 색상각에서 명도만 낮춤
@@ -52,7 +49,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-orange-400",
   },
   SMOKING_ZONE_CLOSE: {
-    label: "폐쇄형 흡연구역(흡연실)",
     group: "smoking",
     fill: "#EF4444",
     stroke: "#DC2626",
@@ -61,7 +57,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-red-500",
   },
   SMOKING_ZONE_CLOSE_IMPLICIT: {
-    label: "폐쇄형 흡연구역(비공식)",
     group: "smoking",
     fill: "#F87171",
     stroke: "#EF4444",
@@ -70,7 +65,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-red-400",
   },
   SMOKING_ZONE_LINE: {
-    label: "라인형 흡연구역",
     group: "smoking",
     fill: "#A855F7",
     stroke: "#9333EA",
@@ -79,7 +73,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-purple-500",
   },
   SMOKING_ZONE_LINE_IMPLICIT: {
-    label: "라인형 흡연구역(비공식)",
     group: "smoking",
     fill: "#C084FC",
     stroke: "#A855F7",
@@ -88,7 +81,6 @@ export const ZONE_STYLES = {
     markerBg: "bg-purple-400",
   },
   APARTMENT: {
-    label: "금연아파트(공동주택)",
     group: "apartment",
     fill: "#3B82F6",
     stroke: "#2563EB",
@@ -109,10 +101,7 @@ export function getZoneStyle(divisionArea: string): ZoneStyle {
 
 // 필터 칩·범례 그룹용. ink는 흰 글자/배경 모두 4.5:1 이상인 텍스트용 색 (--zone-*-ink)
 export const ZONE_GROUPS = {
-  nonSmoking: { label: "금연구역", ink: "#15803D", icon: CigaretteOff },
-  smoking: { label: "흡연구역", ink: "#DC2626", icon: Cigarette },
-  apartment: { label: "아파트", ink: "#2563EB", icon: Building2 },
-} as const satisfies Record<
-  ZoneGroup,
-  { label: string; ink: string; icon: LucideIcon }
->;
+  nonSmoking: { ink: "#15803D", icon: CigaretteOff },
+  smoking: { ink: "#DC2626", icon: Cigarette },
+  apartment: { ink: "#2563EB", icon: Building2 },
+} as const satisfies Record<ZoneGroup, { ink: string; icon: LucideIcon }>;

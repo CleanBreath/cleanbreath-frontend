@@ -1,0 +1,57 @@
+{
+  "panelLabel": "Map information panel",
+  "subtitle": "No-smoking zone and smoking area map",
+  "expandPanel": "Expand panel",
+  "collapsePanel": "Collapse panel",
+  "collapseSidebar": "Collapse sidebar",
+  "openMenu": "Open menu",
+  "tabs": {
+    "info": "About",
+    "list": "Areas",
+    "apartments": "Apartments"
+  },
+  "nav": {
+    "label": "Secondary menu",
+    "feedback": "Feedback",
+    "register": "Suggest",
+    "version": "Version"
+  },
+  "info": {
+    "aboutTitle": "About the service",
+    "about1": "CleanBreath is a free service that shows no-smoking zones and smoking areas on a map. Green marks no-smoking zones, and orange, red and purple mark smoking areas. In the Apartments tab, you can check whether an apartment complex has designated its hallways, stairs, elevators and underground parking as no-smoking zones.",
+    "about2": "Anyone can suggest a new area on the <register>Suggest an area</register> page. Suggested areas are posted on the <board>board</board>, and once one gets 20 or more “Correct” votes, it is added to the map automatically in the daily update at 3 a.m. (Korea time). You can vote without logging in (a random ID stored in your browser prevents duplicate votes).",
+    "about3": "No-smoking zones are designated under Article 9 of Korea’s National Health Promotion Act. See <statute>No-smoking zone laws</statute> for the rules for each type of facility, and <about>About CleanBreath</about> for who runs the service and how the data is managed.",
+    "howToTitle": "How to use",
+    "howTo": [
+      "Use the filters at the top to show or hide no-smoking zones, smoking areas and apartments",
+      "Tap a marker on the map to see its details",
+      "Select an area in the list to jump to its location"
+    ],
+    "legendTitle": "Legend",
+    "moreTitle": "Learn more",
+    "more": {
+      "statute": {
+        "title": "No-smoking zone laws",
+        "desc": "See which facilities are designated as no-smoking zones under the National Health Promotion Act, and the related rules."
+      },
+      "about": {
+        "title": "About CleanBreath",
+        "desc": "Learn who runs the service and how the data is managed."
+      },
+      "health": {
+        "title": "Server status",
+        "desc": "Check the live status of the API server and database."
+      },
+      "privacy": {
+        "title": "Privacy Policy",
+        "desc": "What information we collect and how long we keep it."
+      }
+    }
+  },
+  "empty": "No data",
+  "badge": {
+    "smoking": "Smoking",
+    "nonSmoking": "No smoking"
+  },
+  "buildingCount": "{count, plural, one {# building} other {# buildings}}"
+}

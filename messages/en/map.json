@@ -1,0 +1,38 @@
+{
+  "loading": "Loading map...",
+  "filterLabel": "Map zone filters",
+  "legendLabel": "Map legend",
+  "zoneTypes": {
+    "NON_SMOKING_ZONE": "No-smoking zone",
+    "SMOKING_ZONE_OPEN": "Open smoking area",
+    "SMOKING_ZONE_OPEN_IMPLICIT": "Open smoking area (unofficial)",
+    "SMOKING_ZONE_CLOSE": "Enclosed smoking area (smoking room)",
+    "SMOKING_ZONE_CLOSE_IMPLICIT": "Enclosed smoking area (unofficial)",
+    "SMOKING_ZONE_LINE": "Line-marked smoking area",
+    "SMOKING_ZONE_LINE_IMPLICIT": "Line-marked smoking area (unofficial)",
+    "APARTMENT": "Smoke-free apartment complex"
+  },
+  "zoneGroups": {
+    "nonSmoking": "No-smoking zones",
+    "smoking": "Smoking areas",
+    "apartment": "Apartments"
+  },
+  "closeSelection": "Clear selection",
+  "selectedAddress": {
+    "label": "Selected area"
+  },
+  "selectedApartment": {
+    "label": "Selected apartment complex",
+    "buildings": "{count, plural, one {# building} other {# buildings}}",
+    "households": "{count, plural, one {# household} other {# households}}",
+    "designationTitle": "No-smoking zone designation",
+    "areas": {
+      "hallway": "Hallways",
+      "stairs": "Stairs",
+      "elevator": "Elevators",
+      "undergroundParkingLot": "Underground parking"
+    },
+    "designated": "Yes",
+    "notDesignated": "No"
+  }
+}

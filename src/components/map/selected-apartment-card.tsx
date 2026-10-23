@@ -2,6 +2,7 @@
 
 import { Check, MapPin, Minus, X } from "lucide-react";
 import * as motion from "motion/react-client";
+import { useTranslations } from "next-intl";
 import { ZONE_TONE } from "@/components/home/zone-tone";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,15 +11,17 @@ import { cn } from "@/lib/utils";
 import { ZONE_GROUPS } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 
+// 라벨은 messages map.selectedApartment.areas.<key>
 const DESIGNATION_AREAS = [
-  ["hallway", "복도"],
-  ["stairs", "계단"],
-  ["elevator", "엘리베이터"],
-  ["undergroundParkingLot", "지하주차장"],
+  "hallway",
+  "stairs",
+  "elevator",
+  "undergroundParkingLot",
 ] as const;
 
 // 위치는 page.tsx의 하단 스택이 정한다 (모바일: 시트 peek 위)
 export function SelectedApartmentCard() {
+  const t = useTranslations("map");
   const selectedApartment = useMapStore((state) => state.selectedApartment);
   const clearSelection = useMapStore((state) => state.clearSelection);
 
@@ -29,7 +32,7 @@ export function SelectedApartmentCard() {
 
   return (
     <motion.section
-      aria-label="선택한 아파트"
+      aria-label={t("selectedApartment.label")}
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2 }}
@@ -46,29 +49,35 @@ export function SelectedApartmentCard() {
             <Icon className="size-5" aria-hidden />
           </span>
           <div className="min-w-0 flex-1">
-            <h2 className="text-base font-semibold leading-snug">
+            <h2 lang="ko" className="text-base font-semibold leading-snug">
               {selectedApartment.apartmentName}
             </h2>
             <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
               <MapPin className="size-3.5 shrink-0" aria-hidden />
-              <span className="truncate">{selectedApartment.address}</span>
+              <span lang="ko" className="truncate">
+                {selectedApartment.address}
+              </span>
             </p>
             <div className="mt-2 flex flex-wrap gap-1.5 tabular-nums">
               <Badge variant="outline" className={ZONE_TONE.apartment.soft}>
-                {selectedApartment.numberOfBuilding}개 동
+                {t("selectedApartment.buildings", {
+                  count: selectedApartment.numberOfBuilding,
+                })}
               </Badge>
               <Badge variant="outline" className={ZONE_TONE.apartment.soft}>
-                {selectedApartment.numberOfHouseholds}세대
+                {t("selectedApartment.households", {
+                  count: selectedApartment.numberOfHouseholds,
+                })}
               </Badge>
             </div>
 
             {designation && (
               <div className="mt-3 rounded-lg bg-muted p-3">
                 <p className="mb-2 text-xs font-medium text-muted-foreground">
-                  금연구역 지정 범위
+                  {t("selectedApartment.designationTitle")}
                 </p>
                 <ul className="grid grid-cols-2 gap-1.5">
-                  {DESIGNATION_AREAS.map(([key, name]) => {
+                  {DESIGNATION_AREAS.map((key) => {
                     const isDesignated = designation[key] === "YES";
                     return (
                       <li
@@ -80,14 +89,16 @@ export function SelectedApartmentCard() {
                             : "border-transparent bg-background text-muted-foreground",
                         )}
                       >
-                        <span>{name}</span>
+                        <span>{t(`selectedApartment.areas.${key}`)}</span>
                         <span className="flex items-center gap-0.5 font-medium">
                           {isDesignated ? (
                             <Check className="size-3.5" aria-hidden />
                           ) : (
                             <Minus className="size-3.5" aria-hidden />
                           )}
-                          {isDesignated ? "지정" : "미지정"}
+                          {isDesignated
+                            ? t("selectedApartment.designated")
+                            : t("selectedApartment.notDesignated")}
                         </span>
                       </li>
                     );
@@ -101,7 +112,7 @@ export function SelectedApartmentCard() {
             size="icon-touch"
             className="-mr-2 -mt-2 shrink-0 rounded-full"
             onClick={clearSelection}
-            aria-label="선택 닫기"
+            aria-label={t("closeSelection")}
           >
             <X aria-hidden />
           </Button>

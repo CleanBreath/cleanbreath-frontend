@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
 import { getZoneStyle } from "@/lib/zone-style";
@@ -19,6 +20,7 @@ export function DetailNaverMap({
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
   const isLoaded = useNaverMapLoader();
+  const t = useTranslations("map");
 
   // 지도 초기화
   useEffect(() => {
@@ -74,7 +76,7 @@ export function DetailNaverMap({
   if (!isLoaded) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-muted rounded-lg">
-        <p className="text-muted-foreground">지도를 불러오는 중...</p>
+        <p className="text-muted-foreground">{t("loading")}</p>
       </div>
     );
   }
