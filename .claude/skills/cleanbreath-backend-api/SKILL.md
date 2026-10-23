@@ -22,11 +22,7 @@ description: CleanBreath 백엔드 REST API(Spring, base `/v1`) 명세와 이 �
 | POST | `/updateDate` | `checkUpdateDate(updateDate)` + 타입가드 `isUpdateNeeded` | `UpdateDateResponse \| UpdateNotNeededResponse` |
 | GET | `/apartment` | `getAllApartments` | `ApartmentListResponse` |
 | GET | `/region?r` | `getApartmentsByRegion(region)` | `ApartmentListResponse` |
-| GET | `/feedback-list` | `getFeedbackList` | `FeedbackListResponse` |
-| GET | `/feedback/{id}` | `getFeedbackById(id)` | `FeedbackDetail` |
 | POST | `/feedback/add` | `addFeedback(data)` | `MessageResponse` |
-| PUT | `/feedback/{id}` | `updateFeedback(id, data)` | `MessageResponse` |
-| DELETE | `/feedback/{id}` | `deleteFeedback(id)` | `MessageResponse` |
 | GET | `/allRequestAddress` | `getAllPendingAddresses` | `PendingAddressListResponse` |
 | GET | `/allRequestAddressPage?page&size` | `getPendingAddressesPage(page=0, size=20)` / 게시판용 `getSmokingAreaList(page=0, size=10)` | `PendingAddressPageResponse` / `SmokingAreaPageResponse` |
 | POST | `/smokingArea/add` | `addSmokingArea(data)` | `MessageResponse` |
@@ -54,7 +50,8 @@ description: CleanBreath 백엔드 REST API(Spring, base `/v1`) 명세와 이 �
 - **경로 좌표는 문자열**(`"37.401234"`), 중심 좌표 `latitude` / `longitude`는 숫자다. 지도에 넘길 때 `Number()`로 바꿔야 한다.
 - **날짜 형식이 요청마다 다르다.** `/updateDate`는 `"2024-01-01T12:00:00.000000"`(마이크로초), `/smokingArea/add`의 `updateAt`은 `"2024-01-01 12:00:00"`(공백 구분), 응답은 대부분 `"2024-01-01T12:00:00"`이다.
 - **`/updateDate`는 응답이 두 종류다.** 업데이트가 필요하면 목록 전체(`data` 배열)를, 아니면 `{ message }`만 온다. 반드시 `isUpdateNeeded`로 구분한다.
-- **피드백 id 필드명**: 목록은 `feedbackId`, 상세는 `id`다.
+- **피드백 관리 API는 관리자 전용이다.** `GET /feedback-list`, `GET·PUT·DELETE /feedback/{id}`는 `Authorization: Bearer <ADMIN_TOKEN>`이 없으면 401이다. 토큰을 브라우저에 넣으면 노출되므로 프론트엔드에 이 함수들을 만들지 않는다. 공개 API는 `POST /feedback/add`뿐이다.
+- **피드백 등록**은 `title`·`content`가 비어 있으면 400이다.
 - **`/allRequestAddressPage`의 `size` 최대값은 2000**이다.
 - **투표 `clientToken`**은 `src/lib`의 `getClientToken()`으로 만든 브라우저별 익명 토큰을 쓴다.
 - **에러**: 백엔드는 400/404/500 모두 `{ message }`로 응답한다. `handleError`가 이를 `ApiError(status, message)`로 바꿔 던지므로, UI에서는 `error instanceof ApiError`로 확인하고 `error.message`를 보여준다.

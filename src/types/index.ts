@@ -19,13 +19,7 @@ export type {
   DesignationStatus,
 } from "./apartment";
 export type { ApiErrorResponse, MessageResponse } from "./api";
-export type {
-  FeedbackAddRequest,
-  FeedbackDetail,
-  FeedbackListItem,
-  FeedbackListResponse,
-  FeedbackUpdateRequest,
-} from "./feedback";
+export type { FeedbackAddRequest } from "./feedback";
 export type {
   PageInfo,
   PendingAddressItem,

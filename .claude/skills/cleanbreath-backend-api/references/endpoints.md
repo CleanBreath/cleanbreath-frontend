@@ -7,7 +7,7 @@
 - Base URL
 - Address API (금연/흡연구역): `/allAddress`, `/address`, `/updateDate`
 - Apartment API (공동주택): `/apartment`, `/region`
-- Feedback API: `/feedback-list`, `/feedback/add`, `/feedback/{id}` (GET/PUT/DELETE)
+- Feedback API: `/feedback/add` (공개), `/feedback-list`·`/feedback/{id}` (GET/PUT/DELETE, 관리자 토큰 필요)
 - Pending Address API (신규 구역 제안): `/allRequestAddress`, `/allRequestAddressPage`, `/smokingArea/add`
 - Smoking Area API (게시판/투표): `/smokingArea/{id}`, `/smokingArea/{id}/vote`
 - Health API: `/health`
@@ -175,10 +175,13 @@ GET /v1/region?r={region}
 
 ### 💬 Feedback API (피드백)
 
-#### 1. 피드백 목록 조회
+> 등록(`POST /feedback/add`)을 뺀 나머지는 관리자 전용이다. `Authorization: Bearer <ADMIN_TOKEN>` 헤더가 없거나 틀리면 `401`을 돌려준다. 서버에 토큰이 설정되지 않았어도 모두 거부한다. 프론트엔드(브라우저)에서는 호출하지 않는다.
+
+#### 1. 피드백 목록 조회 (관리자)
 
 ```http
 GET /v1/feedback-list
+Authorization: Bearer <ADMIN_TOKEN>
 ```
 
 **Response**
@@ -208,6 +211,8 @@ POST /v1/feedback/add
 }
 ```
 
+`title`, `content`는 필수이며 비어 있으면 `400`을 돌려준다.
+
 **Response**
 
 ```json
@@ -216,10 +221,11 @@ POST /v1/feedback/add
 }
 ```
 
-#### 3. 피드백 상세 조회
+#### 3. 피드백 상세 조회 (관리자)
 
 ```http
 GET /v1/feedback/{id}
+Authorization: Bearer <ADMIN_TOKEN>
 ```
 
 **Response**
@@ -233,10 +239,11 @@ GET /v1/feedback/{id}
 }
 ```
 
-#### 4. 피드백 수정
+#### 4. 피드백 수정 (관리자)
 
 ```http
 PUT /v1/feedback/{id}
+Authorization: Bearer <ADMIN_TOKEN>
 ```
 
 **Request Body**
@@ -257,10 +264,11 @@ PUT /v1/feedback/{id}
 }
 ```
 
-#### 5. 피드백 삭제
+#### 5. 피드백 삭제 (관리자)
 
 ```http
 DELETE /v1/feedback/{id}
+Authorization: Bearer <ADMIN_TOKEN>
 ```
 
 **Response**
