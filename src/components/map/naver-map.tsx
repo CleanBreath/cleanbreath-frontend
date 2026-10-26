@@ -1,6 +1,13 @@
 "use client";
 
-import { ZoomIn } from "lucide-react";
+import {
+  Bus,
+  Footprints,
+  type LucideIcon,
+  School,
+  Trees,
+  ZoomIn,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
@@ -13,6 +20,7 @@ import type {
   ApartmentItem,
   MapBounds,
   PublicZoneItem,
+  PublicZoneType,
 } from "@/types";
 
 interface NaverMapProps {
@@ -28,11 +36,17 @@ function isSmokingZone(divisionArea: string): boolean {
 // renderToString은 비싸므로 마커마다 호출하지 않고 구역 타입별로 한 번만 생성
 const markerContentCache = new Map<string, string>();
 
-function createMarkerContent(divisionArea: string): string {
-  const cached = markerContentCache.get(divisionArea);
+// icon을 넘기면 구역 색은 그대로 두고 아이콘만 바꾼다 (공공데이터 유형별 아이콘). 이때 cacheKey도 유형별로 넘긴다
+function createMarkerContent(
+  divisionArea: string,
+  icon?: LucideIcon,
+  cacheKey = divisionArea,
+): string {
+  const cached = markerContentCache.get(cacheKey);
   if (cached) return cached;
 
-  const { icon: Icon, stroke, dashed } = getZoneStyle(divisionArea);
+  const { icon: zoneIcon, stroke, dashed } = getZoneStyle(divisionArea);
+  const Icon = icon ?? zoneIcon;
 
   // 배경은 stroke 색: 흰 아이콘 대비 3:1 이상 (fill 색은 초록·주황에서 미달). 비공식 구역은 점선 테두리
   const content = renderToString(
@@ -43,7 +57,7 @@ function createMarkerContent(divisionArea: string): string {
       <Icon size={20} className="text-white" aria-hidden />
     </div>,
   );
-  markerContentCache.set(divisionArea, content);
+  markerContentCache.set(cacheKey, content);
   return content;
 }
 
@@ -80,8 +94,16 @@ async function runInChunks(tasks: (() => void)[], isCancelled: () => boolean) {
   }
 }
 
-// 공공데이터 점은 이 줌 이상에서만 불러온다 (서울만 1만 건이라 축소 상태에서 다 그릴 수 없다)
-const PUBLIC_ZONE_MIN_ZOOM = 16;
+// 구역은 이 줌 이상에서만 그린다 (공공데이터가 전국 10만 건이라 축소 상태에서 다 그릴 수 없고, 직접 그린 구역도 맞춘다)
+const ZONE_MIN_ZOOM = 16;
+
+// 공공데이터 유형별 아이콘. 시설경계는 대부분 학교·어린이집 주변이다
+const PUBLIC_ZONE_ICONS: Record<PublicZoneType, LucideIcon> = {
+  TRANSIT: Bus,
+  PARK: Trees,
+  STREET: Footprints,
+  BOUNDARY: School,
+};
 // 화면 범위를 약 500m 격자로 넓혀, 조금 움직여도 같은 쿼리 키(캐시)를 쓰게 한다
 const BOUNDS_GRID = 0.005;
 
@@ -90,7 +112,7 @@ function snap(value: number, round: (x: number) => number): number {
 }
 
 function viewBounds(map: naver.maps.Map): MapBounds | null {
-  if (map.getZoom() < PUBLIC_ZONE_MIN_ZOOM) return null;
+  if (map.getZoom() < ZONE_MIN_ZOOM) return null;
   const bounds = map.getBounds() as naver.maps.LatLngBounds;
   const sw = bounds.getSW();
   const ne = bounds.getNE();
@@ -149,7 +171,10 @@ export function NaverMap({
   // 중심 좌표 변경
   useEffect(() => {
     if (!map) return;
-    map.panTo(new naver.maps.LatLng(center.lat, center.lng));
+    const target = new naver.maps.LatLng(center.lat, center.lng);
+    // 축소 상태에서 목록의 구역을 고르면 구역이 안 그려지므로 보이는 줌까지 확대하며 이동
+    if (map.getZoom() < ZONE_MIN_ZOOM) map.morph(target, ZONE_MIN_ZOOM);
+    else map.panTo(target);
   }, [map, center.lat, center.lng]);
 
   // 줌 변경
@@ -182,7 +207,11 @@ export function NaverMap({
       const marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(zone.latitude, zone.longitude),
         icon: {
-          content: createMarkerContent("NON_SMOKING_ZONE"),
+          content: createMarkerContent(
+            "NON_SMOKING_ZONE",
+            PUBLIC_ZONE_ICONS[zone.zoneType],
+            zone.zoneType,
+          ),
           anchor: new naver.maps.Point(20, 20),
         },
         title: zone.name,
@@ -202,9 +231,9 @@ export function NaverMap({
     };
   }, [map, zoomedIn, showNonSmoking, publicZoneData, selectAddress]);
 
-  // 마커 및 폴리곤 렌더링 (직접 그린 구역)
+  // 마커 및 폴리곤 렌더링 (직접 그린 구역). 축소 상태에서는 그리지 않는다
   useEffect(() => {
-    if (!map) return;
+    if (!map || !zoomedIn) return;
 
     const tasks: (() => void)[] = [];
     const overlays: (naver.maps.Marker | naver.maps.Polygon)[] = [];
@@ -356,6 +385,7 @@ export function NaverMap({
     };
   }, [
     map,
+    zoomedIn,
     addresses,
     apartments,
     showNonSmoking,
@@ -377,8 +407,8 @@ export function NaverMap({
   return (
     <>
       <div ref={mapRef} className="isolate h-full w-full" />
-      {/* 필터 칩(top-2, 높이 약 3.5rem) 바로 아래. 공공데이터 점은 PUBLIC_ZONE_MIN_ZOOM 이상에서만 그린다 */}
-      {map && !zoomedIn && showNonSmoking && (
+      {/* 필터 칩(top-2, 높이 약 3.5rem) 바로 아래. 구역은 ZONE_MIN_ZOOM 이상에서만 그린다 */}
+      {map && !zoomedIn && (
         <p
           role="status"
           className="pointer-events-none absolute top-16 left-1/2 z-20 flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-foreground text-sm shadow-md"
