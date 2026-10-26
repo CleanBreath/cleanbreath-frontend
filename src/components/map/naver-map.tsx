@@ -1,5 +1,6 @@
 "use client";
 
+import { ZoomIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
@@ -373,5 +374,19 @@ export function NaverMap({
   }
 
   // NAVER 내부 컨트롤의 z-index가 시트·다이얼로그 위로 새지 않도록 쌓임 맥락을 가둔다
-  return <div ref={mapRef} className="isolate h-full w-full" />;
+  return (
+    <>
+      <div ref={mapRef} className="isolate h-full w-full" />
+      {/* 필터 칩(top-2, 높이 약 3.5rem) 바로 아래. 공공데이터 점은 PUBLIC_ZONE_MIN_ZOOM 이상에서만 그린다 */}
+      {map && !zoomedIn && showNonSmoking && (
+        <p
+          role="status"
+          className="pointer-events-none absolute top-16 left-1/2 z-20 flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-foreground text-sm shadow-md"
+        >
+          <ZoomIn aria-hidden className="size-4" />
+          {t("zoomInHint")}
+        </p>
+      )}
+    </>
+  );
 }

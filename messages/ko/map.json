@@ -1,5 +1,6 @@
 {
   "loading": "지도를 불러오는 중...",
+  "zoomInHint": "확대하면 전국 금연구역이 더 보여요",
   "filterLabel": "지도 구역 필터",
   "legendLabel": "지도 범례",
   "zoneTypes": {

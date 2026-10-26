@@ -1,5 +1,6 @@
 {
   "loading": "地図を読み込み中...",
+  "zoomInHint": "拡大すると全国の禁煙区域がさらに表示されます",
   "filterLabel": "地図のエリアフィルター",
   "legendLabel": "地図の凡例",
   "zoneTypes": {
