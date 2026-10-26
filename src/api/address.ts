@@ -5,6 +5,8 @@
 import type {
   AddressItem,
   AllAddressResponse,
+  MapBounds,
+  PublicZoneListResponse,
   UpdateDateRequest,
   UpdateDateResponse,
   UpdateNotNeededResponse,
@@ -23,6 +25,15 @@ export async function getAddressByCoords(
 ): Promise<AddressItem> {
   return apiGet<AddressItem>("/address", {
     params: { lat, lng },
+  });
+}
+
+/** 화면 사각형 안의 공공데이터 실외 금연구역 (최대 3000건) */
+export async function getPublicZonesWithin(
+  bounds: MapBounds,
+): Promise<PublicZoneListResponse> {
+  return apiGet<PublicZoneListResponse>("/publicZone/within", {
+    params: bounds,
   });
 }
 

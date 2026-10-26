@@ -7,6 +7,7 @@ export {
   checkUpdateDate,
   getAddressByCoords,
   getAllAddress,
+  getPublicZonesWithin,
   isUpdateNeeded,
 } from "./address";
 // Apartment API
