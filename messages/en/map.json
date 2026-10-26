@@ -1,6 +1,6 @@
 {
   "loading": "Loading map...",
-  "zoomInHint": "Zoom in to see more no-smoking zones nationwide",
+  "zoomInHint": "Zoom in to see zones",
   "filterLabel": "Map zone filters",
   "legendLabel": "Map legend",
   "zoneTypes": {
