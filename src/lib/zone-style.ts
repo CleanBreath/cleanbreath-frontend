@@ -1,9 +1,14 @@
 import {
   Building2,
+  Bus,
   Cigarette,
   CigaretteOff,
+  Footprints,
   type LucideIcon,
+  School,
+  Trees,
 } from "lucide-react";
+import type { PublicZoneType } from "@/types";
 
 export type ZoneGroup = "nonSmoking" | "smoking" | "apartment";
 
@@ -105,3 +110,11 @@ export const ZONE_GROUPS = {
   smoking: { ink: "#DC2626", icon: Cigarette },
   apartment: { ink: "#2563EB", icon: Building2 },
 } as const satisfies Record<ZoneGroup, { ink: string; icon: LucideIcon }>;
+
+// 공공데이터 실외 금연구역 유형별 아이콘(지도 마커·범례). 색은 NON_SMOKING_ZONE. 시설경계는 대부분 학교·어린이집 주변이다
+export const PUBLIC_ZONE_ICONS = {
+  TRANSIT: Bus,
+  PARK: Trees,
+  STREET: Footprints,
+  BOUNDARY: School,
+} as const satisfies Record<PublicZoneType, LucideIcon>;

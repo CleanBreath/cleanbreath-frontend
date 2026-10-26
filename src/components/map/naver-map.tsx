@@ -1,26 +1,23 @@
 "use client";
 
-import {
-  Bus,
-  Footprints,
-  type LucideIcon,
-  School,
-  Trees,
-  ZoomIn,
-} from "lucide-react";
+import { type LucideIcon, ZoomIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
 import { usePublicZonesWithin } from "@/hooks/use-address";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
-import { getZoneStyle, ZONE_STYLES, type ZoneStyle } from "@/lib/zone-style";
+import {
+  getZoneStyle,
+  PUBLIC_ZONE_ICONS,
+  ZONE_STYLES,
+  type ZoneStyle,
+} from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 import type {
   AddressItem,
   ApartmentItem,
   MapBounds,
   PublicZoneItem,
-  PublicZoneType,
 } from "@/types";
 
 interface NaverMapProps {
@@ -96,14 +93,6 @@ async function runInChunks(tasks: (() => void)[], isCancelled: () => boolean) {
 
 // 구역은 이 줌 이상에서만 그린다 (공공데이터가 전국 10만 건이라 축소 상태에서 다 그릴 수 없고, 직접 그린 구역도 맞춘다)
 const ZONE_MIN_ZOOM = 16;
-
-// 공공데이터 유형별 아이콘. 시설경계는 대부분 학교·어린이집 주변이다
-const PUBLIC_ZONE_ICONS: Record<PublicZoneType, LucideIcon> = {
-  TRANSIT: Bus,
-  PARK: Trees,
-  STREET: Footprints,
-  BOUNDARY: School,
-};
 // 화면 범위를 약 500m 격자로 넓혀, 조금 움직여도 같은 쿼리 키(캐시)를 쓰게 한다
 const BOUNDS_GRID = 0.005;
 
