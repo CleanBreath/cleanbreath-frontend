@@ -5,7 +5,7 @@
 ## 목차
 
 - Base URL
-- Address API (금연/흡연구역): `/allAddress`, `/address`, `/address/within`, `/address/contains`, `/updateDate`
+- Address API (금연/흡연구역): `/allAddress`, `/address`, `/address/within`, `/address/contains`, `/publicZone/within`, `/updateDate`
 - Apartment API (공동주택): `/apartment`, `/region`
 - Feedback API: `/feedback/add` (공개), `/feedback-list`·`/feedback/{id}` (GET/PUT/DELETE, 관리자 토큰 필요)
 - Pending Address API (신규 구역 제안): `/allRequestAddress`, `/allRequestAddressPage`, `/smokingArea/add`
@@ -103,6 +103,36 @@ GET /v1/address/contains?lat={latitude}&lng={longitude}
 ```
 
 구역 다각형이 이 점을 포함하는 구역을 반환한다. "지금 위치가 금연·흡연 구역인가?"에 쓴다. 응답 형식은 `/allAddress`와 같고, 해당 구역이 없으면 `count: 0`, `data: []`. 좌표가 범위를 벗어나면 `400`.
+
+#### 2-3. 사각형 범위 안의 공공데이터 실외 금연구역 (공간 인덱스)
+
+```http
+GET /v1/publicZone/within?swLat={남서 위도}&swLng={남서 경도}&neLat={북동 위도}&neLng={북동 경도}
+```
+
+공공데이터포털 전국금연구역표준데이터 중 실외 금연구역(버스정류소·공원·금연거리·시설경계)을 점 좌표로 반환한다. 다각형(`path`)은 없다. 최대 3000건이라 프론트는 줌 16 이상에서만 부른다. 좌표가 범위를 벗어나면 `400`.
+
+```json
+{
+  "count": 1,
+  "updateAt": "2026-10-26T18:00:00",
+  "data": [
+    {
+      "id": 1,
+      "name": "쌍문역",
+      "zoneType": "TRANSIT",
+      "division": "지하철 역사",
+      "scope": "출입구 10M이내",
+      "roadAddress": "서울특별시 도봉구 도봉로 486-1",
+      "latitude": 37.6482236,
+      "longitude": 127.0343875,
+      "referenceDate": "2018-05-15"
+    }
+  ]
+}
+```
+
+`zoneType`: `TRANSIT`(정류소·지하철 출입구) | `PARK`(공원·놀이터·광장) | `STREET`(금연거리·통학로) | `BOUNDARY`(학교·어린이집 등 시설경계). `division`·`scope`·`roadAddress`·`referenceDate`는 `null`일 수 있다.
 
 #### 3. 데이터 업데이트 확인
 

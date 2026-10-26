@@ -5,19 +5,25 @@
 
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { getAllAddress } from "@/api";
+import { keepPreviousData, skipToken, useQuery } from "@tanstack/react-query";
+import { getAllAddress, getPublicZonesWithin } from "@/api";
 import {
   getAddresses,
   getMetadata,
   isDataExpired,
   saveAddresses,
 } from "@/lib/indexeddb";
-import type { AllAddressResponse } from "@/types";
+import type {
+  AllAddressResponse,
+  MapBounds,
+  PublicZoneListResponse,
+} from "@/types";
 
 export const addressKeys = {
   all: ["address"] as const,
   list: () => [...addressKeys.all, "list"] as const,
+  publicWithin: (bounds: MapBounds | null) =>
+    [...addressKeys.all, "publicWithin", bounds] as const,
 };
 
 /**
@@ -67,5 +73,16 @@ export function useAddressList() {
     queryFn: fetchAddressesWithCache,
     staleTime: 1000 * 60 * 60, // 1시간 동안 fresh 상태 유지
     gcTime: 1000 * 60 * 60 * 24, // 24시간 동안 캐시 유지
+  });
+}
+
+/** 화면 사각형 안의 공공데이터 실외 금연구역. bounds가 null이면 부르지 않는다(축소 상태) */
+export function usePublicZonesWithin(bounds: MapBounds | null) {
+  return useQuery<PublicZoneListResponse>({
+    queryKey: addressKeys.publicWithin(bounds),
+    queryFn: bounds ? () => getPublicZonesWithin(bounds) : skipToken,
+    // 지도를 옮기는 동안 이전 마커를 유지해 깜빡이지 않게 한다
+    placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 60,
   });
 }

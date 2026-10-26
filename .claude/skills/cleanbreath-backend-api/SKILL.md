@@ -21,6 +21,7 @@ description: CleanBreath 백엔드 REST API(Spring, base `/v1`) 명세와 이 �
 | GET | `/address?lat&lng` | `getAddressByCoords(lat, lng)` | `AddressItem` |
 | GET | `/address/within?swLat&swLng&neLat&neLng` | (프론트 함수 없음) | `AllAddressResponse` 형식 |
 | GET | `/address/contains?lat&lng` | (프론트 함수 없음) | `AllAddressResponse` 형식 |
+| GET | `/publicZone/within?swLat&swLng&neLat&neLng` | `getPublicZonesWithin(bounds)` + 훅 `usePublicZonesWithin` | `PublicZoneListResponse` |
 | POST | `/updateDate` | `checkUpdateDate(updateDate)` + 타입가드 `isUpdateNeeded` | `UpdateDateResponse \| UpdateNotNeededResponse` |
 | GET | `/apartment` | `getAllApartments` | `ApartmentListResponse` |
 | GET | `/region?r` | `getApartmentsByRegion(region)` | `ApartmentListResponse` |

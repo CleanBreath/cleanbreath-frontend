@@ -3,10 +3,16 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
+import { usePublicZonesWithin } from "@/hooks/use-address";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
 import { getZoneStyle, ZONE_STYLES, type ZoneStyle } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
-import type { AddressItem, ApartmentItem } from "@/types";
+import type {
+  AddressItem,
+  ApartmentItem,
+  MapBounds,
+  PublicZoneItem,
+} from "@/types";
 
 interface NaverMapProps {
   zoom?: number;
@@ -60,6 +66,57 @@ function yieldToMain(): Promise<void> {
     : new Promise((resolve) => setTimeout(resolve, 0));
 }
 
+// 수백 개를 한 번에 만들면 긴 작업(long task)이 되므로 ~10ms씩 나눠 실행
+async function runInChunks(tasks: (() => void)[], isCancelled: () => boolean) {
+  let deadline = performance.now() + 10;
+  for (const task of tasks) {
+    if (performance.now() > deadline) {
+      await yieldToMain();
+      if (isCancelled()) return;
+      deadline = performance.now() + 10;
+    }
+    task();
+  }
+}
+
+// 공공데이터 점은 이 줌 이상에서만 불러온다 (서울만 1만 건이라 축소 상태에서 다 그릴 수 없다)
+const PUBLIC_ZONE_MIN_ZOOM = 16;
+// 화면 범위를 약 500m 격자로 넓혀, 조금 움직여도 같은 쿼리 키(캐시)를 쓰게 한다
+const BOUNDS_GRID = 0.005;
+
+function snap(value: number, round: (x: number) => number): number {
+  return Number((round(value / BOUNDS_GRID) * BOUNDS_GRID).toFixed(3));
+}
+
+function viewBounds(map: naver.maps.Map): MapBounds | null {
+  if (map.getZoom() < PUBLIC_ZONE_MIN_ZOOM) return null;
+  const bounds = map.getBounds() as naver.maps.LatLngBounds;
+  const sw = bounds.getSW();
+  const ne = bounds.getNE();
+  return {
+    swLat: snap(sw.lat(), Math.floor),
+    swLng: snap(sw.lng(), Math.floor),
+    neLat: snap(ne.lat(), Math.ceil),
+    neLng: snap(ne.lng(), Math.ceil),
+  };
+}
+
+// 점 수백 개를 그리므로 renderToString 아이콘 대신 작은 원 하나로 그린다
+const PUBLIC_ZONE_MARKER = `<div style="width:14px;height:14px;border-radius:9999px;border:2px solid #fff;box-shadow:0 1px 2px rgb(0 0 0/.3);background:${ZONE_STYLES.NON_SMOKING_ZONE.stroke}"></div>`;
+
+// 선택 카드(SelectedAddressCard)를 그대로 쓰기 위해 구역 형태로 바꾼다. id는 기존 구역과 겹치지 않게 음수
+function publicZoneToAddress(zone: PublicZoneItem): AddressItem {
+  return {
+    id: -zone.id,
+    addressName: zone.name,
+    buildingName: zone.roadAddress ?? zone.scope ?? "",
+    latitude: zone.latitude,
+    longitude: zone.longitude,
+    category: "NON_SMOKING",
+    path: [],
+  };
+}
+
 export function NaverMap({
   zoom = 17,
   addresses = [],
@@ -74,6 +131,8 @@ export function NaverMap({
 
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
+  const [bounds, setBounds] = useState<MapBounds | null>(null);
+  const { data: publicZoneData } = usePublicZonesWithin(bounds);
   const isLoaded = useNaverMapLoader();
   const t = useTranslations("map");
 
@@ -101,8 +160,51 @@ export function NaverMap({
     map.setZoom(zoom);
   }, [map, zoom]);
 
-  // 마커 및 폴리곤 렌더링
-  // 수백 개를 한 번에 만들면 긴 작업(long task)이 되므로 경로별 작업으로 모아 ~10ms씩 나눠 실행
+  // 이동·확대가 끝날 때마다 화면 범위 갱신. 격자가 같으면 이전 객체를 유지해 다시 그리지 않는다
+  useEffect(() => {
+    if (!map) return;
+    const update = () =>
+      setBounds((prev) => {
+        const next = viewBounds(map);
+        return JSON.stringify(prev) === JSON.stringify(next) ? prev : next;
+      });
+    update();
+    const listener = naver.maps.Event.addListener(map, "idle", update);
+    return () => naver.maps.Event.removeListener(listener);
+  }, [map]);
+
+  // 공공데이터 실외 금연구역 점 마커. bounds 대신 확대 여부만 의존해, 이동할 때는 새 데이터가 왔을 때 한 번만 다시 그린다
+  const zoomedIn = bounds !== null;
+  // shortcut: 범위가 바뀌면 전부 지우고 다시 만든다. 확대 상태라 수백 개 수준이며, 끊김이 보이면 id로 차이만 반영한다
+  useEffect(() => {
+    if (!map || !zoomedIn || !showNonSmoking || !publicZoneData) return;
+
+    const markers: naver.maps.Marker[] = [];
+    const tasks = publicZoneData.data.map((zone) => () => {
+      const marker = new naver.maps.Marker({
+        position: new naver.maps.LatLng(zone.latitude, zone.longitude),
+        icon: {
+          content: PUBLIC_ZONE_MARKER,
+          anchor: new naver.maps.Point(7, 7),
+        },
+        title: zone.name,
+        map,
+      });
+      naver.maps.Event.addListener(marker, "click", () =>
+        selectAddress(publicZoneToAddress(zone)),
+      );
+      markers.push(marker);
+    });
+
+    let cancelled = false;
+    runInChunks(tasks, () => cancelled);
+    return () => {
+      cancelled = true;
+      for (const marker of markers) marker.setMap(null);
+    };
+  }, [map, zoomedIn, showNonSmoking, publicZoneData, selectAddress]);
+
+  // 마커 및 폴리곤 렌더링 (직접 그린 구역)
   useEffect(() => {
     if (!map) return;
 
@@ -247,17 +349,7 @@ export function NaverMap({
     }
 
     let cancelled = false;
-    (async () => {
-      let deadline = performance.now() + 10;
-      for (const task of tasks) {
-        if (performance.now() > deadline) {
-          await yieldToMain();
-          if (cancelled) return;
-          deadline = performance.now() + 10;
-        }
-        task();
-      }
-    })();
+    runInChunks(tasks, () => cancelled);
 
     // 토글 변경·언마운트(사이드바 접힘 시 key 리마운트 포함) 시 남은 작업 중단 및 오버레이 제거
     return () => {
