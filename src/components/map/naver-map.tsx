@@ -101,9 +101,6 @@ function viewBounds(map: naver.maps.Map): MapBounds | null {
   };
 }
 
-// 점 수백 개를 그리므로 renderToString 아이콘 대신 작은 원 하나로 그린다
-const PUBLIC_ZONE_MARKER = `<div style="width:14px;height:14px;border-radius:9999px;border:2px solid #fff;box-shadow:0 1px 2px rgb(0 0 0/.3);background:${ZONE_STYLES.NON_SMOKING_ZONE.stroke}"></div>`;
-
 // 선택 카드(SelectedAddressCard)를 그대로 쓰기 위해 구역 형태로 바꾼다. id는 기존 구역과 겹치지 않게 음수
 function publicZoneToAddress(zone: PublicZoneItem): AddressItem {
   return {
@@ -184,8 +181,8 @@ export function NaverMap({
       const marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(zone.latitude, zone.longitude),
         icon: {
-          content: PUBLIC_ZONE_MARKER,
-          anchor: new naver.maps.Point(7, 7),
+          content: createMarkerContent("NON_SMOKING_ZONE"),
+          anchor: new naver.maps.Point(20, 20),
         },
         title: zone.name,
         map,
