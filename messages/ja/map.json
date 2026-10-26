@@ -35,5 +35,12 @@
     },
     "designated": "指定",
     "notDesignated": "未指定"
+  },
+  "publicZoneLegendLabel": "公共データの禁煙区域（拡大時に表示）",
+  "publicZoneTypes": {
+    "TRANSIT": "バス停・地下鉄出入口",
+    "PARK": "公園・遊び場",
+    "STREET": "禁煙通り・通学路",
+    "BOUNDARY": "学校・保育園の周辺"
   }
 }

@@ -35,5 +35,12 @@
     },
     "designated": "Yes",
     "notDesignated": "No"
+  },
+  "publicZoneLegendLabel": "Public no-smoking zones (shown when zoomed in)",
+  "publicZoneTypes": {
+    "TRANSIT": "Bus stops & subway exits",
+    "PARK": "Parks & playgrounds",
+    "STREET": "No-smoking streets & school routes",
+    "BOUNDARY": "Around schools & daycares"
   }
 }
