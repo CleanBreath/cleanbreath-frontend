@@ -87,7 +87,7 @@
         "period": "Until you delete your browser data (stored only on your device)"
       }
     ],
-    "note": "A registration request is added to the map automatically at 3 a.m. (Korea time) every day once it collects 20 or more “Correct” votes, at which point the request and its vote records are deleted."
+    "note": "Once a registration request collects 20 or more “Correct” votes, an administrator reviews it and adds it to the map, at which point the request and its vote records are deleted."
   },
   "destruction": {
     "title": "4. Procedures and Methods for Destroying Personal Information",
