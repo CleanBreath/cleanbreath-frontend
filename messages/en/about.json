@@ -25,7 +25,7 @@
     "title": "How area data is managed",
     "source": "The area information shown on the map is provided by the CleanBreath server.",
     "proposal": "Areas suggested on the <register>Suggest an area</register> page are not added to the map right away. They are posted publicly on the <board>board</board>, where anyone can vote “Correct” or “Incorrect”.",
-    "autoApply": "Areas that collect 20 or more “Correct” votes are added to the map automatically at 3 a.m. (Korea time) every day, without any separate human review.",
+    "autoApply": "Areas that collect 20 or more “Correct” votes, well ahead of “Incorrect” votes, are added to the map after an administrator reviews them.",
     "voting": "You can vote without logging in. To prevent duplicate votes, a random identifier stored in your browser is recorded along with your vote.",
     "cache": "The app keeps area data on your device. When you visit more than 24 hours after the last check, or at the end of each month, it checks the server for new data and updates it."
   },

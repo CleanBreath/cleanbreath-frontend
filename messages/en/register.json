@@ -9,7 +9,7 @@
   },
   "guide": {
     "draw": "Tap “Draw area”, then place at least 3 points on the map to mark the area.",
-    "publish": "Areas you submit are posted on the board. Once an area gets 20 or more “Correct” votes, it is added to the map automatically at 3 a.m. (Korea time) every day."
+    "publish": "Areas you submit are posted on the board. Once an area gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map."
   },
   "category": {
     "title": "Area type",
@@ -39,7 +39,7 @@
   "submitFailed": "Something went wrong while submitting the area. Please try again later.",
   "success": {
     "title": "Request submitted!",
-    "description": "The area you suggested will be posted on the board. Once it gets 20 or more “Correct” votes, it is added to the map automatically at 3 a.m. (Korea time) every day.",
+    "description": "The area you suggested will be posted on the board. Once it gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map.",
     "viewBoard": "View on the board"
   },
   "map": {
