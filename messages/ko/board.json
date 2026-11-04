@@ -5,7 +5,11 @@
   },
   "detailMeta": {
     "title": "흡연·금연구역 상세 정보",
-    "description": "CleanBreath에 등록된 흡연구역 또는 금연구역의 위치와 상세 정보를 확인할 수 있습니다."
+    "description": "CleanBreath에 등록된 흡연구역 또는 금연구역의 위치와 상세 정보를 확인할 수 있습니다.",
+    "titleNamed": "{name} {category, select, SMOKING {흡연구역} NON_SMOKING {금연구역} other {구역}} · {address}",
+    "titleAddressOnly": "{address} {category, select, SMOKING {흡연구역} NON_SMOKING {금연구역} other {구역}}",
+    "descriptionNamed": "{address}에 있는 {name} {category, select, SMOKING {흡연구역} NON_SMOKING {금연구역} other {구역}}의 위치와 범위, 이용자 투표 현황입니다. CleanBreath 이용자가 등록 요청한 구역으로, 투표와 관리자 확인을 거쳐 지도에 반영됩니다.",
+    "descriptionAddressOnly": "{address}에 있는 {category, select, SMOKING {흡연구역} NON_SMOKING {금연구역} other {구역}}의 위치와 범위, 이용자 투표 현황입니다. CleanBreath 이용자가 등록 요청한 구역으로, 투표와 관리자 확인을 거쳐 지도에 반영됩니다."
   },
   "category": {
     "SMOKING": "흡연구역",
@@ -27,6 +31,13 @@
     "title": "구역 상세 정보",
     "description": "등록 요청된 구역의 위치와 투표 현황",
     "notFound": "데이터를 찾을 수 없습니다.",
+    "infoTitle": "구역 정보",
+    "fields": {
+      "category": "구역 타입",
+      "address": "주소",
+      "building": "건물명"
+    },
+    "pendingNotice": "이용자가 등록 요청한 구역이라 아직 지도에 반영되지 않았을 수 있습니다. ‘사실이에요’ 투표가 20표 이상 모이면 관리자가 확인한 뒤 지도에 반영합니다.",
     "voteTitle": "이 정보가 사실인가요?",
     "voteTrue": "사실이에요",
     "voteFalse": "아니에요"

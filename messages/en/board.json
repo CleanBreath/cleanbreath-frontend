@@ -5,7 +5,11 @@
   },
   "detailMeta": {
     "title": "Smoking Area & No-Smoking Zone Details",
-    "description": "See the location and details of a smoking area or no-smoking zone registered on CleanBreath."
+    "description": "See the location and details of a smoking area or no-smoking zone registered on CleanBreath.",
+    "titleNamed": "{category, select, SMOKING {Smoking area} NON_SMOKING {No-smoking zone} other {Area}}: {name} · {address}",
+    "titleAddressOnly": "{category, select, SMOKING {Smoking area} NON_SMOKING {No-smoking zone} other {Area}}: {address}",
+    "descriptionNamed": "Location, boundary and user votes for the {category, select, SMOKING {smoking area} NON_SMOKING {no-smoking zone} other {area}} at {name} ({address}). This area was suggested by a CleanBreath user and is added to the map after user votes and an administrator review.",
+    "descriptionAddressOnly": "Location, boundary and user votes for the {category, select, SMOKING {smoking area} NON_SMOKING {no-smoking zone} other {area}} at {address}. This area was suggested by a CleanBreath user and is added to the map after user votes and an administrator review."
   },
   "category": {
     "SMOKING": "Smoking area",
@@ -27,6 +31,13 @@
     "title": "Area details",
     "description": "Location and votes for a suggested area",
     "notFound": "We couldn’t find this area.",
+    "infoTitle": "Area info",
+    "fields": {
+      "category": "Area type",
+      "address": "Address",
+      "building": "Building name"
+    },
+    "pendingNotice": "This area was suggested by a user, so it may not be on the map yet. Once it gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map.",
     "voteTitle": "Is this information correct?",
     "voteTrue": "Correct",
     "voteFalse": "Incorrect"
