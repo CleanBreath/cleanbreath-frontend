@@ -1,4 +1,5 @@
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
+import { cache } from "react";
 import type {
   AddressItem,
   AllAddressResponse,
@@ -6,6 +7,7 @@ import type {
   PublicZoneListResponse,
   PublicZoneType,
 } from "@/types";
+import { isTimeoutError, withDeadline } from "./deadline";
 import { parseSeoulGu } from "./seoul-address";
 import { type DistrictBounds, SEOUL_DISTRICTS } from "./seoul-districts";
 
@@ -14,8 +16,14 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/v1";
 
 /** 응답 데이터 캐시 1일. 페이지(segment revalidate)는 더 자주 다시 그려 빌드 때 실패한 페이지가 빨리 채워지게 한다 */
 export const ZONES_DATA_REVALIDATE = 86400;
-const TIMEOUT_MS = 15_000;
+const IS_BUILD = process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD;
+// 빌드 중에는 정적 생성 시간 제한(60초) 안에 끝나도록 짧게 기다린다.
+// 야간 DB 중지 중에는 백엔드가 연결을 거부하지 않고 매달려 있어 시도마다 제한 시간을 다 쓰므로,
+// 빌드에서는 제한 시간 초과를 다시 시도하지 않는다 (연결 오류·5xx는 그대로 한 번 더 시도)
+const TIMEOUT_MS = IS_BUILD ? 10_000 : 15_000;
 const RETRIES = 1;
+/** /publicZone/within 한 번에 돌려주는 최대 행 수. 타일 응답이 여기에 닿으면 잘린 것일 수 있다 */
+const WITHIN_ROW_CAP = 3000;
 // 구 목록 페이지가 타일 30여 개를 한꺼번에 부르지 않도록 동시 요청 수 제한
 const CONCURRENCY = 4;
 
@@ -26,10 +34,22 @@ export const PUBLIC_ZONE_TYPES: PublicZoneType[] = [
   "BOUNDARY",
 ];
 
+/**
+ * 빌드 워커 안에서 API 응답이 제한 시간을 넘기면 남은 페이지는 바로 데이터 없이 만든다
+ * (페이지마다 제한 시간을 다시 기다리면 야간 배포가 아주 느려지거나 워커가 재시작된다).
+ * 빌드 때만 쓰며, 이렇게 만든 페이지는 revalidate로 운영 중에 다시 채워진다
+ */
+let buildApiDown = false;
+
 async function getJson<T>(
   path: string,
   params?: Record<string, number>,
 ): Promise<T> {
+  if (IS_BUILD && buildApiDown) {
+    throw new Error(
+      `GET ${path} 건너뜀: 이번 빌드에서 API가 응답하지 않았습니다`,
+    );
+  }
   const qs = params
     ? `?${new URLSearchParams(
         Object.entries(params).map(([k, v]) => [k, String(v)]),
@@ -38,18 +58,26 @@ async function getJson<T>(
   // 빌드 때 여러 워커가 동시에 부르면 연결 시간 초과가 가끔 나서 네트워크 오류·5xx는 한 번 더 시도한다
   for (let attempt = 1; ; attempt++) {
     try {
-      const res = await fetch(`${API_URL}${path}${qs}`, {
-        next: { revalidate: ZONES_DATA_REVALIDATE, tags: ["zones"] },
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
-      if (!res.ok) {
-        const error = new Error(`GET ${path} ${res.status}`);
-        if (res.status < 500) throw Object.assign(error, { retry: false });
-        throw error;
-      }
-      return (await res.json()) as T;
+      // 오래된 캐시 재검증에서는 Next가 signal을 빼므로 withDeadline으로도 끊는다 (deadline.ts)
+      const load = async () => {
+        const res = await fetch(`${API_URL}${path}${qs}`, {
+          next: { revalidate: ZONES_DATA_REVALIDATE, tags: ["zones"] },
+          signal: AbortSignal.timeout(TIMEOUT_MS),
+        });
+        if (!res.ok) {
+          const error = new Error(`GET ${path} ${res.status}`);
+          if (res.status < 500) throw Object.assign(error, { retry: false });
+          throw error;
+        }
+        return (await res.json()) as T;
+      };
+      return await withDeadline(load(), TIMEOUT_MS, `GET ${path}`);
     } catch (error) {
-      const retryable = (error as { retry?: boolean }).retry !== false;
+      const timedOut = isTimeoutError(error);
+      if (IS_BUILD && timedOut) buildApiDown = true;
+      const retryable =
+        (error as { retry?: boolean }).retry !== false &&
+        !(IS_BUILD && timedOut);
       if (attempt >= RETRIES + 1 || !retryable) throw error;
       await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
     }
@@ -64,9 +92,7 @@ async function loadOrNull<T>(label: string, load: () => Promise<T>) {
   try {
     return await load();
   } catch (error) {
-    const degrade =
-      process.env.NEXT_PHASE === PHASE_PRODUCTION_BUILD ||
-      process.env.NODE_ENV === "development";
+    const degrade = IS_BUILD || process.env.NODE_ENV === "development";
     if (!degrade) throw error;
     console.warn(`[zones] ${label} 조회 실패, 데이터 없이 렌더링:`, error);
     return null;
@@ -105,9 +131,18 @@ const tileKey = (t: DistrictBounds) =>
 /** 타일들의 공공데이터 행을 id로 중복 제거해 합친다. updateAt은 가장 늦은 응답 값 */
 async function fetchTiles(tiles: DistrictBounds[]) {
   const unique = [...new Map(tiles.map((t) => [tileKey(t), t])).values()];
-  const responses = await mapLimit(unique, CONCURRENCY, (t) =>
-    getJson<PublicZoneListResponse>("/publicZone/within", { ...t }),
-  );
+  const responses = await mapLimit(unique, CONCURRENCY, async (t) => {
+    const res = await getJson<PublicZoneListResponse>("/publicZone/within", {
+      ...t,
+    });
+    // 상한에 닿은 타일은 행이 잘렸을 수 있어 구별 개수가 적게 나온다. scripts/build-seoul-districts.ts로 타일을 다시 나눌 것
+    if (res.data.length >= WITHIN_ROW_CAP) {
+      console.warn(
+        `[zones] 타일 ${tileKey(t)} 응답이 ${res.data.length}행으로 상한(${WITHIN_ROW_CAP})에 닿았습니다. 행이 잘렸을 수 있으니 타일을 다시 생성하세요`,
+      );
+    }
+    return res;
+  });
   const rows = new Map<number, PublicZoneItem>();
   for (const r of responses) for (const item of r.data) rows.set(item.id, item);
   const updateAt =
@@ -158,8 +193,11 @@ function summarize(
 const byName = (a: PublicZoneItem, b: PublicZoneItem) =>
   a.name.localeCompare(b.name, "ko");
 
-/** 구 하나의 공공데이터 금연구역. 조회 실패 시 빌드·개발 중에는 null */
-export async function getDistrictZones(slug: string) {
+/**
+ * 구 하나의 공공데이터 금연구역. 조회 실패 시 빌드·개발 중에는 null.
+ * generateMetadata와 페이지가 한 번만 부르도록 cache로 감싼다 (signal을 넘기면 Next의 fetch 중복 제거가 꺼진다)
+ */
+export const getDistrictZones = cache(async (slug: string) => {
   const district = SEOUL_DISTRICTS.find((d) => d.slug === slug);
   if (!district) return null;
   return loadOrNull(`district ${slug}`, async () => {
@@ -170,7 +208,7 @@ export async function getDistrictZones(slug: string) {
     const noAddress = rows.filter((r) => !r.roadAddress).length;
     return summarize(own, noAddress, updateAt);
   });
-}
+});
 
 export interface SeoulSummary {
   districts: { slug: string; total: number; counts: ZoneTypeCounts }[];
@@ -181,8 +219,8 @@ export interface SeoulSummary {
 }
 
 /** 서울 25개 구별 개수. 구 상세 페이지와 같은 타일 URL을 불러 데이터 캐시를 함께 쓴다 */
-export async function getSeoulSummary() {
-  return loadOrNull<SeoulSummary>("seoul summary", async () => {
+export const getSeoulSummary = cache(async () =>
+  loadOrNull<SeoulSummary>("seoul summary", async () => {
     const { rows, updateAt } = await fetchTiles(
       SEOUL_DISTRICTS.flatMap((d) => d.tiles),
     );
@@ -203,8 +241,8 @@ export async function getSeoulSummary() {
       latestReferenceDate: maxDate(seoulRows.map((r) => r.referenceDate)),
       updateAt,
     };
-  });
-}
+  }),
+);
 
 export type AnyangGroup = "smoking" | "nonSmoking";
 
@@ -222,8 +260,8 @@ const anyangGroup = (item: AddressItem): AnyangGroup =>
     : "nonSmoking";
 
 /** CleanBreath 서버에 등록된 안양시 구역. 조회 실패 시 빌드·개발 중에는 null */
-export async function getAnyangZones() {
-  return loadOrNull<AnyangZones>("anyang", async () => {
+export const getAnyangZones = cache(async () =>
+  loadOrNull<AnyangZones>("anyang", async () => {
     const res = await getJson<AllAddressResponse>("/allAddress");
     // 원본 주소가 "경기도 안양시"와 "경기 안양시" 두 가지로 섞여 있다
     const isAnyang = (a: AddressItem) =>
@@ -237,8 +275,8 @@ export async function getAnyangZones() {
       outsideCount: res.data.length - items.length,
       updateAt: res.updateAt ?? null,
     };
-  });
-}
+  }),
+);
 
 /**
  * 백엔드 updateAt은 오프셋 없는 서버 시각(UTC, 예 "2026-11-04T07:10:18.0099")이고 응답을 만든 시각이다.

@@ -85,7 +85,6 @@ export default async function AnyangZonesPage({
       { name: tc("home"), path: "/" },
       { name: t("anyang.breadcrumb"), path: PATH },
     ],
-    numberOfItems: data?.items.length,
   });
 
   return (

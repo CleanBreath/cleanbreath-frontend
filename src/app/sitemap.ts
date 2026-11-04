@@ -5,7 +5,7 @@ import { getBoardSitemapEntries } from "@/lib/seo/board-sitemap";
 import { zonesSitemap } from "@/lib/seo/zones-sitemap";
 
 // 게시판 상세 항목이 API에서 오므로 빌드 시점 값에 묶이지 않게 1시간마다 다시 만든다.
-// 야간 DB 중지(23:00~08:30 KST) 중 재생성되면 게시판 항목만 빠지고 정적·지역 항목은 그대로 나간다
+// 야간 DB 중지(23:00~08:30 KST) 중 재생성되면 예외로 끝나 이전 sitemap이 그대로 유지된다 (게시판 항목이 빠진 판을 캐시하지 않음)
 export const revalidate = 3600;
 
 const baseUrl = "https://cleanbreath.cmu02-studio.com";
@@ -53,13 +53,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // 지역 페이지 항목은 고정 날짜 상수로 만들어 API와 무관하다
   const zoneEntries = zonesSitemap();
 
-  // 게시판 상세는 API 목록에서 만든다. 실패(야간 DB 중지 등)하면 빈 배열로 대체해 정적 항목은 항상 내보낸다
-  let boardEntries: MetadataRoute.Sitemap = [];
-  try {
-    boardEntries = await getBoardSitemapEntries();
-  } catch {
-    boardEntries = [];
-  }
+  // 게시판 상세는 API 목록에서 만든다. 운영 재생성 중 실패하면(야간 DB 중지 등) 여기서 예외가 올라가
+  // Next가 마지막으로 성공한 sitemap을 계속 내보낸다. 빌드·개발 중에는 빈 배열로 대체한다 (board-sitemap.ts)
+  const boardEntries = await getBoardSitemapEntries();
 
   return [...staticEntries, ...zoneEntries, ...boardEntries];
 }

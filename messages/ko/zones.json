@@ -47,6 +47,7 @@
     "intro": "서울 {gu}에는 공공데이터포털 전국금연구역표준데이터 기준 실외 금연구역 {total, number}곳이 있습니다. 정류소·지하철 출입구 {transit, number}곳, 공원·놀이터 {park, number}곳, 금연거리·통학로 {street, number}곳, 학교·어린이집 주변 {boundary, number}곳입니다. 아래 표는 유형별로 이름, 구분, 금연 범위, 도로명주소를 정리한 것입니다.",
     "introNoData": "서울 {gu}의 공공데이터 실외 금연구역을 유형별로 정리한 페이지입니다.",
     "noAddressNote": "이 구 주변 조회 범위에서 도로명주소가 없는 {count, number}곳은 어느 구인지 알 수 없어 목록에서 뺐습니다.",
+    "truncated": "이 표에는 이름순으로 {shown, number}곳만 싣습니다. 나머지 {rest, number}곳은 지도에서 확인할 수 있습니다.",
     "otherDistricts": "서울의 다른 구",
     "backToSeoul": "서울 구별 목록"
   },

@@ -4,6 +4,8 @@
     "sources": "Legal basis",
     "related": "Related guides",
     "statuteLink": "View all facilities designated as no-smoking zones and related laws",
+    "zonesSeoulLink": "No-smoking zones by Seoul district",
+    "zonesAnyangLink": "Anyang no-smoking zones and smoking areas",
     "mapCta": {
       "title": "Check no-smoking zones on the map",
       "body": "See no-smoking zones and smoking areas near you on the CleanBreath map.",
@@ -39,6 +41,6 @@
       "fine": "What is the fine for smoking in a designated apartment no-smoking zone?",
       "map": "Can I check an apartment complex's no-smoking designation on CleanBreath?"
     },
-    "mapAnswer": "Yes. In the Apartments tab of the CleanBreath map, you can check whether an apartment complex has designated its hallways, stairs, elevators and underground parking as no-smoking zones."
+    "mapAnswer": "Yes, for apartment complexes in Anyang that have been designated as no-smoking zones. In the Apartments tab of the CleanBreath map, you can check whether their hallways, stairs, elevators and underground parking are designated. Apartment complexes in other areas have not been added yet."
   }
 }

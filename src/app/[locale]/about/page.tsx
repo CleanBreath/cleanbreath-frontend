@@ -193,12 +193,28 @@ export default function AboutPage({
           <ul className="mb-3 space-y-1.5">
             <Bullet>{t.rich("dataSources.public", { strong })}</Bullet>
             <Bullet>{t("dataSources.publicDate")}</Bullet>
+            <Bullet>
+              <Link href="/zones/seoul" className="text-primary underline">
+                {t("dataSources.publicLink")}
+              </Link>
+            </Bullet>
           </ul>
           <h3 className="mb-1 font-semibold text-foreground">
             {t("dataSources.anyangTitle")}
           </h3>
           <ul className="mb-3 space-y-1.5">
             <Bullet>{t("dataSources.anyang")}</Bullet>
+            <Bullet>
+              <Link href="/zones/anyang" className="text-primary underline">
+                {t("dataSources.anyangLink")}
+              </Link>
+            </Bullet>
+          </ul>
+          <h3 className="mb-1 font-semibold text-foreground">
+            {t("dataSources.apartmentTitle")}
+          </h3>
+          <ul className="mb-3 space-y-1.5">
+            <Bullet>{t("dataSources.apartment")}</Bullet>
           </ul>
           <h3 className="mb-1 font-semibold text-foreground">
             {t("dataSources.refreshTitle")}

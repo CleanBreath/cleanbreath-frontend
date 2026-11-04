@@ -14,6 +14,8 @@ import { getStatuteData } from "@/lib/statute-data";
 
 const PATH = "/guide/apartment";
 // 페이지 문구를 바꾸면 dateModified와 sitemap.ts의 날짜를 함께 갱신
+// messages/*/guide.json의 answer·meta.description은 src/json/*/statute-faq.json의 조문·금액을 옮겨 적은 요약이다.
+// statute-faq.json(lawBaseDate·reviewedAt)을 고치면 세 언어의 guide.json 요약도 함께 확인할 것
 const DATE_PUBLISHED = "2026-11-04";
 const DATE_MODIFIED = "2026-11-04";
 

@@ -30,6 +30,10 @@ export const revalidate = 3600;
 // 공공데이터가 있는 구만 빌드 때 만든다. 그 밖의 슬러그는 404
 export const dynamicParams = false;
 
+// 유형별 표에 싣는 최대 행 수. 큰 구는 행이 1500개 가까이 되어 HTML이 0.9MB, DOM이 7천 개를 넘었다.
+// 나머지는 개수만 알리고 지도에서 보게 한다 (구 전체·유형별 개수는 소개 문단에 그대로 있다)
+const MAX_ROWS_PER_TYPE = 200;
+
 export function generateStaticParams() {
   return DISTRICTS_WITH_PAGE.map((d) => ({ gu: d.slug }));
 }
@@ -96,8 +100,6 @@ export default async function DistrictZonesPage({
       { name: t("seoul.breadcrumb"), path: ZONES_PATHS.seoul },
       { name, path },
     ],
-    dateModified: data?.latestReferenceDate,
-    numberOfItems: data?.rows.length,
   });
 
   return (
@@ -153,7 +155,15 @@ export default async function DistrictZonesPage({
                   </span>
                 }
               >
-                <PublicZoneTable rows={rows} />
+                <PublicZoneTable rows={rows.slice(0, MAX_ROWS_PER_TYPE)} />
+                {rows.length > MAX_ROWS_PER_TYPE && (
+                  <p className="mt-2 text-sm">
+                    {t("district.truncated", {
+                      shown: MAX_ROWS_PER_TYPE,
+                      rest: rows.length - MAX_ROWS_PER_TYPE,
+                    })}
+                  </p>
+                )}
               </PageSection>
             );
           })}

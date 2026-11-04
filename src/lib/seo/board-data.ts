@@ -7,12 +7,16 @@
 
 import { cache } from "react";
 import type { SmokingAreaDetail, SmokingAreaPageResponse } from "@/types";
+import { withDeadline } from "./deadline";
 
 // src/api/client.ts와 같은 기본값
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/v1";
 
-/** 백엔드가 응답하지 않을 때(DB 중지로 연결 대기 등) 렌더링을 오래 붙잡지 않도록 */
+/**
+ * 백엔드가 응답하지 않을 때(DB 중지로 연결 대기 등) 렌더링을 오래 붙잡지 않도록.
+ * 오래된 캐시 재검증에서는 signal이 빠지므로 withDeadline으로도 끊는다
+ */
 const REQUEST_TIMEOUT_MS = 5000;
 
 /** 게시판 데이터 캐시 주기(초). 페이지의 `export const revalidate`와 맞출 것 */
@@ -31,20 +35,23 @@ async function fetchBoardJson<T>(
   revalidate: number,
 ): Promise<BoardFetchResult<T>> {
   try {
-    const res = await fetch(`${API_BASE_URL}${path}`, {
-      headers: { Accept: "application/json" },
-      next: { revalidate, tags: [BOARD_CACHE_TAG] },
-      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
-    });
-    // 백엔드는 없는 id에 404, 숫자가 아닌 id에 400을 준다
-    if (res.status === 404 || res.status === 400)
-      return { status: "not-found" };
-    if (!res.ok) return { status: "error" };
-    return {
-      status: "ok",
-      data: (await res.json()) as T,
-      fetchedAt: Date.now(),
+    const load = async (): Promise<BoardFetchResult<T>> => {
+      const res = await fetch(`${API_BASE_URL}${path}`, {
+        headers: { Accept: "application/json" },
+        next: { revalidate, tags: [BOARD_CACHE_TAG] },
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      });
+      // 백엔드는 없는 id에 404, 숫자가 아닌 id에 400을 준다
+      if (res.status === 404 || res.status === 400)
+        return { status: "not-found" };
+      if (!res.ok) return { status: "error" };
+      return {
+        status: "ok",
+        data: (await res.json()) as T,
+        fetchedAt: Date.now(),
+      };
     };
+    return await withDeadline(load(), REQUEST_TIMEOUT_MS, `GET ${path}`);
   } catch {
     // 네트워크 실패·타임아웃·JSON 파싱 실패 (야간 DB 중지 포함)
     return { status: "error" };

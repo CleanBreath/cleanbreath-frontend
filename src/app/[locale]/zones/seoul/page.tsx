@@ -91,7 +91,6 @@ export default async function SeoulZonesPage({
     name: title,
     description: t("seoul.description"),
     crumbs,
-    dateModified: summary?.latestReferenceDate,
     links: rows
       .filter((r) => withPage.has(r.district.slug))
       .map((r) => ({

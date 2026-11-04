@@ -5,12 +5,14 @@ import { BoardDetail } from "@/components/board/board-detail";
 import { localeMetadata, localizedPath } from "@/i18n/metadata";
 import type { Locale } from "@/i18n/routing";
 import { getZoneName, hasBuildingName, parseBoardId } from "@/lib/board-zone";
-import { fetchBoardDetail } from "@/lib/seo/board-data";
+import { fetchBoardDetail, shouldKeepLastGoodPage } from "@/lib/seo/board-data";
 import type { SmokingAreaDetail } from "@/types";
 
 // [locale] 레이아웃이 dynamicParams = false라 generateStaticParams를 두면 새 글이 404가 된다.
 // 그래서 요청마다 렌더링하되, API 응답은 fetch 데이터 캐시(5분)에 두고
-// 재검증이 실패하면(야간 DB 중지) 마지막으로 받은 데이터를 계속 쓴다 (board-data 참고)
+// 재검증이 실패하면(야간 DB 중지) 마지막으로 받은 데이터를 계속 쓴다 (board-data 참고).
+// 캐시에 없는 id를 API 장애 중에 요청하면 모든 id가 같은 일반 제목으로 색인되지 않도록
+// 운영에서는 예외를 던져 5xx(일시 장애)로 응답하고, 화면은 error.tsx가 클라이언트 조회로 채운다
 
 const SITE_URL = "https://cleanbreath.cmu02-studio.com";
 const IN_LANGUAGE: Record<Locale, string> = {
@@ -61,6 +63,8 @@ export async function generateMetadata({
   const detail = result.status === "ok" ? result.data : undefined;
   const { title, description } = await buildDetailText(locale, detail);
   const tm = await getTranslations({ locale, namespace: "meta" });
+  // 데이터 없이 그린 페이지(빌드·개발 중 API 실패 등)는 내용 없는 일반 제목이라 색인하지 않는다
+  const noData = result.status === "error";
   // 부모 /board canonical을 물려받지 않도록 상세 경로로 덮어씀
   const m = localeMetadata(locale, `/board/${id}`);
 
@@ -69,6 +73,7 @@ export async function generateMetadata({
     title: { absolute: `${title} | CleanBreath` },
     description,
     alternates: m.alternates,
+    ...(noData && { robots: { index: false, follow: true } }),
     openGraph: {
       ...m.openGraph,
       type: "website",
@@ -98,6 +103,12 @@ export default async function BoardDetailPage({ params }: { params: Params }) {
   const result = await fetchBoardDetail(id);
   // 백엔드가 없다고 답한 경우만 404. API 장애(야간 DB 중지 등)는 404가 아니라 클라이언트 조회로 채운다
   if (result.status === "not-found") notFound();
+  // 운영 중 API 장애: 200 일반 페이지 대신 5xx로 응답해 크롤러가 나중에 다시 오게 한다
+  if (result.status === "error" && shouldKeepLastGoodPage()) {
+    throw new Error(
+      "구역 상세를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    );
+  }
   const detail = result.status === "ok" ? result.data : undefined;
 
   const t = await getTranslations({ locale, namespace: "board" });

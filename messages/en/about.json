@@ -6,7 +6,7 @@
   },
   "intro": {
     "title": "What is CleanBreath?",
-    "lead": "CleanBreath is a free map service that shows <strong>no-smoking zones</strong> and <strong>smoking areas</strong> in and around Anyang, Korea.",
+    "lead": "CleanBreath is a free map service that shows <strong>no-smoking zones</strong> and <strong>smoking areas</strong> registered in and around Anyang, Korea, along with outdoor no-smoking zones in Seoul from public data.",
     "items": [
       "A map showing no-smoking zones in green and smoking areas in orange, red or purple, depending on their type.",
       "Whether apartment complexes have designated their hallways, stairs, elevators and underground parking garages as no-smoking zones.",
@@ -23,14 +23,18 @@
   },
   "dataSources": {
     "title": "Data sources",
-    "lead": "Areas on the CleanBreath map come from two sources.",
+    "lead": "Areas on the CleanBreath map come from three sources.",
     "publicTitle": "Public outdoor no-smoking zones",
     "public": "Outdoor no-smoking zones from the <strong>National No-Smoking Zone Standard Data</strong> (전국금연구역표준데이터) on Korea's Public Data Portal are shown as points on the map. They include bus stops and subway exits, parks and playgrounds, no-smoking streets and school routes, and areas around facility boundaries such as schools and daycare centers. Data for Seoul has been added so far.",
     "publicDate": "The source data records a reference date for each zone. If conditions on site have changed since that date, they may differ from the map.",
-    "anyangTitle": "No-smoking zones and smoking areas in Anyang",
-    "anyang": "Areas in Anyang registered and managed by the CleanBreath team, plus areas suggested by users that an administrator has reviewed and approved.",
+    "publicLink": "See no-smoking zones by Seoul district",
+    "anyangTitle": "No-smoking zones and smoking areas in Anyang and nearby areas",
+    "anyang": "Areas in Anyang and nearby areas registered and managed by the CleanBreath team, plus areas suggested by users that an administrator has reviewed and approved.",
+    "anyangLink": "See the list of Anyang no-smoking zones and smoking areas",
+    "apartmentTitle": "Apartment no-smoking zones",
+    "apartment": "The Apartments tab of the map shows apartment complexes in Anyang that have been designated as no-smoking zones, and whether their hallways, stairs, elevators and underground parking are covered. Apartment complexes in other areas have not been added yet.",
     "refreshTitle": "How often data is refreshed",
-    "refreshPublic": "Public zones for the visible map area are loaded from the server when you zoom in, and an area that has already been loaded is reused for one hour.",
+    "refreshPublic": "Public zones for the visible map area are loaded from the server when you zoom in, and an area that has already been loaded is reused for up to one hour.",
     "refreshAnyang": "Anyang area data is kept on your device. When you visit more than 24 hours after the last check, or at the end of each month, the app checks the server for new data and updates it."
   },
   "data": {

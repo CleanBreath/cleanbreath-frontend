@@ -118,6 +118,22 @@ export function GuideLayout({
               </Link>
             </li>
             <li>
+              <Link
+                href="/zones/seoul"
+                className="inline-flex min-h-11 items-center text-primary underline underline-offset-2"
+              >
+                {t("zonesSeoulLink")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/zones/anyang"
+                className="inline-flex min-h-11 items-center text-primary underline underline-offset-2"
+              >
+                {t("zonesAnyangLink")}
+              </Link>
+            </li>
+            <li>
               <a
                 href={LAW_URL}
                 target="_blank"
