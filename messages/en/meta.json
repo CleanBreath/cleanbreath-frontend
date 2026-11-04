@@ -1,7 +1,7 @@
 {
-  "title": "CleanBreath - No-Smoking Zone and Smoking Area Map",
-  "description": "Find no-smoking zones and smoking areas on a map. CleanBreath is a free map service with no-smoking zone information for apartment complexes and public places, based on Korea's National Health Promotion Act.",
-  "keywords": "no-smoking zone, smoking area, no-smoking zone map, smoking area map, where can I smoke, designated smoking area, smoke-free apartment, National Health Promotion Act, Korea smoking rules, CleanBreath",
+  "title": "No-Smoking Zone & Smoking Area Map | Anyang & Seoul | CleanBreath",
+  "description": "Find no-smoking zones and smoking areas in Anyang, plus public outdoor no-smoking zones in Seoul, on one map. A free service that also shows apartment no-smoking designations and Korea's National Health Promotion Act rules.",
   "author": "Daelim University BlueSky Team",
-  "ogImageAlt": "CleanBreath service preview image"
+  "ogImageAlt": "CleanBreath service preview image",
+  "organizationDescription": "A no-smoking zone and smoking area map service developed and operated by the Daelim University BlueSky Team."
 }

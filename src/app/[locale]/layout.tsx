@@ -47,7 +47,6 @@ export async function generateMetadata({
     icons: {
       icon: "/cleanBreathFavicon.ico",
     },
-    keywords: t("keywords"),
     authors: [
       {
         name: t("author"),
@@ -59,7 +58,8 @@ export async function generateMetadata({
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title,
+      // 홈 제목은 검색 결과용으로 길어서 홈 화면 아이콘 이름은 서비스명만
+      title: APP_NAME,
       // startUpImage: [],
     },
     formatDetection: {
@@ -85,7 +85,7 @@ export async function generateMetadata({
     },
     // title/description을 비워두면 Next가 경로별 openGraph 값으로 채운다
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
     },
     robots: {
       index: true,
@@ -118,11 +118,12 @@ export default async function LocaleLayout({
 
   // 정적 렌더링 유지: 하위 서버 컴포넌트의 next-intl 호출이 헤더 대신 이 값을 읽는다
   setRequestLocale(locale);
-  // about·privacy·zones는 서버 컴포넌트에서만 쓰므로 모든 페이지 RSC 페이로드에 싣지 않는다
+  // about·privacy·zones·guide는 서버 컴포넌트에서만 쓰므로 모든 페이지 RSC 페이로드에 싣지 않는다
   const {
     about: _about,
     privacy: _privacy,
     zones: _zones,
+    guide: _guide,
     ...clientMessages
   } = await getMessages();
 

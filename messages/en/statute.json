@@ -9,6 +9,11 @@
   "translationNotice": "This English version is a reference translation. If it differs from the Korean version, the Korean version prevails.",
   "lawDates": "Law as of: <num>{lawBaseDate}</num> · Last reviewed: <num>{reviewedAt}</num>",
   "disclaimer": "This information is for reference only. Please check the relevant laws for the exact legal text.",
+  "sections": {
+    "facilities": "No-smoking zones by type of facility",
+    "faq": "Frequently asked questions",
+    "guides": "Guides by topic"
+  },
   "law": {
     "name": "National Health Promotion Act",
     "source": "Ministry of Government Legislation, National Law Information Center",

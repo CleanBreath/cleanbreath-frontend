@@ -2,6 +2,7 @@ import {
   AlertTriangle,
   Database,
   ExternalLink,
+  FileText,
   Info,
   MapPin,
   MessageSquare,
@@ -19,18 +20,21 @@ import { Button } from "@/components/ui/button";
 import { localeMetadata, localizedPath } from "@/i18n/metadata";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import {
+  breadcrumbJsonLd,
+  IN_LANGUAGE,
+  ISSUES_URL,
+  ORGANIZATION_ID,
+  organizationJsonLd,
+  SITE_URL,
+  serializeJsonLd,
+} from "@/lib/seo/jsonld";
 
-const SITE_URL = "https://cleanbreath.cmu02-studio.com";
-const LAST_UPDATED = "2026-10-22";
+// 페이지 문구를 바꾸면 이 날짜와 sitemap.ts의 날짜를 함께 갱신
+const LAST_UPDATED = "2026-11-04";
 const GITHUB_URL = "https://github.com/CleanBreath/cleanbreath-frontend";
-const ISSUES_URL = `${GITHUB_URL}/issues`;
 const LAW_URL =
   "https://www.law.go.kr/%EB%B2%95%EB%A0%B9/%EA%B5%AD%EB%AF%BC%EA%B1%B4%EA%B0%95%EC%A6%9D%EC%A7%84%EB%B2%95";
-const IN_LANGUAGE: Record<Locale, string> = {
-  ko: "ko-KR",
-  en: "en-US",
-  ja: "ja-JP",
-};
 
 // 버전 정보 모달(version-modal.tsx)에 기록된 개발 참여자 (실명이라 언어와 관계없이 한글 그대로)
 const DEVELOPERS = ["최현준", "문찬수", "김건우", "유현목", "최시헌", "김장환"];
@@ -88,13 +92,20 @@ export default function AboutPage({
   setRequestLocale(locale);
   const t = useTranslations("about");
   const tc = useTranslations("common");
+  const tm = useTranslations("meta");
   const pageTitle = t("meta.title");
   const pageUrl = `${SITE_URL}${localizedPath(locale, "/about")}`;
   const strong = (chunks: React.ReactNode) => <strong>{chunks}</strong>;
+  // 한 문장(텍스트 노드 하나)으로 렌더링해 크롤러가 날짜를 라벨과 함께 읽게 한다
+  const lastUpdated = t.rich("lastUpdated", {
+    date: LAST_UPDATED,
+    time: (chunks) => <time dateTime={LAST_UPDATED}>{chunks}</time>,
+  });
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
+      organizationJsonLd(tm("organizationDescription")),
       {
         "@type": "AboutPage",
         "@id": `${pageUrl}#webpage`,
@@ -104,27 +115,14 @@ export default function AboutPage({
         inLanguage: IN_LANGUAGE[locale],
         dateModified: LAST_UPDATED,
         isPartOf: { "@id": `${SITE_URL}${localizedPath(locale, "/")}#website` },
-        about: { "@id": `${SITE_URL}/#organization` },
+        about: { "@id": ORGANIZATION_ID },
+        publisher: { "@id": ORGANIZATION_ID },
         breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
       },
-      {
-        "@type": "BreadcrumbList",
-        "@id": `${pageUrl}#breadcrumb`,
-        itemListElement: [
-          {
-            "@type": "ListItem",
-            position: 1,
-            name: tc("home"),
-            item: `${SITE_URL}${localizedPath(locale, "/")}`,
-          },
-          {
-            "@type": "ListItem",
-            position: 2,
-            name: t("meta.breadcrumb"),
-            item: pageUrl,
-          },
-        ],
-      },
+      breadcrumbJsonLd(`${pageUrl}#breadcrumb`, [
+        { name: tc("home"), url: `${SITE_URL}${localizedPath(locale, "/")}` },
+        { name: t("meta.breadcrumb"), url: pageUrl },
+      ]),
     ],
   };
 
@@ -134,7 +132,7 @@ export default function AboutPage({
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: 정적 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          __html: serializeJsonLd(jsonLd),
         }}
       />
 
@@ -147,6 +145,8 @@ export default function AboutPage({
 
       {/* 메인 컨텐츠 */}
       <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+        <p className="px-1 text-sm tabular-nums">{lastUpdated}</p>
+
         <PageSection
           title={t("intro.title")}
           icon={<MapPin />}
@@ -180,6 +180,35 @@ export default function AboutPage({
           </Button>
         </PageSection>
 
+        <PageSection
+          id="data-sources"
+          title={t("dataSources.title")}
+          icon={<FileText />}
+          className="scroll-mt-20"
+        >
+          <p className="mb-3">{t("dataSources.lead")}</p>
+          <h3 className="mb-1 font-semibold text-foreground">
+            {t("dataSources.publicTitle")}
+          </h3>
+          <ul className="mb-3 space-y-1.5">
+            <Bullet>{t.rich("dataSources.public", { strong })}</Bullet>
+            <Bullet>{t("dataSources.publicDate")}</Bullet>
+          </ul>
+          <h3 className="mb-1 font-semibold text-foreground">
+            {t("dataSources.anyangTitle")}
+          </h3>
+          <ul className="mb-3 space-y-1.5">
+            <Bullet>{t("dataSources.anyang")}</Bullet>
+          </ul>
+          <h3 className="mb-1 font-semibold text-foreground">
+            {t("dataSources.refreshTitle")}
+          </h3>
+          <ul className="space-y-1.5">
+            <Bullet>{t("dataSources.refreshPublic")}</Bullet>
+            <Bullet>{t("dataSources.refreshAnyang")}</Bullet>
+          </ul>
+        </PageSection>
+
         <PageSection title={t("data.title")} icon={<Database />}>
           <ul className="space-y-1.5">
             <Bullet>{t("data.source")}</Bullet>
@@ -199,11 +228,15 @@ export default function AboutPage({
             </Bullet>
             <Bullet>{t("data.autoApply")}</Bullet>
             <Bullet>{t("data.voting")}</Bullet>
-            <Bullet>{t("data.cache")}</Bullet>
           </ul>
         </PageSection>
 
-        <PageSection title={t("contact.title")} icon={<MessageSquare />}>
+        <PageSection
+          id="contact"
+          title={t("contact.title")}
+          icon={<MessageSquare />}
+          className="scroll-mt-20"
+        >
           <p className="mb-3">{t("contact.body")}</p>
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" asChild>
@@ -258,9 +291,7 @@ export default function AboutPage({
           </div>
         </PageSection>
 
-        <p className="text-center text-sm tabular-nums">
-          {t("lastUpdated")} <time dateTime={LAST_UPDATED}>{LAST_UPDATED}</time>
-        </p>
+        <p className="text-center text-sm tabular-nums">{lastUpdated}</p>
       </main>
     </div>
   );
