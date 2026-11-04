@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
 interface PageHeaderProps {
-  title: string;
+  /** 게시판 상세처럼 한국어 원문 데이터를 넣을 때는 `<span lang="ko">`로 감싸 넘긴다 */
+  title: React.ReactNode;
   description?: React.ReactNode;
   icon: React.ReactNode;
   backHref?: string;
