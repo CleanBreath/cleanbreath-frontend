@@ -1,0 +1,65 @@
+{
+  "breadcrumbLabel": "현재 위치",
+  "unit": "{count, number}곳",
+  "mapHome": "지도 홈으로",
+  "mapHint": "지도 홈에서 해당 지역을 크게 확대하면 공공데이터 금연구역이 마커로 표시됩니다.",
+  "otherRegions": "다른 지역",
+  "unavailable": {
+    "title": "구역 데이터를 잠시 불러오지 못했습니다",
+    "body": "서버에서 목록을 받지 못해 표를 비워 두었습니다. 잠시 후 다시 확인하거나 지도 홈을 이용해 주세요."
+  },
+  "source": {
+    "label": "출처",
+    "public": "공공데이터포털 전국금연구역표준데이터 (실외 금연구역)",
+    "anyang": "CleanBreath에 등록된 구역 (운영팀이 등록한 구역과, 이용자가 제안하고 관리자가 확인해 지도에 반영한 구역)",
+    "referenceDate": "최근 데이터 기준일",
+    "fetchedAt": "데이터 조회",
+    "disclaimer": "참고용 정보이며 실제 현장과 다를 수 있습니다. 정확한 금연구역은 관할 기관에 문의하세요."
+  },
+  "table": {
+    "name": "이름",
+    "division": "구분",
+    "scope": "금연 범위",
+    "roadAddress": "도로명주소",
+    "address": "주소",
+    "category": "분류",
+    "zoneType": "구역 유형",
+    "district": "구",
+    "total": "전체",
+    "empty": "-"
+  },
+  "seoul": {
+    "title": "서울 구별 금연구역 목록",
+    "breadcrumb": "서울 금연구역",
+    "subtitle": "공공데이터 실외 금연구역",
+    "description": "서울 25개 구의 실외 금연구역(정류소·지하철 출입구, 공원·놀이터, 금연거리·통학로, 학교·어린이집 주변)을 구별 개수와 목록으로 정리했습니다. 출처: 공공데이터포털 전국금연구역표준데이터.",
+    "intro": "공공데이터포털 전국금연구역표준데이터에 실린 서울의 실외 금연구역 {total, number}곳을 구별로 정리했습니다. 유형별로는 정류소·지하철 출입구 {transit, number}곳, 공원·놀이터 {park, number}곳, 금연거리·통학로 {street, number}곳, 학교·어린이집 주변 {boundary, number}곳입니다. 가장 많은 곳은 {topDistrict}({topCount, number}곳)입니다.",
+    "introNoData": "공공데이터포털 전국금연구역표준데이터에 실린 서울의 실외 금연구역을 구별로 정리한 페이지입니다.",
+    "introLinks": "구 이름을 누르면 해당 구의 금연구역 목록을 볼 수 있습니다.",
+    "tableTitle": "구별 금연구역 수",
+    "noDataDistricts": "{districts}는 아직 공공데이터에 실외 금연구역이 없습니다.",
+    "noAddressNote": "도로명주소가 없는 {count, number}곳은 어느 구인지 알 수 없어 집계에서 뺐습니다."
+  },
+  "district": {
+    "title": "서울 {gu} 금연구역 목록",
+    "description": "서울 {gu}의 실외 금연구역 {total, number}곳을 정류소·지하철 출입구, 공원·놀이터, 금연거리·통학로, 학교·어린이집 주변으로 나눠 이름·구분·금연 범위·주소와 함께 정리했습니다.",
+    "descriptionNoData": "서울 {gu}의 실외 금연구역을 정류소·지하철 출입구, 공원·놀이터, 금연거리·통학로, 학교·어린이집 주변으로 나눠 정리했습니다. 출처: 공공데이터포털 전국금연구역표준데이터.",
+    "intro": "서울 {gu}에는 공공데이터포털 전국금연구역표준데이터 기준 실외 금연구역 {total, number}곳이 있습니다. 정류소·지하철 출입구 {transit, number}곳, 공원·놀이터 {park, number}곳, 금연거리·통학로 {street, number}곳, 학교·어린이집 주변 {boundary, number}곳입니다. 아래 표는 유형별로 이름, 구분, 금연 범위, 도로명주소를 정리한 것입니다.",
+    "introNoData": "서울 {gu}의 공공데이터 실외 금연구역을 유형별로 정리한 페이지입니다.",
+    "noAddressNote": "이 구 주변 조회 범위에서 도로명주소가 없는 {count, number}곳은 어느 구인지 알 수 없어 목록에서 뺐습니다.",
+    "otherDistricts": "서울의 다른 구",
+    "backToSeoul": "서울 구별 목록"
+  },
+  "anyang": {
+    "title": "안양 흡연구역·금연구역 목록",
+    "breadcrumb": "안양 흡연구역·금연구역",
+    "subtitle": "CleanBreath 등록 구역",
+    "description": "안양시의 흡연구역과 금연구역을 흡연구역 유형과 시설 분류별 목록으로 정리했습니다. 개방형·폐쇄형(흡연실)·라인형 흡연구역과 학교·유치원·공원 등 금연구역을 주소와 함께 확인하세요.",
+    "intro": "CleanBreath에 등록된 안양시 구역은 {total, number}곳으로, 흡연구역 {smoking, number}곳과 금연구역 {nonSmoking, number}곳입니다. 금연구역 분류 중 가장 많은 것은 {topCategory}({topCount, number}곳)입니다. 아래 표는 흡연구역과 금연구역을 시설 분류별로 나눠 정리한 것입니다.",
+    "introNoData": "CleanBreath에 등록된 안양시의 흡연구역과 금연구역을 시설 분류별로 정리한 페이지입니다.",
+    "smokingTitle": "흡연구역",
+    "nonSmokingTitle": "금연구역",
+    "outsideNote": "주소가 안양시가 아닌 {count, number}곳은 이 목록에서 뺐습니다.",
+    "seoulLink": "서울 구별 금연구역 목록"
+  }
+}
