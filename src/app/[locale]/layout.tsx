@@ -47,7 +47,6 @@ export async function generateMetadata({
     icons: {
       icon: "/cleanBreathFavicon.ico",
     },
-    keywords: t("keywords"),
     authors: [
       {
         name: t("author"),
@@ -59,7 +58,8 @@ export async function generateMetadata({
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title,
+      // 홈 제목은 검색 결과용으로 길어서 홈 화면 아이콘 이름은 서비스명만
+      title: APP_NAME,
       // startUpImage: [],
     },
     formatDetection: {
@@ -85,7 +85,7 @@ export async function generateMetadata({
     },
     // title/description을 비워두면 Next가 경로별 openGraph 값으로 채운다
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
     },
     robots: {
       index: true,

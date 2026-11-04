@@ -15,31 +15,27 @@ import { Button } from "@/components/ui/button";
 import { VersionModal } from "@/components/version/version-modal";
 import { useAddressList } from "@/hooks/use-address";
 import { useApartmentList } from "@/hooks/use-apartment";
-import { localizedPath } from "@/i18n/metadata";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import {
+  absoluteUrl,
+  IN_LANGUAGE,
+  ORGANIZATION_ID,
+  organizationJsonLd,
+  serializeJsonLd,
+} from "@/lib/seo/jsonld";
 
-const SITE_URL = "https://cleanbreath.cmu02-studio.com/";
-
-const IN_LANGUAGE: Record<Locale, string> = {
-  ko: "ko-KR",
-  en: "en-US",
-  ja: "ja-JP",
-};
-
-// 홈 전용 구조화 데이터. 한국어는 기존과 같은 SITE_URL, 영어·일본어는 /en·/ja
-const buildJsonLd = (locale: Locale, description: string) => {
-  const pageUrl = `https://cleanbreath.cmu02-studio.com${localizedPath(locale, "/")}`;
+// 홈 전용 구조화 데이터. 한국어는 기존과 같은 SITE_URL/, 영어·일본어는 /en·/ja
+const buildJsonLd = (
+  locale: Locale,
+  description: string,
+  organizationDescription: string,
+) => {
+  const pageUrl = absoluteUrl(locale, "/");
   return {
     "@context": "https://schema.org",
     "@graph": [
-      {
-        "@type": "Organization",
-        "@id": `${SITE_URL}#organization`,
-        name: "CleanBreath",
-        url: SITE_URL,
-        logo: `${SITE_URL}logo.svg`,
-      },
+      organizationJsonLd(organizationDescription),
       {
         "@type": "WebSite",
         "@id": `${pageUrl}#website`,
@@ -47,7 +43,7 @@ const buildJsonLd = (locale: Locale, description: string) => {
         url: pageUrl,
         inLanguage: IN_LANGUAGE[locale],
         description,
-        publisher: { "@id": `${SITE_URL}#organization` },
+        publisher: { "@id": ORGANIZATION_ID },
       },
       {
         "@type": "WebApplication",
@@ -69,7 +65,11 @@ export default function Home() {
   const t = useTranslations("home");
   const tm = useTranslations("meta");
   const locale = useLocale();
-  const jsonLd = buildJsonLd(locale, tm("description"));
+  const jsonLd = buildJsonLd(
+    locale,
+    tm("description"),
+    tm("organizationDescription"),
+  );
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [isVersionOpen, setIsVersionOpen] = useState(false);
@@ -88,7 +88,7 @@ export default function Home() {
           type="application/ld+json"
           // biome-ignore lint/security/noDangerouslySetInnerHtml: 메시지 파일 문구로 만든 jsonLd 객체를 JSON.stringify한 값이라 사용자 입력 없음
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+            __html: serializeJsonLd(jsonLd),
           }}
         />
         <Sidebar
