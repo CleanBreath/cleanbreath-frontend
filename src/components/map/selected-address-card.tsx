@@ -1,7 +1,6 @@
 "use client";
 
 import { MapPin, X } from "lucide-react";
-import * as motion from "motion/react-client";
 import { useTranslations } from "next-intl";
 import { categoryGroup, ZONE_TONE } from "@/components/home/zone-tone";
 import { Badge } from "@/components/ui/badge";
@@ -23,12 +22,10 @@ export function SelectedAddressCard() {
   const { icon: Icon } = ZONE_GROUPS[group];
 
   return (
-    <motion.section
+    // 등장 효과는 CSS로 (motion 라이브러리를 홈 번들에 싣지 않는다). 동작 줄이기 설정이면 생략
+    <section
       aria-label={t("selectedAddress.label")}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
-      className="w-full sm:w-96"
+      className="w-full animate-in fade-in-0 slide-in-from-bottom-2 duration-200 motion-reduce:animate-none sm:w-96"
     >
       <Card className="gap-0 py-0 shadow-md">
         <CardContent className="flex items-start gap-3 p-4">
@@ -69,6 +66,6 @@ export function SelectedAddressCard() {
           </Button>
         </CardContent>
       </Card>
-    </motion.section>
+    </section>
   );
 }
