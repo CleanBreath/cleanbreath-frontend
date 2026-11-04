@@ -9,6 +9,11 @@
   "translationNotice": "この日本語版は参考用の翻訳です。韓国語版と内容が異なる場合は、韓国語版が優先されます。",
   "lawDates": "法令基準日：<num>{lawBaseDate}</num> · 最終確認日：<num>{reviewedAt}</num>",
   "disclaimer": "本内容は参考用です。正確な内容は関連法令をご確認ください。",
+  "sections": {
+    "facilities": "施設別の禁煙区域の指定基準",
+    "faq": "よくある質問",
+    "guides": "テーマ別の法令ガイド"
+  },
   "law": {
     "name": "国民健康増進法",
     "source": "韓国 法制処 国家法令情報センター",

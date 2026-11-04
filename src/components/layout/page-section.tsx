@@ -7,23 +7,29 @@ interface PageSectionProps {
   /** 제목 오른쪽에 둘 보조 요소(버튼, 개수 뱃지 등) */
   action?: React.ReactNode;
   className?: string;
+  /** 페이지 안 앵커(#data-sources 등)로 쓸 id */
+  id?: string;
+  /** 제목 태그. 상위 h2 아래에 놓이는 카드는 h3 (기본 h2) */
+  headingLevel?: "h2" | "h3";
   children: React.ReactNode;
 }
 
-/** 하위 페이지 본문의 카드 섹션. title이 있으면 h2로 렌더링한다 */
+/** 하위 페이지 본문의 카드 섹션. title이 있으면 h2(headingLevel)로 렌더링한다 */
 export function PageSection({
   title,
   icon,
   action,
   className,
+  id,
+  headingLevel: Heading = "h2",
   children,
 }: PageSectionProps) {
   return (
-    <Card className={cn("gap-0 py-0 shadow-none", className)}>
+    <Card id={id} className={cn("gap-0 py-0 shadow-none", className)}>
       <CardContent className="p-4 sm:p-6">
         {title && (
           <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+            <Heading className="flex items-center gap-2 text-lg font-semibold text-foreground">
               {icon && (
                 <span
                   aria-hidden
@@ -33,7 +39,7 @@ export function PageSection({
                 </span>
               )}
               {title}
-            </h2>
+            </Heading>
             {action}
           </div>
         )}

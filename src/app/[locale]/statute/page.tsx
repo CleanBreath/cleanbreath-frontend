@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Baby,
   Bath,
@@ -20,12 +18,15 @@ import {
   Users,
   UtensilsCrossed,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
+import { use } from "react";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageSection } from "@/components/layout/page-section";
-import { StatuteCard } from "@/components/statute/statute-card";
+import { StatuteAccordion } from "@/components/statute/statute-accordion";
 import { Button } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
+import type { Locale } from "@/i18n/routing";
 import { getStatuteData } from "@/lib/statute-data";
 
 // 언어별 statute.json의 항목 순서가 같으므로 category 문자열 대신 순서로 아이콘을 고른다
@@ -51,15 +52,18 @@ const categoryIcons: React.ReactNode[] = [
   <BookMarked key="comic" size={20} />, // 만화방
 ];
 
-export default function StatutePage() {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+// 서버 컴포넌트: 시설명(h3)·FAQ 질문(h3)이 서버 HTML에 제목으로 들어간다. 펼침 상태만 StatuteAccordion(클라이언트)
+export default function StatutePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  // 정적 렌더링 유지 (locale 값은 [locale]/layout에서 검증됨)
+  const locale = use(params).locale as Locale;
+  setRequestLocale(locale);
   const t = useTranslations("statute");
-  const locale = useLocale();
+  const tg = useTranslations("guide");
   const { statute: statuteData, faq: statuteFaq } = getStatuteData(locale);
-
-  const toggleExpand = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
-  };
 
   return (
     <div className="flex min-h-dvh flex-col bg-muted/40">
@@ -86,24 +90,25 @@ export default function StatutePage() {
           )}
         </PageSection>
 
-        {/* 법률 목록 */}
-        <div className="space-y-3">
-          {statuteData.map((statute, index) => (
-            <StatuteCard
-              key={statute.category}
-              category={statute.category}
-              designatedNoSmokingAreas={statute.designated_no_smoking_areas}
-              content={statute.content}
-              icon={categoryIcons[index]}
-              isExpanded={expandedIndex === index}
-              onToggle={() => toggleExpand(index)}
-              index={index}
-            />
-          ))}
-        </div>
+        {/* 시설별 금연구역 */}
+        <section aria-labelledby="statute-facilities" className="space-y-3">
+          <h2
+            id="statute-facilities"
+            className="px-1 text-lg font-semibold text-foreground"
+          >
+            {t("sections.facilities")}
+          </h2>
+          <StatuteAccordion items={statuteData} icons={categoryIcons} />
+        </section>
 
         {/* 자주 묻는 질문 */}
-        <section className="space-y-3">
+        <section aria-labelledby="statute-faq" className="space-y-3">
+          <h2
+            id="statute-faq"
+            className="px-1 text-lg font-semibold text-foreground"
+          >
+            {t("sections.faq")}
+          </h2>
           <div className="px-1 text-sm text-muted-foreground">
             <p>
               {t.rich("lawDates", {
@@ -115,7 +120,11 @@ export default function StatutePage() {
             <p>{statuteFaq.lawBaseNote}</p>
           </div>
           {statuteFaq.items.map((item) => (
-            <PageSection key={item.question} title={item.question}>
+            <PageSection
+              key={item.question}
+              title={item.question}
+              headingLevel="h3"
+            >
               <p className="text-muted-foreground">{item.answer.join(" ")}</p>
               <div className="mt-2 flex flex-wrap gap-x-4">
                 {item.sources.map((source) => (
@@ -134,6 +143,28 @@ export default function StatutePage() {
             </PageSection>
           ))}
         </section>
+
+        {/* 법령 FAQ를 주제별로 풀어 쓴 안내 페이지 */}
+        <PageSection title={t("sections.guides")}>
+          <ul className="space-y-1">
+            <li>
+              <Link
+                href="/guide/fine"
+                className="inline-flex min-h-11 items-center text-primary underline underline-offset-2"
+              >
+                {tg("fine.title")}
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/guide/apartment"
+                className="inline-flex min-h-11 items-center text-primary underline underline-offset-2"
+              >
+                {tg("apartment.title")}
+              </Link>
+            </li>
+          </ul>
+        </PageSection>
 
         {/* 하단 안내 */}
         <div className="space-y-3">
