@@ -1,0 +1,44 @@
+{
+  "common": {
+    "dates": "Law as of: <lawBase>{lawBaseDate}</lawBase> · Last reviewed: <reviewed>{reviewedAt}</reviewed>",
+    "sources": "Legal basis",
+    "related": "Related guides",
+    "statuteLink": "View all facilities designated as no-smoking zones and related laws",
+    "mapCta": {
+      "title": "Check no-smoking zones on the map",
+      "body": "See no-smoking zones and smoking areas near you on the CleanBreath map.",
+      "button": "Open the map"
+    }
+  },
+  "fine": {
+    "meta": {
+      "title": "Fines for Smoking in No-Smoking Zones in Korea",
+      "description": "How much is the fine for smoking in a no-smoking zone in Korea? Fines by type of place under Article 34 of the National Health Promotion Act and Annex 5 of its Enforcement Decree (100,000 won for public-use facilities, 50,000 won for apartment complexes), whether e-cigarettes are covered, and fines for facility managers.",
+      "breadcrumb": "Fines"
+    },
+    "title": "Fines for Smoking in No-Smoking Zones in Korea",
+    "subtitle": "National Health Promotion Act, Article 34 · Enforcement Decree, Annex 5",
+    "answer": "Under subparagraph 2 of Article 34 (3) of the National Health Promotion Act, smoking in a no-smoking zone is subject to a fine of up to 100,000 won. Under the imposition standards in Annex 5 of the Enforcement Decree, the fine is 100,000 won for public-use facilities and for zones within 30 meters of kindergartens, daycare centers, and elementary, middle, and high schools, and 50,000 won for no-smoking zones in apartment complexes.",
+    "questions": {
+      "byPlace": "How do fines differ by type of place?",
+      "ordinance": "What about no-smoking zones designated by local government ordinance?",
+      "reduction": "Can the fine be reduced?"
+    }
+  },
+  "apartment": {
+    "meta": {
+      "title": "Designating No-Smoking Zones in Korean Apartment Complexes",
+      "description": "How can hallways, stairways, elevators, and underground parking lots in a Korean apartment complex become no-smoking zones? The application by at least half of households under Article 9 (5) of the National Health Promotion Act, the consent rules in Article 6-2 of the Enforcement Rule, and the 50,000 won fine.",
+      "breadcrumb": "Apartment no-smoking zones"
+    },
+    "title": "Designating No-Smoking Zones in Korean Apartment Complexes",
+    "subtitle": "National Health Promotion Act, Article 9 (5)",
+    "answer": "If at least half of the households in an apartment complex apply, all or part of its hallways, stairways, elevators, and underground parking lots can be designated as no-smoking zones (Article 9 (5) of the National Health Promotion Act). Smoking in a designated apartment no-smoking zone is subject to a fine of 50,000 won (Annex 5 of the Enforcement Decree).",
+    "questions": {
+      "application": "What documents and consent are needed to apply?",
+      "fine": "What is the fine for smoking in a designated apartment no-smoking zone?",
+      "map": "Can I check an apartment complex's no-smoking designation on CleanBreath?"
+    },
+    "mapAnswer": "Yes. In the Apartments tab of the CleanBreath map, you can check whether an apartment complex has designated its hallways, stairs, elevators and underground parking as no-smoking zones."
+  }
+}

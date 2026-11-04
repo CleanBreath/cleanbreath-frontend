@@ -118,10 +118,11 @@ export default async function LocaleLayout({
 
   // 정적 렌더링 유지: 하위 서버 컴포넌트의 next-intl 호출이 헤더 대신 이 값을 읽는다
   setRequestLocale(locale);
-  // about·privacy는 서버 컴포넌트에서만 쓰므로 모든 페이지 RSC 페이로드에 싣지 않는다
+  // about·privacy·guide는 서버 컴포넌트에서만 쓰므로 모든 페이지 RSC 페이로드에 싣지 않는다
   const {
     about: _about,
     privacy: _privacy,
+    guide: _guide,
     ...clientMessages
   } = await getMessages();
 

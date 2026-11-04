@@ -2,6 +2,7 @@ import type about from "../../messages/ko/about.json";
 import type board from "../../messages/ko/board.json";
 import type common from "../../messages/ko/common.json";
 import type errors from "../../messages/ko/errors.json";
+import type guide from "../../messages/ko/guide.json";
 import type health from "../../messages/ko/health.json";
 import type home from "../../messages/ko/home.json";
 import type map from "../../messages/ko/map.json";
@@ -31,6 +32,7 @@ declare module "next-intl" {
       register: typeof register;
       board: typeof board;
       health: typeof health;
+      guide: typeof guide;
     };
   }
 }
