@@ -1,6 +1,12 @@
 import type { MetadataRoute } from "next";
 import { localizedPath } from "@/i18n/metadata";
 import { type Locale, routing } from "@/i18n/routing";
+import { getBoardSitemapEntries } from "@/lib/seo/board-sitemap";
+import { zonesSitemap } from "@/lib/seo/zones-sitemap";
+
+// 게시판 상세 항목이 API에서 오므로 빌드 시점 값에 묶이지 않게 1시간마다 다시 만든다.
+// 야간 DB 중지(23:00~08:30 KST) 중 재생성되면 게시판 항목만 빠지고 정적·지역 항목은 그대로 나간다
+export const revalidate = 3600;
 
 const baseUrl = "https://cleanbreath.cmu02-studio.com";
 
@@ -11,7 +17,7 @@ const PAGES = [
   { path: "/statute", lastModified: "2026-11-04" },
   { path: "/guide/fine", lastModified: "2026-11-04" },
   { path: "/guide/apartment", lastModified: "2026-11-04" },
-  { path: "/board", lastModified: "2026-10-23" },
+  { path: "/board", lastModified: "2026-11-04" },
   { path: "/about", lastModified: "2026-11-04" },
   { path: "/privacy", lastModified: "2026-10-26" },
 ];
@@ -39,14 +45,21 @@ function entry(
   };
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries = routing.locales.flatMap((locale) =>
     PAGES.map(({ path, lastModified }) => entry(locale, path, lastModified)),
   );
 
-  // ── 동적 항목 자리 (integrator) ─────────────────────────────────────────
-  // src/lib/seo/zones-sitemap.ts, src/lib/seo/board-sitemap.ts의 항목을 여기에 이어 붙인다.
-  // API 호출이 필요하면 이 함수를 async로 바꾸고, DB 야간 중지(23:00~08:30 KST) 중 실패해도
-  // 정적 항목은 그대로 내보내도록 각 호출을 try/catch(빈 배열 대체)로 감쌀 것.
-  return [...staticEntries];
+  // 지역 페이지 항목은 고정 날짜 상수로 만들어 API와 무관하다
+  const zoneEntries = zonesSitemap();
+
+  // 게시판 상세는 API 목록에서 만든다. 실패(야간 DB 중지 등)하면 빈 배열로 대체해 정적 항목은 항상 내보낸다
+  let boardEntries: MetadataRoute.Sitemap = [];
+  try {
+    boardEntries = await getBoardSitemapEntries();
+  } catch {
+    boardEntries = [];
+  }
+
+  return [...staticEntries, ...zoneEntries, ...boardEntries];
 }
