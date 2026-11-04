@@ -65,6 +65,7 @@ export async function generateMetadata({
       ? t("description", { gu: name, total: data.rows.length })
       : t("descriptionNoData", { gu: name }),
     ogImageAlt: tm("ogImageAlt"),
+    hasData: data !== null,
   });
 }
 

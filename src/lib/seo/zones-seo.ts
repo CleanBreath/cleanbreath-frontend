@@ -42,17 +42,21 @@ export function zonesMetadata({
   title,
   description,
   ogImageAlt,
+  hasData,
 }: {
   locale: Locale;
   path: string;
   title: string;
   description: string;
   ogImageAlt: string;
+  /** false면 noindex (API가 꺼진 동안 만든 빈 페이지가 색인되지 않게) */
+  hasData: boolean;
 }): Metadata {
   const m = localeMetadata(locale, path);
   return {
     title,
     description,
+    ...(hasData ? {} : { robots: { index: false, follow: true } }),
     alternates: m.alternates,
     openGraph: {
       ...m.openGraph,
