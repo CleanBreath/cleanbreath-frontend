@@ -8,10 +8,13 @@ import {
   ChevronUp,
   Info,
   List,
+  MapPin,
+  MapPinned,
   MapPinPlus,
   MessageSquarePlus,
   PanelLeft,
   PanelLeftClose,
+  Receipt,
   Scale,
   ShieldCheck,
 } from "lucide-react";
@@ -34,9 +37,9 @@ type Snap = "peek" | "half" | "full";
 
 // 시트 높이는 100dvh-4rem 고정, 스냅은 translate로만 바꾼다(높이 애니메이션 금지).
 // half에서는 화면 밖으로 밀린 만큼 내부 스크롤 하단 여백(pad)을 줘서 끝까지 스크롤되게 한다.
-// peek 4.75rem = 손잡이 + 헤더 한 줄. page.tsx 하단 스택도 같은 값을 쓴다
+// peek 5.25rem(84px) = 손잡이 + 헤더(브랜드·h1·한 줄 소개). page.tsx 하단 스택도 같은 값을 쓴다
 const SNAP_STYLE: Record<Snap, { y: string; pad: string }> = {
-  peek: { y: "calc(100% - 4.75rem - env(safe-area-inset-bottom))", pad: "0px" },
+  peek: { y: "calc(100% - 5.25rem - env(safe-area-inset-bottom))", pad: "0px" },
   half: { y: "calc(100% - 50dvh)", pad: "calc(50dvh - 4rem)" },
   full: { y: "0px", pad: "0px" },
 };
@@ -120,7 +123,7 @@ export function Sidebar({
     // 놓은 위치에서 보이는 높이와 가장 가까운 스냅
     const visible = window.innerHeight - sheet.getBoundingClientRect().top;
     const heights: Record<Snap, number> = {
-      peek: 76,
+      peek: 84,
       half: window.innerHeight / 2,
       full: sheet.offsetHeight,
     };
@@ -175,25 +178,29 @@ export function Sidebar({
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={() => setDragY(null)}
-          className="shrink-0 touch-none select-none px-4 pt-2 pb-3 lg:touch-auto lg:select-auto lg:p-5"
+          className="shrink-0 touch-none select-none px-4 pt-2 pb-2.5 lg:touch-auto lg:select-auto lg:p-5"
         >
           <div
             aria-hidden
-            className="mx-auto mb-2 h-1 w-10 rounded-full bg-muted-foreground/40 lg:hidden"
+            className="mx-auto mb-1.5 h-1 w-10 rounded-full bg-muted-foreground/40 lg:hidden"
           />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 lg:gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary p-1.5">
               <Image src="/logo.svg" alt="" width={28} height={28} />
             </span>
-            <h1 className="flex min-w-0 flex-1 flex-col">
-              <span className="text-lg font-bold leading-tight tracking-tight">
+            {/* 브랜드 → h1(무엇을 하는 지도인지) → 한 줄 소개. 접힌 모바일 시트(peek)에서도 세 줄이 다 보이게
+                각 줄 높이를 고정하고 자른다(16+20+20px). 데스크톱은 줄바꿈 허용 */}
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-semibold text-muted-foreground text-xs leading-4 tracking-tight">
                 CleanBreath
-              </span>
-              {/* peek 높이가 한 줄 기준이라 긴 번역도 한 줄로 자른다 */}
-              <span className="truncate text-sm font-normal text-muted-foreground">
-                {t("subtitle")}
-              </span>
-            </h1>
+              </p>
+              <h1 className="truncate font-bold text-base leading-5 tracking-tight lg:whitespace-normal lg:text-lg lg:leading-snug">
+                {t("title")}
+              </h1>
+              <p className="truncate text-muted-foreground text-sm leading-5 lg:mt-0.5 lg:whitespace-normal">
+                {t("tagline")}
+              </p>
+            </div>
             <LocaleSwitcher iconOnly />
             <Button
               ref={toggleRef}
@@ -319,9 +326,15 @@ export function Sidebar({
   );
 }
 
-const linkClass = "text-primary underline underline-offset-2";
+// 문장 속 링크: 터치 기기에서는 세로 패딩으로 누르는 영역만 44px 안팎으로 넓힌다 (인라인 요소라 줄 간격은 그대로)
+const linkClass =
+  "text-primary underline underline-offset-2 pointer-coarse:py-3";
 
 const MORE_LINKS = [
+  { href: "/zones/seoul", icon: MapPinned, key: "zonesSeoul" },
+  { href: "/zones/anyang", icon: MapPin, key: "zonesAnyang" },
+  { href: "/guide/fine", icon: Receipt, key: "guideFine" },
+  { href: "/guide/apartment", icon: Building2, key: "guideApartment" },
   { href: "/statute", icon: Scale, key: "statute" },
   { href: "/about", icon: Info, key: "about" },
   { href: "/health", icon: Activity, key: "health" },
@@ -353,6 +366,9 @@ function ServiceInfo() {
               statute: link("/statute"),
               about: link("/about"),
             })}
+          </p>
+          <p className="text-sm">
+            {t.rich("dataSource", { sources: link("/about#data-sources") })}
           </p>
         </div>
       </section>

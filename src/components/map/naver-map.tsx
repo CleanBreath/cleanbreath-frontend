@@ -3,9 +3,10 @@
 import { type LucideIcon, ZoomIn } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { renderToString } from "react-dom/server";
+import { MapPlaceholder } from "@/components/map/map-placeholder";
 import { usePublicZonesWithin } from "@/hooks/use-address";
 import { useNaverMapLoader } from "@/hooks/use-naver-map-loader";
+import { iconMarkup } from "@/lib/icon-markup";
 import {
   getZoneStyle,
   PUBLIC_ZONE_ICONS,
@@ -30,7 +31,7 @@ function isSmokingZone(divisionArea: string): boolean {
   return divisionArea.startsWith("SMOKING_ZONE");
 }
 
-// renderToString은 비싸므로 마커마다 호출하지 않고 구역 타입별로 한 번만 생성
+// 마커 HTML은 구역 타입별로 한 번만 만든다
 const markerContentCache = new Map<string, string>();
 
 // icon을 넘기면 구역 색은 그대로 두고 아이콘만 바꾼다 (공공데이터 유형별 아이콘). 이때 cacheKey도 유형별로 넘긴다
@@ -43,17 +44,14 @@ function createMarkerContent(
   if (cached) return cached;
 
   const { icon: zoneIcon, stroke, dashed } = getZoneStyle(divisionArea);
-  const Icon = icon ?? zoneIcon;
+  const svg = iconMarkup(icon ?? zoneIcon, {
+    size: 20,
+    className: "text-white",
+    "aria-hidden": true,
+  });
 
   // 배경은 stroke 색: 흰 아이콘 대비 3:1 이상 (fill 색은 초록·주황에서 미달). 비공식 구역은 점선 테두리
-  const content = renderToString(
-    <div
-      className={`flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-md ${dashed ? "border-dashed" : ""}`}
-      style={{ backgroundColor: stroke }}
-    >
-      <Icon size={20} className="text-white" aria-hidden />
-    </div>,
-  );
+  const content = `<div class="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white shadow-md${dashed ? " border-dashed" : ""}" style="background-color:${stroke}">${svg}</div>`;
   markerContentCache.set(cacheKey, content);
   return content;
 }
@@ -90,6 +88,11 @@ async function runInChunks(tasks: (() => void)[], isCancelled: () => boolean) {
     task();
   }
 }
+
+// NAVER 지도 기본 배경색(라이트). 첫 타일 전에는 투명으로 두고 이후 이 값으로 되돌린다
+const MAP_BACKGROUND = "#f8f9fa";
+// 타일 이벤트가 오지 않아도(타일 오류 등) 이 시간이 지나면 구역 조회·그리기를 시작한다
+const VIEW_READY_TIMEOUT_MS = 5000;
 
 // 구역은 이 줌 이상에서만 그린다 (공공데이터가 전국 10만 건이라 축소 상태에서 다 그릴 수 없고, 직접 그린 구역도 맞춘다)
 const ZONE_MIN_ZOOM = 16;
@@ -141,6 +144,7 @@ export function NaverMap({
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
   const [bounds, setBounds] = useState<MapBounds | null>(null);
+  const [viewReady, setViewReady] = useState(false);
   const { data: publicZoneData } = usePublicZonesWithin(bounds);
   const isLoaded = useNaverMapLoader();
   const t = useTranslations("map");
@@ -153,8 +157,30 @@ export function NaverMap({
     const newMap = new naver.maps.Map(mapRef.current, {
       center: new naver.maps.LatLng(center.lat, center.lng),
       zoom,
+      // 첫 타일이 올 때까지 아래 자리표시자가 비치게 투명으로 시작 (NAVER는 # 또는 rgb로 시작해야 색으로 본다)
+      background: "rgba(0,0,0,0)",
     });
+
+    // 첫 화면 준비: 타일이 다 그려졌거나(tilesloaded), 그 전에 사용자가 지도를 움직였거나(idle), 시간이 지나면.
+    // 자리표시자를 걷고 NAVER 기본 배경색으로 되돌린 뒤, 화면 범위 조회(공공데이터)와 구역 그리기를 시작한다
+    let done = false;
+    const markReady = () => {
+      if (done) return;
+      done = true;
+      newMap.setOptions({ background: MAP_BACKGROUND });
+      setViewReady(true);
+    };
+    const listeners = [
+      naver.maps.Event.once(newMap, "tilesloaded", markReady),
+      naver.maps.Event.once(newMap, "idle", markReady),
+    ];
+    const timer = window.setTimeout(markReady, VIEW_READY_TIMEOUT_MS);
     setMap(newMap);
+
+    return () => {
+      window.clearTimeout(timer);
+      naver.maps.Event.removeListener(listeners);
+    };
   }, [isLoaded]);
 
   // 중심 좌표 변경
@@ -172,9 +198,10 @@ export function NaverMap({
     map.setZoom(zoom);
   }, [map, zoom]);
 
-  // 이동·확대가 끝날 때마다 화면 범위 갱신. 격자가 같으면 이전 객체를 유지해 다시 그리지 않는다
+  // 이동·확대가 끝날 때마다(idle) 화면 범위 갱신. 격자가 같으면 이전 객체를 유지해 다시 그리지 않는다.
+  // 첫 화면 타일이 준비된 뒤에 시작해, 공공데이터 요청·마커 생성이 첫 타일 로드와 겹치지 않게 한다
   useEffect(() => {
-    if (!map) return;
+    if (!map || !viewReady) return;
     const update = () =>
       setBounds((prev) => {
         const next = viewBounds(map);
@@ -183,7 +210,7 @@ export function NaverMap({
     update();
     const listener = naver.maps.Event.addListener(map, "idle", update);
     return () => naver.maps.Event.removeListener(listener);
-  }, [map]);
+  }, [map, viewReady]);
 
   // 공공데이터 실외 금연구역 점 마커. bounds 대신 확대 여부만 의존해, 이동할 때는 새 데이터가 왔을 때 한 번만 다시 그린다
   const zoomedIn = bounds !== null;
@@ -384,20 +411,14 @@ export function NaverMap({
     selectApartment,
   ]);
 
-  if (!isLoaded) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-muted">
-        <p className="text-muted-foreground">{t("loading")}</p>
-      </div>
-    );
-  }
-
-  // NAVER 내부 컨트롤의 z-index가 시트·다이얼로그 위로 새지 않도록 쌓임 맥락을 가둔다
+  // NAVER 내부 컨트롤의 z-index가 시트·다이얼로그 위로 새지 않도록 쌓임 맥락을 가둔다.
+  // 지도 div는 처음부터 같은 크기로 두고(레이아웃 이동 없음), 첫 타일 전까지 뒤에 자리표시자를 깐다
   return (
     <>
+      {!viewReady && <MapPlaceholder label={t("loading")} />}
       <div ref={mapRef} className="isolate h-full w-full" />
       {/* 필터 칩(top-2, 높이 약 3.5rem) 바로 아래. 구역은 ZONE_MIN_ZOOM 이상에서만 그린다 */}
-      {map && !zoomedIn && (
+      {map && viewReady && !zoomedIn && (
         <p
           role="status"
           className="pointer-events-none absolute top-16 left-1/2 z-20 flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-foreground text-sm shadow-md"
