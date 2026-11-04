@@ -17,6 +17,7 @@ export const NAMESPACES = [
   "register",
   "board",
   "health",
+  "zones",
 ] as const;
 
 export default getRequestConfig(async ({ requestLocale }) => {
