@@ -1,160 +1,171 @@
-"use client";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import { BoardDetail } from "@/components/board/board-detail";
+import { localeMetadata, localizedPath } from "@/i18n/metadata";
+import type { Locale } from "@/i18n/routing";
+import { getZoneName, hasBuildingName, parseBoardId } from "@/lib/board-zone";
+import { fetchBoardDetail, shouldKeepLastGoodPage } from "@/lib/seo/board-data";
+import type { SmokingAreaDetail } from "@/types";
 
-import {
-  ArrowLeft,
-  Cigarette,
-  CigaretteOff,
-  MapPin,
-  ThumbsDown,
-  ThumbsUp,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
-import { use } from "react";
-import { PageHeader } from "@/components/layout/page-header";
-import { PageSection } from "@/components/layout/page-section";
-import { DetailNaverMap } from "@/components/map/detail-naver-map";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import {
-  useSmokingAreaDetail,
-  useSmokingAreaVote,
-} from "@/hooks/use-smoking-area";
-import { Link } from "@/i18n/navigation";
-import { getClientToken } from "@/lib/client-token";
+// [locale] 레이아웃이 dynamicParams = false라 generateStaticParams를 두면 새 글이 404가 된다.
+// 그래서 요청마다 렌더링하되, API 응답은 fetch 데이터 캐시(5분)에 두고
+// 재검증이 실패하면(야간 DB 중지) 마지막으로 받은 데이터를 계속 쓴다 (board-data 참고).
+// 캐시에 없는 id를 API 장애 중에 요청하면 모든 id가 같은 일반 제목으로 색인되지 않도록
+// 운영에서는 예외를 던져 5xx(일시 장애)로 응답하고, 화면은 error.tsx가 클라이언트 조회로 채운다
 
-/** 카테고리 뱃지: 색 + 아이콘 + 라벨 (zone ink 토큰은 흰 글자 대비 4.5:1 이상) */
-function CategoryBadge({ category }: { category: string }) {
-  const t = useTranslations("board.category");
-  const isSmoking = category === "SMOKING";
-  const Icon = isSmoking ? Cigarette : CigaretteOff;
-  return (
-    <Badge
-      className={
-        isSmoking
-          ? "bg-zone-smoking-ink text-white"
-          : "bg-zone-non-smoking-ink text-white"
+const SITE_URL = "https://cleanbreath.cmu02-studio.com";
+const IN_LANGUAGE: Record<Locale, string> = {
+  ko: "ko-KR",
+  en: "en-US",
+  ja: "ja-JP",
+};
+
+type Params = Promise<{ locale: string; id: string }>;
+
+/** 구역 데이터로 만든 제목·설명. 데이터가 없으면 기존 고정 문구 */
+async function buildDetailText(locale: Locale, detail?: SmokingAreaDetail) {
+  const t = await getTranslations({ locale, namespace: "board" });
+  if (!detail) {
+    return {
+      title: t("detailMeta.title"),
+      description: t("detailMeta.description"),
+    };
+  }
+  const values = {
+    name: getZoneName(detail),
+    address: detail.addressName,
+    category: detail.category,
+  };
+  return hasBuildingName(detail)
+    ? {
+        title: t("detailMeta.titleNamed", values),
+        description: t("detailMeta.descriptionNamed", values),
       }
-    >
-      <Icon aria-hidden />
-      {/* 모르는 카테고리 값은 원문 그대로 */}
-      {category === "SMOKING" || category === "NON_SMOKING"
-        ? t(category)
-        : category}
-    </Badge>
-  );
+    : {
+        title: t("detailMeta.titleAddressOnly", values),
+        description: t("detailMeta.descriptionAddressOnly", values),
+      };
 }
 
-export default function BoardDetailPage({
+export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
-}) {
-  const t = useTranslations("board");
-  const tc = useTranslations("common");
-  const { id: idStr } = use(params);
-  const id = Number(idStr);
-  const { data, isLoading } = useSmokingAreaDetail(id);
-  const voteMutation = useSmokingAreaVote();
+  params: Params;
+}): Promise<Metadata> {
+  const { locale: rawLocale, id: rawId } = await params;
+  const locale = rawLocale as Locale;
+  const id = parseBoardId(rawId);
+  // 형식이 틀린 id는 페이지에서 notFound() 처리
+  if (id === null) return {};
 
-  /** 투표 핸들러 */
-  function handleVote(isTruth: boolean) {
-    const clientToken = getClientToken();
-    voteMutation.mutate({ id, data: { clientToken, isTruth } });
+  const result = await fetchBoardDetail(id);
+  const detail = result.status === "ok" ? result.data : undefined;
+  const { title, description } = await buildDetailText(locale, detail);
+  const tm = await getTranslations({ locale, namespace: "meta" });
+  // 데이터 없이 그린 페이지(빌드·개발 중 API 실패 등)는 내용 없는 일반 제목이라 색인하지 않는다
+  const noData = result.status === "error";
+  // 부모 /board canonical을 물려받지 않도록 상세 경로로 덮어씀
+  const m = localeMetadata(locale, `/board/${id}`);
+
+  return {
+    // 부모 board/layout이 템플릿 없는 문자열 title이라 루트 템플릿이 적용되지 않음
+    title: { absolute: `${title} | CleanBreath` },
+    description,
+    alternates: m.alternates,
+    ...(noData && { robots: { index: false, follow: true } }),
+    openGraph: {
+      ...m.openGraph,
+      type: "website",
+      siteName: "CleanBreath",
+      title,
+      description,
+      images: [
+        {
+          url: "/OGImage.png",
+          width: 1200,
+          height: 630,
+          alt: tm("ogImageAlt"),
+        },
+      ],
+    },
+  };
+}
+
+export default async function BoardDetailPage({ params }: { params: Params }) {
+  const { locale: rawLocale, id: rawId } = await params;
+  const locale = rawLocale as Locale;
+  setRequestLocale(locale);
+
+  const id = parseBoardId(rawId);
+  if (id === null) notFound();
+
+  const result = await fetchBoardDetail(id);
+  // 백엔드가 없다고 답한 경우만 404. API 장애(야간 DB 중지 등)는 404가 아니라 클라이언트 조회로 채운다
+  if (result.status === "not-found") notFound();
+  // 운영 중 API 장애: 200 일반 페이지 대신 5xx로 응답해 크롤러가 나중에 다시 오게 한다
+  if (result.status === "error" && shouldKeepLastGoodPage()) {
+    throw new Error(
+      "구역 상세를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+    );
   }
+  const detail = result.status === "ok" ? result.data : undefined;
+
+  const t = await getTranslations({ locale, namespace: "board" });
+  const tc = await getTranslations({ locale, namespace: "common" });
+  const { title } = await buildDetailText(locale, detail);
+  const listUrl = SITE_URL + localizedPath(locale, "/board");
+  const pageUrl = SITE_URL + localizedPath(locale, `/board/${id}`);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${pageUrl}#webpage`,
+        url: pageUrl,
+        name: title,
+        inLanguage: IN_LANGUAGE[locale],
+        isPartOf: { "@id": `${SITE_URL}${localizedPath(locale, "/")}#website` },
+        breadcrumb: { "@id": `${pageUrl}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${pageUrl}#breadcrumb`,
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: tc("home"),
+            item: SITE_URL + localizedPath(locale, "/"),
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: t("list.title"),
+            item: listUrl,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: detail ? getZoneName(detail) : t("detail.title"),
+            item: pageUrl,
+          },
+        ],
+      },
+    ],
+  };
 
   return (
-    <div className="flex min-h-dvh flex-col bg-muted/40">
-      {/* 상세 데이터는 클라이언트에서 받아오므로 h1은 고정 문구로 서버 HTML에 둔다 */}
-      <PageHeader
-        title={t("detail.title")}
-        description={t("detail.description")}
-        icon={<MapPin />}
-        backHref="/board"
-        backLabel={t("backToList")}
+    <>
+      <BoardDetail id={id} initialDetail={detail} />
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: 메시지 문구와 API 데이터로 만든 jsonLd를 JSON.stringify하고 <를 이스케이프한 값
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
       />
-
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base">
-        {isLoading ? (
-          <p role="status" className="py-16 text-center text-muted-foreground">
-            {tc("loading")}
-          </p>
-        ) : !data ? (
-          <div className="flex flex-col items-center gap-4 py-16">
-            <p className="text-muted-foreground">{t("detail.notFound")}</p>
-            <Button variant="outline" size="touch" asChild>
-              <Link href="/board">{t("backToList")}</Link>
-            </Button>
-          </div>
-        ) : (
-          <>
-            <PageSection
-              title={
-                <span lang="ko">
-                  {data.addressName}
-                  {data.buildingName && ` ${data.buildingName}`}
-                </span>
-              }
-            >
-              <CategoryBadge category={data.category} />
-            </PageSection>
-
-            {/* 지도 */}
-            <Card className="gap-0 overflow-hidden py-0 shadow-none">
-              <div className="h-80 w-full">
-                <DetailNaverMap
-                  latitude={data.latitude}
-                  longitude={data.longitude}
-                  paths={data.paths}
-                />
-              </div>
-            </Card>
-
-            {/* 투표 */}
-            <PageSection title={t("detail.voteTitle")}>
-              <div className="grid grid-cols-2 gap-3">
-                <Button
-                  variant="outline"
-                  size="touch"
-                  className="gap-1.5"
-                  onClick={() => handleVote(true)}
-                  disabled={voteMutation.isPending}
-                >
-                  <ThumbsUp aria-hidden className="text-primary" />
-                  {t("detail.voteTrue")}
-                  <span className="font-semibold tabular-nums">
-                    {data.truthCount}
-                  </span>
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="touch"
-                  className="gap-1.5"
-                  onClick={() => handleVote(false)}
-                  disabled={voteMutation.isPending}
-                >
-                  <ThumbsDown aria-hidden className="text-destructive" />
-                  {t("detail.voteFalse")}
-                  <span className="font-semibold tabular-nums">
-                    {data.untruthCount}
-                  </span>
-                </Button>
-              </div>
-            </PageSection>
-
-            {/* 목록으로 */}
-            <div className="flex justify-center">
-              <Button variant="ghost" size="touch" asChild>
-                <Link href="/board">
-                  <ArrowLeft aria-hidden />
-                  {t("backToList")}
-                </Link>
-              </Button>
-            </div>
-          </>
-        )}
-      </main>
-    </div>
+    </>
   );
 }

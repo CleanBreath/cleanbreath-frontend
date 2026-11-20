@@ -9,6 +9,11 @@
   "translationNotice": "이 번역본은 참고용이며, 내용이 다를 경우 한국어본이 우선합니다.",
   "lawDates": "법령 기준일: <num>{lawBaseDate}</num> · 최종 검토일: <num>{reviewedAt}</num>",
   "disclaimer": "본 내용은 참고용이며, 정확한 법령 내용은 관련 법령을 확인해주세요.",
+  "sections": {
+    "facilities": "시설별 금연구역 지정 기준",
+    "faq": "자주 묻는 질문",
+    "guides": "주제별 법령 안내"
+  },
   "law": {
     "name": "국민건강증진법",
     "source": "법제처 국가법령정보센터",

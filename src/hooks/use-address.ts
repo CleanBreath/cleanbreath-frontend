@@ -83,6 +83,8 @@ export function usePublicZonesWithin(bounds: MapBounds | null) {
     queryFn: bounds ? () => getPublicZonesWithin(bounds) : skipToken,
     // 지도를 옮기는 동안 이전 마커를 유지해 깜빡이지 않게 한다
     placeholderData: keepPreviousData,
+    // 한 번 불러온 범위는 최대 1시간 다시 쓴다 (기본 gcTime 30분이면 다른 곳으로 옮긴 범위가 더 일찍 지워진다)
     staleTime: 1000 * 60 * 60,
+    gcTime: 1000 * 60 * 60,
   });
 }

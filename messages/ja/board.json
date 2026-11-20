@@ -5,7 +5,11 @@
   },
   "detailMeta": {
     "title": "喫煙所・禁煙エリアの詳細情報",
-    "description": "CleanBreathに登録された喫煙所または禁煙エリアの場所と詳細情報を確認できます。"
+    "description": "CleanBreathに登録された喫煙所または禁煙エリアの場所と詳細情報を確認できます。",
+    "titleNamed": "{name}の{category, select, SMOKING {喫煙所} NON_SMOKING {禁煙エリア} other {エリア}}・{address}",
+    "titleAddressOnly": "{address}の{category, select, SMOKING {喫煙所} NON_SMOKING {禁煙エリア} other {エリア}}",
+    "descriptionNamed": "{address}にある{name}の{category, select, SMOKING {喫煙所} NON_SMOKING {禁煙エリア} other {エリア}}の場所と範囲、ユーザー投票の状況です。CleanBreathのユーザーが登録をリクエストしたエリアで、投票と管理者の確認を経て地図に反映されます。",
+    "descriptionAddressOnly": "{address}にある{category, select, SMOKING {喫煙所} NON_SMOKING {禁煙エリア} other {エリア}}の場所と範囲、ユーザー投票の状況です。CleanBreathのユーザーが登録をリクエストしたエリアで、投票と管理者の確認を経て地図に反映されます。"
   },
   "category": {
     "SMOKING": "喫煙所",
@@ -27,6 +31,13 @@
     "title": "エリアの詳細情報",
     "description": "登録リクエストされたエリアの場所と投票状況",
     "notFound": "データが見つかりません。",
+    "infoTitle": "エリア情報",
+    "fields": {
+      "category": "エリアの種類",
+      "address": "住所",
+      "building": "建物名"
+    },
+    "pendingNotice": "ユーザーが登録をリクエストしたエリアのため、まだ地図に反映されていない場合があります。「正しい」の投票が20票以上集まると、管理者が確認したうえで地図に反映します。",
     "voteTitle": "この情報は正しいですか？",
     "voteTrue": "正しい",
     "voteFalse": "正しくない"

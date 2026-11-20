@@ -366,7 +366,7 @@ GET /v1/allRequestAddressPage?page={page}&size={size}
 **Parameters**
 
 - `page` (optional): 페이지 번호 (기본값: 0)
-- `size` (optional): 페이지 크기 (기본값: 20, 최대: 2000)
+- `size` (optional): 페이지 크기 (기본값: 20, 실제 최대: 50. 더 큰 값은 서버가 50으로 줄인다. 2026-11-04 운영 서버 확인)
 
 **Response**
 

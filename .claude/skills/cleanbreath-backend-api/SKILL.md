@@ -55,7 +55,7 @@ description: CleanBreath 백엔드 REST API(Spring, base `/v1`) 명세와 이 �
 - **`/updateDate`는 응답이 두 종류다.** 업데이트가 필요하면 목록 전체(`data` 배열)를, 아니면 `{ message }`만 온다. 반드시 `isUpdateNeeded`로 구분한다.
 - **피드백 관리 API는 관리자 전용이다.** `GET /feedback-list`, `GET·PUT·DELETE /feedback/{id}`는 `Authorization: Bearer <ADMIN_TOKEN>`이 없으면 401이다. 토큰을 브라우저에 넣으면 노출되므로 프론트엔드에 이 함수들을 만들지 않는다. 공개 API는 `POST /feedback/add`뿐이다.
 - **피드백 등록**은 `title`·`content`가 비어 있으면 400이다.
-- **`/allRequestAddressPage`의 `size` 최대값은 2000**이다.
+- **`/allRequestAddressPage`의 `size`는 실제로 50까지만 적용된다.** 더 큰 값을 보내도 서버가 50으로 줄여 `page.size: 50`을 돌려준다(2026-11-04 운영 서버에서 size=100·2000으로 확인). 페이지 수는 응답의 `page.totalPages`를 따른다.
 - **투표 `clientToken`**은 `src/lib`의 `getClientToken()`으로 만든 브라우저별 익명 토큰을 쓴다.
 - **에러**: 백엔드는 400/404/500 모두 `{ message }`로 응답한다. `handleError`가 이를 `ApiError(status, message)`로 바꿔 던지므로, UI에서는 `error instanceof ApiError`로 확인하고 `error.message`를 보여준다.
 

@@ -1,0 +1,66 @@
+{
+  "breadcrumbLabel": "Breadcrumb",
+  "unit": "{count, plural, one {# zone} other {# zones}}",
+  "mapHome": "Back to the map",
+  "mapHint": "Zoom far into an area on the map to see public no-smoking zones as markers.",
+  "otherRegions": "Other regions",
+  "unavailable": {
+    "title": "Zone data is temporarily unavailable",
+    "body": "We could not load the list from the server, so the tables are empty for now. Please check again later or use the map."
+  },
+  "source": {
+    "label": "Source",
+    "public": "Korea Public Data Portal, National No-Smoking Zone Standard Data (outdoor no-smoking zones)",
+    "anyang": "Zones registered in CleanBreath (added by the CleanBreath team, or proposed by users and added to the map after an administrator reviewed them)",
+    "referenceDate": "Latest data reference date",
+    "fetchedAt": "Data retrieved",
+    "disclaimer": "For reference only; conditions on site may differ. Contact the local authority for official no-smoking zone information."
+  },
+  "table": {
+    "name": "Name",
+    "division": "Type",
+    "scope": "No-smoking range",
+    "roadAddress": "Road address",
+    "address": "Address",
+    "category": "Category",
+    "zoneType": "Area type",
+    "district": "District",
+    "total": "Total",
+    "empty": "-"
+  },
+  "seoul": {
+    "title": "Seoul No-Smoking Zones by District",
+    "breadcrumb": "Seoul no-smoking zones",
+    "subtitle": "Outdoor no-smoking zones from public data",
+    "description": "Outdoor no-smoking zones in Seoul's 25 districts (bus stops & subway exits, parks & playgrounds, no-smoking streets & school routes, areas around schools & daycares), with counts and lists per district. Source: Korea Public Data Portal, National No-Smoking Zone Standard Data.",
+    "intro": "This page groups the {total, number} outdoor no-smoking zones in Seoul listed in the Korea Public Data Portal's National No-Smoking Zone Standard Data by district. By type, there are {transit, number} bus stops & subway exits, {park, number} parks & playgrounds, {street, number} no-smoking streets & school routes, and {boundary, number} areas around schools & daycares. {topDistrict} has the most ({topCount, number}).",
+    "introNoData": "This page groups Seoul's outdoor no-smoking zones from the Korea Public Data Portal's National No-Smoking Zone Standard Data by district.",
+    "introLinks": "Select a district to see its list of no-smoking zones.",
+    "tableTitle": "No-smoking zones per district",
+    "noDataDistricts": "The public data does not yet include outdoor no-smoking zones for {districts}.",
+    "noAddressNote": "{count, plural, one {# zone has} other {# zones have}} no road address and could not be assigned to a district, so they are not counted."
+  },
+  "district": {
+    "title": "Seoul {gu} No-Smoking Zones",
+    "description": "A list of the {total, number} outdoor no-smoking zones in {gu}, Seoul, grouped into bus stops & subway exits, parks & playgrounds, no-smoking streets & school routes, and areas around schools & daycares, with name, type, range and address.",
+    "descriptionNoData": "Outdoor no-smoking zones in {gu}, Seoul, grouped into bus stops & subway exits, parks & playgrounds, no-smoking streets & school routes, and areas around schools & daycares. Source: Korea Public Data Portal, National No-Smoking Zone Standard Data.",
+    "intro": "According to the Korea Public Data Portal's National No-Smoking Zone Standard Data, {gu}, Seoul has {total, number} outdoor no-smoking zones: {transit, number} bus stops & subway exits, {park, number} parks & playgrounds, {street, number} no-smoking streets & school routes, and {boundary, number} areas around schools & daycares. The tables below list each zone's name, type, no-smoking range and road address by category.",
+    "introNoData": "This page lists the outdoor no-smoking zones in {gu}, Seoul from public data, grouped by type.",
+    "noAddressNote": "{count, plural, one {# zone} other {# zones}} in the search area around this district {count, plural, one {has} other {have}} no road address and could not be assigned to a district, so {count, plural, one {it is} other {they are}} not listed.",
+    "truncated": "This table lists the first {shown, number} zones by name. The other {rest, number} can be found on the map.",
+    "otherDistricts": "Other districts in Seoul",
+    "backToSeoul": "All Seoul districts"
+  },
+  "anyang": {
+    "title": "Anyang Smoking Areas & No-Smoking Zones",
+    "breadcrumb": "Anyang smoking areas & no-smoking zones",
+    "subtitle": "Zones registered in CleanBreath",
+    "description": "Smoking areas and no-smoking zones in Anyang, listed by smoking area type and facility category. See open, enclosed (smoking room) and line-marked smoking areas, and no-smoking zones such as schools, kindergartens and parks, with addresses.",
+    "intro": "CleanBreath has {total, number} registered zones in Anyang: {smoking, number} smoking areas and {nonSmoking, number} no-smoking zones. The most common no-smoking zone category is {topCategory} ({topCount, number}). The tables below group smoking areas and no-smoking zones by facility category.",
+    "introNoData": "This page lists the smoking areas and no-smoking zones in Anyang registered in CleanBreath, grouped by facility category.",
+    "smokingTitle": "Smoking areas",
+    "nonSmokingTitle": "No-smoking zones",
+    "outsideNote": "{count, plural, one {# zone whose address is} other {# zones whose addresses are}} outside Anyang {count, plural, one {is} other {are}} not included in this list.",
+    "seoulLink": "Seoul no-smoking zones by district"
+  }
+}

@@ -2,6 +2,7 @@ import type about from "../../messages/ko/about.json";
 import type board from "../../messages/ko/board.json";
 import type common from "../../messages/ko/common.json";
 import type errors from "../../messages/ko/errors.json";
+import type guide from "../../messages/ko/guide.json";
 import type health from "../../messages/ko/health.json";
 import type home from "../../messages/ko/home.json";
 import type map from "../../messages/ko/map.json";
@@ -11,6 +12,7 @@ import type privacy from "../../messages/ko/privacy.json";
 import type register from "../../messages/ko/register.json";
 import type sidebar from "../../messages/ko/sidebar.json";
 import type statute from "../../messages/ko/statute.json";
+import type zones from "../../messages/ko/zones.json";
 import type { routing } from "./routing";
 
 // t()의 키를 한국어 메시지 기준으로 타입 검사한다 (request.ts의 NAMESPACES와 같은 목록)
@@ -31,6 +33,8 @@ declare module "next-intl" {
       register: typeof register;
       board: typeof board;
       health: typeof health;
+      zones: typeof zones;
+      guide: typeof guide;
     };
   }
 }

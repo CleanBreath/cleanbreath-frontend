@@ -34,37 +34,40 @@ export function StatuteCard({
         isExpanded && "border-primary/40",
       )}
     >
-      {/* 카테고리 헤더: 아코디언 패턴(h2 > button[aria-expanded]) */}
-      <h2>
-        <button
-          type="button"
-          aria-expanded={isExpanded}
-          aria-controls={panelId}
-          onClick={onToggle}
-          className="flex min-h-11 w-full items-center gap-3 rounded-xl p-4 text-left transition-colors hover:bg-muted/50"
+      {/* 카테고리 헤더: 아코디언 패턴(h3 > button[aria-expanded]). 제목에는 시설명만 두고,
+          버튼의 ::after가 행 전체를 덮어 아이콘·항목 수를 눌러도 펼쳐진다 */}
+      <div className="relative flex min-h-11 items-center gap-3 rounded-xl p-4 transition-colors hover:bg-muted/50">
+        <span
+          aria-hidden
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
         >
-          <span
-            aria-hidden
-            className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
-          >
-            {icon || <Building2 size={20} />}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block font-semibold">{category}</span>
-            <span className="block text-sm font-normal text-muted-foreground tabular-nums">
-              {t("itemCount", { count: designatedNoSmokingAreas.length })}
-            </span>
-          </span>
-          <ChevronDown
-            size={20}
-            aria-hidden
-            className={cn(
-              "shrink-0 text-muted-foreground transition-transform duration-200",
-              isExpanded && "rotate-180",
-            )}
-          />
-        </button>
-      </h2>
+          {icon || <Building2 size={20} />}
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="font-semibold text-foreground">
+            <button
+              type="button"
+              aria-expanded={isExpanded}
+              aria-controls={panelId}
+              onClick={onToggle}
+              className="text-left outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
+            >
+              {category}
+            </button>
+          </h3>
+          <p className="text-sm text-muted-foreground tabular-nums">
+            {t("itemCount", { count: designatedNoSmokingAreas.length })}
+          </p>
+        </div>
+        <ChevronDown
+          size={20}
+          aria-hidden
+          className={cn(
+            "shrink-0 text-muted-foreground transition-transform duration-200",
+            isExpanded && "rotate-180",
+          )}
+        />
+      </div>
 
       {/* 확장된 내용: 크롤러가 읽도록 항상 렌더링하고 접힘은 CSS로 처리 */}
       <div
@@ -83,9 +86,9 @@ export function StatuteCard({
 
             {/* 지정 금연구역 */}
             <div className="mb-4">
-              <h3 className="mb-2 text-sm font-semibold text-primary">
+              <h4 className="mb-2 text-sm font-semibold text-primary">
                 {t("designatedAreas")}
-              </h3>
+              </h4>
               <div className="space-y-2">
                 {designatedNoSmokingAreas.map((area, i) => (
                   <div
@@ -106,9 +109,9 @@ export function StatuteCard({
 
             {/* 세부 내용 */}
             <div>
-              <h3 className="mb-2 text-sm font-semibold text-primary">
+              <h4 className="mb-2 text-sm font-semibold text-primary">
                 {t("details")}
-              </h3>
+              </h4>
               <div className="space-y-2">
                 {content.map((item) => (
                   <div
