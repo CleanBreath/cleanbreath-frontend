@@ -125,10 +125,10 @@ function ExternalTextLink({
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className={`inline-flex items-center gap-1 text-primary underline ${className}`}
+      className={`inline-flex items-center gap-1 text-primary underline underline-offset-2 ${className}`}
     >
       {children}
-      <ExternalLink aria-hidden className="size-3.5" />
+      <ExternalLink aria-hidden className="size-[1em]" strokeWidth={1.5} />
     </a>
   );
 }
@@ -153,7 +153,7 @@ export default function PrivacyPage({
   const pageUrl = `${SITE_URL}${localizedPath(locale, "/privacy")}`;
   const strong = (chunks: React.ReactNode) => <strong>{chunks}</strong>;
   const boardLink = (chunks: React.ReactNode) => (
-    <Link href="/board" className="text-primary underline">
+    <Link href="/board" className="text-primary underline underline-offset-2">
       {chunks}
     </Link>
   );
@@ -234,7 +234,7 @@ export default function PrivacyPage({
         backLabel={tc("goHome")}
       />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         {/* 영어·일본어본은 참고용 번역이며 한국어본이 우선한다는 고지 */}
         {locale !== "ko" && (
           <PageSection className="border-primary/20 bg-primary/5">
@@ -435,7 +435,9 @@ export default function PrivacyPage({
                         href={row.policyUrl}
                         className="min-h-11"
                       >
-                        {t("outsourcing.transfer.policyLink")}
+                        {t("outsourcing.transfer.policyLink", {
+                          name: row.name,
+                        })}
                       </ExternalTextLink>
                     </td>
                     <td className={`${tdClass} whitespace-nowrap`}>
@@ -458,7 +460,7 @@ export default function PrivacyPage({
         </PageSection>
 
         <PageSection title={t("rights.title")} icon={<UserCheck />}>
-          <ul className="mb-3 space-y-1.5">
+          <ul className="space-y-1.5">
             <Bullet>{t("rights.request")}</Bullet>
             <Bullet>{t.rich("rights.how", { issues: issuesLink })}</Bullet>
             <Bullet>{t("rights.identify")}</Bullet>
@@ -533,10 +535,16 @@ export default function PrivacyPage({
           <ul className="space-y-1.5">
             {REMEDY_LINKS.map((link, i) => (
               <Bullet key={link.url}>
-                {remedyRows[i]?.name}: {remedyRows[i]?.phone},{" "}
-                <ExternalTextLink href={link.url}>
-                  {link.label}
-                </ExternalTextLink>
+                {t.rich("remedies.line", {
+                  name: remedyRows[i]?.name ?? "",
+                  phone: remedyRows[i]?.phone ?? "",
+                  site: link.label,
+                  link: (chunks) => (
+                    <ExternalTextLink href={link.url}>
+                      {chunks}
+                    </ExternalTextLink>
+                  ),
+                })}
               </Bullet>
             ))}
           </ul>
@@ -552,16 +560,25 @@ export default function PrivacyPage({
             })}
           </p>
           <p>
-            {t("changes.related")}{" "}
-            <Link href="/about" className="text-primary underline">
-              {ta("meta.title")}
-            </Link>
+            {t.rich("changes.related", {
+              title: ta("meta.title"),
+              link: (chunks) => (
+                <Link
+                  href="/about"
+                  className="text-primary underline underline-offset-2"
+                >
+                  {chunks}
+                </Link>
+              ),
+            })}
           </p>
         </PageSection>
 
-        <p className="text-center text-sm tabular-nums">
-          {t("effectiveDate")}{" "}
-          <time dateTime={EFFECTIVE_DATE}>{EFFECTIVE_DATE}</time>
+        <p className="mx-auto text-center text-sm tabular-nums">
+          {t.rich("effectiveDate", {
+            date: EFFECTIVE_DATE,
+            time: (chunks) => <time dateTime={EFFECTIVE_DATE}>{chunks}</time>,
+          })}
         </p>
       </main>
     </div>

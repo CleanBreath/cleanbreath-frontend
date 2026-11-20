@@ -144,7 +144,7 @@
         "purpose": "Purpose",
         "retention": "Retention period"
       },
-      "policyLink": "Privacy policy",
+      "policyLink": "{name} privacy policy",
       "country": "United States",
       "timing": "Transmitted over the network when you use the Service",
       "retention": "Until the purpose of outsourcing is achieved (access logs within the retention period in Section 3)",
@@ -205,6 +205,7 @@
   "remedies": {
     "title": "11. Remedies for Infringement of Rights",
     "lead": "If you need to report or seek advice about an infringement of your personal information, you can contact the organizations below (services are mainly in Korean).",
+    "line": "{name}: {phone}, <link>{site}</link>",
     "rows": [
       {
         "name": "Personal Information Dispute Mediation Committee",
@@ -227,7 +228,7 @@
   "changes": {
     "title": "12. Changes to This Privacy Policy",
     "effective": "This privacy policy takes effect on <time>{date}</time>. If it changes, we will announce the changes on this page at least seven days before they take effect.",
-    "related": "Related:"
+    "related": "Related: <link>{title}</link>"
   },
-  "effectiveDate": "Effective date:"
+  "effectiveDate": "Effective date: <time>{date}</time>"
 }

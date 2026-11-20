@@ -110,7 +110,7 @@ export default async function SeoulZonesPage({
         backLabel={tc("goHome")}
       />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         <ZonesBreadcrumbs
           items={[{ name: tc("home"), href: "/" }, { name: crumbs[1].name }]}
         />
@@ -135,7 +135,7 @@ export default async function SeoulZonesPage({
         {!summary && <ZonesUnavailable />}
 
         <PageSection title={t("seoul.tableTitle")} icon={<Table2 />}>
-          <TableScroll>
+          <TableScroll label={t("seoul.tableTitle")}>
             <thead>
               <tr>
                 <th scope="col">{t("table.district")}</th>
@@ -156,7 +156,7 @@ export default async function SeoulZonesPage({
                     {withPage.has(district.slug) ? (
                       <Link
                         href={ZONES_PATHS.district(district.slug)}
-                        className="text-primary underline"
+                        className="text-primary underline underline-offset-2"
                       >
                         {name}
                       </Link>
@@ -201,8 +201,12 @@ export default async function SeoulZonesPage({
 
         <PageSection title={t("otherRegions")}>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
-              <Link href={ZONES_PATHS.anyang}>{t("anyang.title")}</Link>
+            <Button
+              variant="outline"
+              asChild
+              className="h-auto min-h-9 max-w-full whitespace-normal text-left"
+            >
+              <Link href={ZONES_PATHS.anyang}>{t("anyang.breadcrumb")}</Link>
             </Button>
             <MapHomeLink />
           </div>

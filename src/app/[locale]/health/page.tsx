@@ -14,6 +14,7 @@ import { checkServerHealth } from "@/api";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageSection } from "@/components/layout/page-section";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 // 상태색은 토큰만 사용: 정상=primary, 오류=destructive, 확인 중=muted
@@ -121,7 +122,7 @@ export default function HealthPage() {
       <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base">
         {/* 전체 상태 카드 */}
         <PageSection>
-          <div aria-live="polite" className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
             <div
               aria-hidden
               className={cn(
@@ -132,20 +133,23 @@ export default function HealthPage() {
               )}
             >
               {overall === "healthy" ? (
-                <CheckCircle2 size={32} />
+                <CheckCircle2 size={32} strokeWidth={2.5} />
               ) : overall === "unhealthy" ? (
-                <XCircle size={32} />
+                <XCircle size={32} strokeWidth={2.5} />
               ) : (
-                <AlertCircle size={32} />
+                <AlertCircle size={32} strokeWidth={2.5} />
               )}
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="text-xl font-bold">
-                {t(`overall.${overall}.title`)}
-              </h2>
-              <p className="text-muted-foreground">
-                {t(`overall.${overall}.description`)}
-              </p>
+              {/* 상태 변화만 낭독되도록 live region은 제목·설명만 감싼다 (30초마다 바뀌는 확인 시각 제외) */}
+              <div aria-live="polite">
+                <h2 className="text-lg font-semibold">
+                  {t(`overall.${overall}.title`)}
+                </h2>
+                <p className="text-muted-foreground">
+                  {t(`overall.${overall}.description`)}
+                </p>
+              </div>
               <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
                 <Clock size={14} aria-hidden />
                 <span className="tabular-nums">
@@ -233,6 +237,14 @@ export default function HealthPage() {
               <span>
                 {t.rich("guide.unhealthy", {
                   b: (chunks) => <strong>{chunks}</strong>,
+                  contact: (chunks) => (
+                    <Link
+                      href="/about#contact"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
                 })}
               </span>
             </li>

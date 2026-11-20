@@ -22,7 +22,7 @@
     },
     "unhealthy": {
       "title": "System error",
-      "description": "Some services are experiencing problems."
+      "description": "Some services are experiencing problems. Status is rechecked automatically every 30 seconds."
     },
     "checking": {
       "title": "Checking systems",
@@ -36,7 +36,7 @@
   "guide": {
     "title": "About server status",
     "healthy": "<b>Operational:</b> The service is running normally.",
-    "unhealthy": "<b>Error:</b> The service is experiencing a problem. Please contact the administrator.",
+    "unhealthy": "<b>Error:</b> The service is experiencing a problem. If it continues, <contact>contact us</contact>.",
     "checking": "<b>Checking:</b> The service status is being checked."
   }
 }

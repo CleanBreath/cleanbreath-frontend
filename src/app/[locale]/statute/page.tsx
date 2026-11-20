@@ -73,7 +73,7 @@ export default function StatutePage({
         icon={<Scale />}
       />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 p-4 pb-8 text-base leading-relaxed">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 p-4 pb-8 text-base leading-relaxed [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         <PageSection className="border-primary/20 bg-primary/5">
           <p className="text-muted-foreground">
             {t.rich("intro", {
@@ -125,7 +125,11 @@ export default function StatutePage({
               title={item.question}
               headingLevel="h3"
             >
-              <p className="text-muted-foreground">{item.answer.join(" ")}</p>
+              <div className="space-y-2 text-muted-foreground">
+                {item.answer.map((p) => (
+                  <p key={p}>{p}</p>
+                ))}
+              </div>
               <div className="mt-2 flex flex-wrap gap-x-4">
                 {item.sources.map((source) => (
                   <a
@@ -168,9 +172,10 @@ export default function StatutePage({
 
         {/* 하단 안내 */}
         <div className="space-y-3">
-          <p className="rounded-xl bg-muted px-4 py-3 text-center text-sm text-muted-foreground">
-            {t("disclaimer")}
-          </p>
+          {/* 면은 아래 카드와 같은 폭으로 두고, 영어 행 길이 제한(max-w-lg)은 안쪽 문단에만 걸린다 */}
+          <div className="rounded-xl bg-muted px-4 py-3 text-center text-sm text-muted-foreground">
+            <p className="mx-auto">{t("disclaimer")}</p>
+          </div>
 
           <PageSection className="border-primary/20 bg-primary/5">
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -182,7 +187,9 @@ export default function StatutePage({
                   <Scale size={20} />
                 </div>
                 <div>
-                  <h2 className="font-semibold">{t("law.name")}</h2>
+                  <h2 className="text-lg font-semibold text-foreground">
+                    {t("law.name")}
+                  </h2>
                   <p className="text-sm text-muted-foreground">
                     {t("law.source")}
                   </p>
