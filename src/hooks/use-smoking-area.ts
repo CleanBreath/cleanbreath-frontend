@@ -4,7 +4,12 @@
 
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   getSmokingAreaDetail,
   getSmokingAreaList,
@@ -28,6 +33,8 @@ export function useSmokingAreaList(page = 0, size = 10) {
   return useQuery<SmokingAreaPageResponse>({
     queryKey: smokingAreaKeys.list(page, size),
     queryFn: () => getSmokingAreaList(page, size),
+    // 다음 페이지를 불러오는 동안 이전 페이지를 유지해 페이지네이션이 언마운트되지 않게 한다
+    placeholderData: keepPreviousData,
   });
 }
 
