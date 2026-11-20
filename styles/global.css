@@ -45,6 +45,8 @@
   --color-zone-smoking-ink: var(--zone-smoking-ink);
   --color-zone-apartment: var(--zone-apartment);
   --color-zone-apartment-ink: var(--zone-apartment-ink);
+  --color-warning-subtle: var(--warning-subtle);
+  --color-warning-border: var(--warning-border);
   --font-sans:
     "Pretendard Variable", system-ui, -apple-system, "Apple SD Gothic Neo",
     "Malgun Gothic", sans-serif;
@@ -71,7 +73,8 @@
   --accent-foreground: oklch(0.2 0.02 200);
   --destructive: oklch(0.55 0.22 25);
   --border: oklch(0.9 0.01 200);
-  --input: oklch(0.9 0.01 200);
+  /* 입력 컨트롤 경계. 배경 대비 3.09:1, card 3.22:1 (MASTER §2.1 컨트롤 경계 ≥ 3:1) */
+  --input: oklch(0.65 0.01 200);
   --ring: oklch(0.48 0.12 195);
   --chart-1: oklch(0.48 0.12 195);
   --chart-2: oklch(0.6 0.15 160);
@@ -93,6 +96,9 @@
   --zone-smoking-ink: #dc2626;
   --zone-apartment: #3b82f6;
   --zone-apartment-ink: #2563eb;
+  /* 경고(데이터 없음 등) 표면과 테두리 (Tailwind amber-50/amber-300과 같은 값) */
+  --warning-subtle: oklch(0.987 0.022 95.277);
+  --warning-border: oklch(0.879 0.169 91.605);
 }
 
 /* Dark Mode */
@@ -134,10 +140,18 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* 하위 페이지 sticky PageHeader(최소 61px, 제목 줄바꿈 시 더 높음) 아래로 앵커·포커스 대상이 숨지 않게 */
+  html {
+    scroll-padding-block-start: 5rem;
+  }
   /* 긴 주소·URL은 어디서든 끊어 넘침 방지 */
   body {
     @apply bg-background text-foreground font-sans antialiased;
     overflow-wrap: anywhere;
+    /* viewport-fit=cover 이후 가로 모드 노치 아래로 콘텐츠가 들어가지 않게 (기존 레터박스와 같은 결과).
+       safe-area는 물리 방향이라 logical 속성 대신 left/right */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   /* 한글만 어절(공백) 단위로 줄바꿈. 일본어는 공백이 없어 keep-all이면 문장부호에서만 줄이 바뀜 */
   body:lang(ko) {
@@ -147,6 +161,11 @@
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+  /* lucide 아이콘 선 굵기를 렌더 크기와 무관하게 strokeWidth(px) 그대로. 기본 2px = 500–600 라벨 굵기.
+     예외는 strokeWidth만 쓴다 (absoluteStrokeWidth와 섞으면 24/size가 곱해짐) */
+  .lucide * {
+    vector-effect: non-scaling-stroke;
   }
 }
 

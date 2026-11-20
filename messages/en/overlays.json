@@ -40,17 +40,19 @@
   },
   "feedback": {
     "title": "Send feedback",
-    "description": "Tell us how we can improve the service",
+    "description": "Bug reports, feature requests, things that bother you: anything is welcome",
     "successTitle": "Feedback sent!",
     "successMessage": "Thank you for your feedback.",
     "titleLabel": "Title",
-    "titlePlaceholder": "Enter a title for your feedback",
+    "titlePlaceholder": "e.g. A removed smoking area is still on the map",
     "contentLabel": "Message",
-    "contentPlaceholder": "Share any ideas for improving the service.\nBug reports, feature requests, things that bother you: anything is welcome.",
-    "submitFailed": "Couldn’t send your feedback. Please try again later.",
+    "contentPlaceholder": "e.g. The smoking area outside exit 2 of my local station was removed, but the map still shows it.",
+    "titleRequired": "Enter a title",
+    "contentRequired": "Enter a message",
+    "submitFailed": "Couldn’t send your feedback. Try again later.",
     "privacyNotice": "We store the feedback title, message and submission time, and delete them after one year. Please don’t include personal information.",
     "privacyLink": "Privacy Policy",
-    "submitting": "Sending...",
+    "submitting": "Sending…",
     "submit": "Send feedback"
   }
 }

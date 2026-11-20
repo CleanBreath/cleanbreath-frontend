@@ -33,7 +33,7 @@ export function PageHeader({
         {/* 375px에서 언어 선택이 들어갈 자리를 위해 장식 배지는 sm 미만에서 숨김 */}
         <div
           aria-hidden
-          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary max-sm:hidden [&_svg]:size-5"
+          className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary max-sm:hidden [&_svg]:size-5 [&_svg]:stroke-[2.5]"
         >
           {icon}
         </div>

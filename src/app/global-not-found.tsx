@@ -17,7 +17,7 @@ export default function GlobalNotFound() {
             aria-hidden
             className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary"
           >
-            <MapPinOff size={28} />
+            <MapPinOff size={28} strokeWidth={2.5} />
           </div>
           <h1 className="text-2xl font-bold">페이지를 찾을 수 없습니다</h1>
           <p className="text-base text-muted-foreground">
@@ -28,7 +28,7 @@ export default function GlobalNotFound() {
             href="/"
             className="inline-flex h-11 items-center justify-center rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            홈으로 이동
+            홈으로 돌아가기
           </a>
         </main>
       </body>

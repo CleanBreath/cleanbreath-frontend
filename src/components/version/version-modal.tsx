@@ -1,7 +1,7 @@
 "use client";
 
 import { Code2, User, Users } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -20,24 +20,25 @@ interface VersionModalProps {
 }
 
 // 변경사항 문구는 messages의 overlays.version.changes.<changesKey>
+// date는 YYYY-MM (UTC로 파싱되어 Asia/Seoul에서도 같은 달). 화면에는 로케일 형식으로 표시
 const VERSION_INFO = {
   current: "0.3.0",
   versions: [
     {
       version: "0.3.0",
-      date: "2025.02",
+      date: "2025-02",
       developers: ["최현준"],
       changesKey: "v030",
     },
     {
       version: "0.2.0",
-      date: "2024.12",
+      date: "2024-12",
       developers: ["최현준"],
       changesKey: "v020",
     },
     {
       version: "0.1.0",
-      date: "2024.11",
+      date: "2024-11",
       developers: ["최현준", "문찬수", "김건우", "유현목", "최시헌", "김장환"],
       changesKey: "v010",
     },
@@ -46,6 +47,7 @@ const VERSION_INFO = {
 
 export function VersionModal({ isOpen, onClose }: VersionModalProps) {
   const t = useTranslations("overlays.version");
+  const format = useFormatter();
   // Trigger 없이 열리므로 Radix가 포커스를 돌려주지 못한다 → 연 요소를 기억해 직접 복원
   const returnFocusRef = useRef<HTMLElement | null>(null);
 
@@ -76,7 +78,13 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
         </SheetHeader>
 
         {/* 버전 목록 */}
-        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-4">
+        <section
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: 포커스 가능한 요소가 없는 세로 스크롤 영역 키보드 접근 (axe scrollable-region-focusable)
+          tabIndex={0}
+          aria-label={t("title")}
+          // 모바일 시트는 화면 폭 전체라 전역 2px 바깥 링이 좌우로 잘린다 → 안쪽으로 그린다 (TabsContent와 같은 방식)
+          className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain p-4 -outline-offset-2"
+        >
           {VERSION_INFO.versions.map((versionInfo, index) => (
             <section
               key={versionInfo.version}
@@ -89,11 +97,8 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Badge
-                    className={
-                      index === 0
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted-foreground/20 text-foreground"
-                    }
+                    variant={index === 0 ? "default" : "outline"}
+                    className={index === 0 ? undefined : "bg-card"}
                   >
                     v{versionInfo.version}
                   </Badge>
@@ -103,9 +108,15 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
                     </Badge>
                   )}
                 </div>
-                <span className="text-xs tabular-nums text-muted-foreground">
-                  {versionInfo.date}
-                </span>
+                <time
+                  dateTime={versionInfo.date}
+                  className="text-xs tabular-nums text-muted-foreground"
+                >
+                  {format.dateTime(new Date(versionInfo.date), {
+                    year: "numeric",
+                    month: "short",
+                  })}
+                </time>
               </div>
 
               <Separator className="my-3" />
@@ -162,7 +173,7 @@ export function VersionModal({ isOpen, onClose }: VersionModalProps) {
               </div>
             </section>
           ))}
-        </div>
+        </section>
 
         {/* 하단 */}
         <div className="shrink-0 border-t p-4 text-center">

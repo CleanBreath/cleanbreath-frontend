@@ -29,7 +29,13 @@ export function PageSection({
       <CardContent className="p-4 sm:p-6">
         {title && (
           <div className="mb-3 flex items-center justify-between gap-3">
-            <Heading className="flex items-center gap-2 text-lg font-semibold text-foreground">
+            <Heading
+              className={cn(
+                "flex items-center gap-2 font-semibold text-foreground",
+                // 상위 h2 아래 카드의 h3는 한 단계 작게
+                Heading === "h3" ? "text-base" : "text-lg",
+              )}
+            >
               {icon && (
                 <span
                   aria-hidden

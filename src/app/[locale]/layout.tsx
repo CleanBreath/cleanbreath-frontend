@@ -104,6 +104,8 @@ export async function generateMetadata({
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
+  // env(safe-area-inset-*)가 실제 값을 갖도록 (바텀 시트·하단 버튼의 홈 인디케이터 여백). 가로 노치 여백은 global.css body에서 처리
+  viewportFit: "cover",
 };
 
 export default async function LocaleLayout({

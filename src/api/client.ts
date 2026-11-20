@@ -26,10 +26,12 @@ export class ApiError extends Error {
 function handleError(error: unknown): never {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<{ message: string }>;
-    // 응답 자체가 없으면(네트워크 실패) 0. 영어·일본어 화면에서 연결 오류 문구를 고르는 데 쓴다
+    // 응답 자체가 없으면(네트워크 실패) 0. 모든 언어에서 연결 오류 문구(errors.network)를 고르는 데 쓴다
     const status = axiosError.response?.status ?? 0;
+    // 백엔드 메시지가 없을 때(예: Cloudflare 52x HTML 응답) 한국어 화면에 그대로 보이는 문구
     const message =
-      axiosError.response?.data?.message || "요청 처리 중 오류가 발생했습니다.";
+      axiosError.response?.data?.message ||
+      "요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요.";
     throw new ApiError(status, message);
   }
   throw error;
