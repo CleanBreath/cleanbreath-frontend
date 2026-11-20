@@ -7,18 +7,19 @@ import { cn } from "@/lib/utils";
 import { ZONE_GROUPS } from "@/lib/zone-style";
 import { useMapStore } from "@/store/map-store";
 
-// Tailwind가 클래스를 정적으로 찾을 수 있도록 그룹별 클래스를 문자열 그대로 둔다
+// Tailwind가 클래스를 정적으로 찾을 수 있도록 그룹별 클래스를 문자열 그대로 둔다.
+// hover도 불투명 같은 색: /90은 지도가 비쳐 흰 라벨 대비가 4.5:1 아래로 떨어진다. hover 클래스 자체는 outline 변형의 hover:bg-accent를 덮으려고 남긴다
 const CHIP_CLASSES = {
   nonSmoking: {
-    on: "bg-zone-non-smoking-ink hover:bg-zone-non-smoking-ink/90",
+    on: "bg-zone-non-smoking-ink hover:bg-zone-non-smoking-ink",
     icon: "text-zone-non-smoking-ink",
   },
   smoking: {
-    on: "bg-zone-smoking-ink hover:bg-zone-smoking-ink/90",
+    on: "bg-zone-smoking-ink hover:bg-zone-smoking-ink",
     icon: "text-zone-smoking-ink",
   },
   apartment: {
-    on: "bg-zone-apartment-ink hover:bg-zone-apartment-ink/90",
+    on: "bg-zone-apartment-ink hover:bg-zone-apartment-ink",
     icon: "text-zone-apartment-ink",
   },
 } as const;
@@ -56,7 +57,7 @@ export function AreaToggle() {
             aria-pressed={pressed}
             onClick={onClick}
             className={cn(
-              "gap-1.5 rounded-full shadow-md transition-colors has-[>svg]:px-3",
+              "gap-1.5 rounded-full shadow-md has-[>svg]:px-3",
               pressed
                 ? cn(
                     "border-transparent text-white hover:text-white",

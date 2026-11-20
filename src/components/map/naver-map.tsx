@@ -146,7 +146,7 @@ export function NaverMap({
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [viewReady, setViewReady] = useState(false);
   const { data: publicZoneData } = usePublicZonesWithin(bounds);
-  const isLoaded = useNaverMapLoader();
+  const { isLoaded, isError } = useNaverMapLoader();
   const t = useTranslations("map");
 
   // 지도 초기화
@@ -183,12 +183,18 @@ export function NaverMap({
     };
   }, [isLoaded]);
 
-  // 중심 좌표 변경
+  // 중심 좌표 변경. 동작 줄이기 설정이면 애니메이션 없이 바로 이동 (register/page.tsx의 revealMap과 같은 방식)
   useEffect(() => {
     if (!map) return;
     const target = new naver.maps.LatLng(center.lat, center.lng);
+    const reduce = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
     // 축소 상태에서 목록의 구역을 고르면 구역이 안 그려지므로 보이는 줌까지 확대하며 이동
-    if (map.getZoom() < ZONE_MIN_ZOOM) map.morph(target, ZONE_MIN_ZOOM);
+    if (reduce) {
+      map.setCenter(target);
+      if (map.getZoom() < ZONE_MIN_ZOOM) map.setZoom(ZONE_MIN_ZOOM, false);
+    } else if (map.getZoom() < ZONE_MIN_ZOOM) map.morph(target, ZONE_MIN_ZOOM);
     else map.panTo(target);
   }, [map, center.lat, center.lng]);
 
@@ -219,7 +225,29 @@ export function NaverMap({
     if (!map || !zoomedIn || !showNonSmoking || !publicZoneData) return;
 
     const markers: naver.maps.Marker[] = [];
-    const tasks = publicZoneData.data.map((zone) => () => {
+    // 키보드 경로는 로빙 tabindex: 마커마다 Tab 정지점을 두면 하단 스택(선택 카드·주 CTA)까지 수백 번 Tab해야 하므로
+    // Tab 정지점은 화면 안 마커 하나뿐이고, 방향키로 화면 안 마커 사이를 옮긴다 (북→남, 서→동 순)
+    const items: { zone: PublicZoneItem; el: HTMLElement }[] = [];
+    let hasTabStop = false;
+    const inView = (zone: PublicZoneItem, bounds: naver.maps.LatLngBounds) =>
+      bounds.hasLatLng(new naver.maps.LatLng(zone.latitude, zone.longitude));
+    const view = map.getBounds() as naver.maps.LatLngBounds;
+    const isVisible = (zone: PublicZoneItem) => inView(zone, view);
+    // 같은 격자 안에서 지도를 옮기면 다시 그리지 않으므로, 움직임이 끝날 때 Tab 정지점이 화면 밖(또는 없음)이면 화면 안 첫 마커로 옮긴다
+    const idleListener = naver.maps.Event.addListener(map, "idle", () => {
+      const bounds = map.getBounds() as naver.maps.LatLngBounds;
+      const current = items.find((item) => item.el.tabIndex === 0);
+      if (current && inView(current.zone, bounds)) return;
+      const next = items.find((item) => inView(item.zone, bounds));
+      if (!next) return;
+      if (current) current.el.tabIndex = -1;
+      next.el.tabIndex = 0;
+      hasTabStop = true;
+    });
+    const zones = [...publicZoneData.data].sort(
+      (a, b) => b.latitude - a.latitude || a.longitude - b.longitude,
+    );
+    const tasks = zones.map((zone) => () => {
       const marker = new naver.maps.Marker({
         position: new naver.maps.LatLng(zone.latitude, zone.longitude),
         icon: {
@@ -233,9 +261,60 @@ export function NaverMap({
         title: zone.name,
         map,
       });
-      naver.maps.Event.addListener(marker, "click", () =>
-        selectAddress(publicZoneToAddress(zone)),
-      );
+      const select = () => selectAddress(publicZoneToAddress(zone));
+      naver.maps.Event.addListener(marker, "click", select);
+      // 키보드·스크린리더 경로 (공공 구역은 사이드바 목록에 없다). 이름은 데이터 원문(zone.name)이라 메시지 키가 필요 없다
+      const el = marker.getElement();
+      if (el) {
+        // 첫 번째로 만든 화면 안 마커만 Tab 정지점
+        const isTabStop = !hasTabStop && isVisible(zone);
+        if (isTabStop) hasTabStop = true;
+        el.tabIndex = isTabStop ? 0 : -1;
+        el.setAttribute("role", "button");
+        el.setAttribute("aria-label", zone.name);
+        el.setAttribute("lang", "ko");
+        // 선택 카드가 닫힐 때, 다시 그려져 바뀐 마커 노드를 찾아 포커스를 돌려줄 수 있게 구역 id를 남긴다
+        el.dataset.zoneMarker = String(zone.id);
+        el.addEventListener("keydown", (e) => {
+          const step =
+            e.key === "ArrowRight" || e.key === "ArrowDown"
+              ? 1
+              : e.key === "ArrowLeft" || e.key === "ArrowUp"
+                ? -1
+                : 0;
+          if (e.key !== "Enter" && e.key !== " " && !step) return;
+          e.preventDefault();
+          e.stopPropagation(); // 지도 keyboardShortcuts가 같은 키를 또 처리하지 않게
+          if (!step) {
+            select();
+            return;
+          }
+          // 지금 화면 범위 안의 다음·이전 마커로 (격자로 넓힌 조회 범위라 화면 밖 마커도 있다)
+          const bounds = map.getBounds() as naver.maps.LatLngBounds;
+          const from = items.findIndex((item) => item.el === el);
+          for (let i = from + step; i >= 0 && i < items.length; i += step) {
+            if (inView(items[i].zone, bounds)) {
+              items[i].el.focus();
+              return;
+            }
+          }
+        });
+        // 화면 밖 마커에 포커스가 가면 브라우저가 지도 컨테이너를 스크롤해 판이 어긋나므로 되돌린다
+        el.addEventListener("focus", () => {
+          // 포커스를 받은 마커가 Tab 정지점이 된다 (클릭·방향키 모두)
+          for (const item of items) item.el.tabIndex = item.el === el ? 0 : -1;
+          const root = mapRef.current;
+          for (
+            let n = el.parentElement;
+            n && root?.contains(n);
+            n = n.parentElement
+          ) {
+            n.scrollTop = 0;
+            n.scrollLeft = 0;
+          }
+        });
+        items.push({ zone, el });
+      }
       markers.push(marker);
     });
 
@@ -243,6 +322,7 @@ export function NaverMap({
     runInChunks(tasks, () => cancelled);
     return () => {
       cancelled = true;
+      naver.maps.Event.removeListener(idleListener);
       for (const marker of markers) marker.setMap(null);
     };
   }, [map, zoomedIn, showNonSmoking, publicZoneData, selectAddress]);
@@ -415,18 +495,24 @@ export function NaverMap({
   // 지도 div는 처음부터 같은 크기로 두고(레이아웃 이동 없음), 첫 타일 전까지 뒤에 자리표시자를 깐다
   return (
     <>
-      {!viewReady && <MapPlaceholder label={t("loading")} />}
+      {/* 하나의 안정된 live region. 같은 노드 안에서 문구가 "불러오는 중"(또는 로드 실패)에서 확대 안내로 바뀌어 읽힌다.
+          지도 div보다 앞에 있어야 지도가 자리표시자 위에 그려진다 */}
+      <div role="status">
+        {!viewReady && (
+          <MapPlaceholder
+            label={isError ? t("loadError") : t("loading")}
+            isError={isError}
+          />
+        )}
+        {/* 필터 칩(top-2, 높이 약 3.5rem) 바로 아래. 구역은 ZONE_MIN_ZOOM 이상에서만 그린다 */}
+        {map && viewReady && !zoomedIn && (
+          <p className="pointer-events-none absolute top-16 left-1/2 z-20 flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-foreground text-sm shadow-md">
+            <ZoomIn aria-hidden className="size-4" strokeWidth={1.5} />
+            {t("zoomInHint")}
+          </p>
+        )}
+      </div>
       <div ref={mapRef} className="isolate h-full w-full" />
-      {/* 필터 칩(top-2, 높이 약 3.5rem) 바로 아래. 구역은 ZONE_MIN_ZOOM 이상에서만 그린다 */}
-      {map && viewReady && !zoomedIn && (
-        <p
-          role="status"
-          className="pointer-events-none absolute top-16 left-1/2 z-20 flex w-max max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-foreground text-sm shadow-md"
-        >
-          <ZoomIn aria-hidden className="size-4" />
-          {t("zoomInHint")}
-        </p>
-      )}
     </>
   );
 }

@@ -51,10 +51,16 @@ function loadScript(src: string, main = false): Promise<void> {
 /**
  * 네이버 지도 스크립트를 로드하는 훅
  * @param options.geocoder 역지오코딩(naver.maps.Service)이 필요할 때만 true
- * @returns 네이버 지도(및 요청한 서브모듈) 로드 완료 여부
+ * @returns isLoaded: 네이버 지도(및 요청한 서브모듈) 로드 완료 여부,
+ *   isError: 스크립트 로드 실패 여부 (차단·오프라인. 실패한 로드는 캐시에서 지워져 새로고침하면 다시 시도한다)
  */
-export function useNaverMapLoader({ geocoder = false } = {}): boolean {
-  const [isLoaded, setIsLoaded] = useState(false);
+export function useNaverMapLoader({ geocoder = false } = {}): {
+  isLoaded: boolean;
+  isError: boolean;
+} {
+  const [status, setStatus] = useState<"loading" | "ready" | "error">(
+    "loading",
+  );
   // 언어 전환은 전체 페이지 이동(locale-switcher)이라 한 페이지에서 locale이 바뀌지 않는다
   const locale = useLocale();
 
@@ -67,9 +73,12 @@ export function useNaverMapLoader({ geocoder = false } = {}): boolean {
   useEffect(() => {
     loadScript(naverMapScriptUrl(locale), true)
       .then(() => (geocoder ? loadScript(GEOCODER_SCRIPT_URL) : undefined))
-      .then(() => setIsLoaded(true))
-      .catch(console.error);
+      .then(() => setStatus("ready"))
+      .catch((error: unknown) => {
+        console.error(error);
+        setStatus("error");
+      });
   }, [geocoder, locale]);
 
-  return isLoaded;
+  return { isLoaded: status === "ready", isError: status === "error" };
 }

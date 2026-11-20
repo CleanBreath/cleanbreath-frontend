@@ -5,7 +5,7 @@
   "expandPanel": "Expand panel",
   "collapsePanel": "Collapse panel",
   "collapseSidebar": "Collapse sidebar",
-  "openMenu": "Open menu",
+  "openMenu": "Expand sidebar",
   "tabs": {
     "info": "About",
     "list": "Areas",
@@ -26,7 +26,7 @@
     "howToTitle": "How to use",
     "howTo": [
       "Use the filters at the top to show or hide no-smoking zones, smoking areas and apartments",
-      "Tap a marker on the map to see its details",
+      "Select a marker on the map to see its details",
       "Select an area in the list to jump to its location"
     ],
     "legendTitle": "Legend",
@@ -66,7 +66,8 @@
       }
     }
   },
-  "empty": "No data",
+  "empty": "Nothing to show yet",
+  "loadError": "Couldn’t load the list. Try again in a moment.",
   "badge": {
     "smoking": "Smoking",
     "nonSmoking": "No smoking"

@@ -49,10 +49,20 @@ const NEXT_SNAP: Record<Snap, Snap> = {
   full: "peek",
 };
 
+/** 목록 하나의 조회 상태. 목록마다 따로 받아 한쪽 실패가 다른 쪽 표시에 번지지 않게 한다 */
+export interface ListState {
+  /** 데이터 없이 가져오는 중 */
+  isLoading: boolean;
+  isError: boolean;
+  /** react-query refetch. 결과로 성공 여부를 보고 포커스를 옮긴다 */
+  onRetry: () => Promise<{ isError: boolean }>;
+}
+
 interface SidebarProps {
   addresses: AddressItem[];
   apartments: ApartmentItem[];
-  isLoading: boolean;
+  addressState: ListState;
+  apartmentState: ListState;
   isCollapsed: boolean;
   onCollapsedChange: (collapsed: boolean) => void;
   onFeedbackClick: () => void;
@@ -63,7 +73,8 @@ interface SidebarProps {
 export function Sidebar({
   addresses,
   apartments,
-  isLoading,
+  addressState,
+  apartmentState,
   isCollapsed,
   onCollapsedChange,
   onFeedbackClick,
@@ -75,8 +86,14 @@ export function Sidebar({
   const dragStartY = useRef(0);
   const sheetRef = useRef<HTMLElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const peekHeight = useRef(84);
   const navRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const collapseRef = useRef<HTMLButtonElement>(null);
+  const reopenRef = useRef<HTMLButtonElement>(null);
+  // 접기/펼치기 버튼은 누르면 숨겨지거나 사라지므로, 키보드 포커스를 반대편 버튼으로 옮긴다 (첫 렌더에는 옮기지 않음)
+  const restoreFocus = useRef(false);
   const bodyId = useId();
   const selectAddress = useMapStore((state) => state.selectAddress);
   const selectApartment = useMapStore((state) => state.selectApartment);
@@ -97,6 +114,23 @@ export function Sidebar({
   useEffect(() => {
     if (selection) collapse();
   }, [selection]);
+
+  useEffect(() => {
+    if (!restoreFocus.current) return;
+    restoreFocus.current = false;
+    (isCollapsed ? reopenRef : collapseRef).current?.focus();
+  }, [isCollapsed]);
+
+  const setCollapsed = (next: boolean) => {
+    restoreFocus.current = true;
+    onCollapsedChange(next);
+  };
+
+  // peek에서 보이는 높이(84px + 하단 안전 영역). peek일 때 헤더 높이가 곧 그 값이라 그때 잰다
+  useEffect(() => {
+    if (snap === "peek" && headerRef.current)
+      peekHeight.current = headerRef.current.offsetHeight;
+  }, [snap]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (window.matchMedia("(min-width: 1024px)").matches) return;
@@ -123,7 +157,7 @@ export function Sidebar({
     // 놓은 위치에서 보이는 높이와 가장 가까운 스냅
     const visible = window.innerHeight - sheet.getBoundingClientRect().top;
     const heights: Record<Snap, number> = {
-      peek: 84,
+      peek: peekHeight.current,
       half: window.innerHeight / 2,
       full: sheet.offsetHeight,
     };
@@ -133,10 +167,11 @@ export function Sidebar({
     setSnap(nearest);
   };
 
+  // 드래그 중에도 가장 바깥 스냅(full~peek) 사이에서만 움직인다
   const sheetY =
     dragY === null
       ? SNAP_STYLE[snap].y
-      : `max(0px, calc(${SNAP_STYLE[snap].y} + ${dragY}px))`;
+      : `clamp(0px, calc(${SNAP_STYLE[snap].y} + ${dragY}px), ${SNAP_STYLE.peek.y})`;
 
   return (
     <>
@@ -165,7 +200,7 @@ export function Sidebar({
           } as React.CSSProperties
         }
         className={cn(
-          "fixed inset-x-0 bottom-0 z-30 flex h-[calc(100dvh-4rem)] translate-y-(--sheet-y) flex-col overflow-hidden rounded-t-2xl border-t bg-background shadow-lg",
+          "fixed right-[env(safe-area-inset-right)] bottom-0 left-[env(safe-area-inset-left)] z-30 flex h-[calc(100dvh-4rem)] translate-y-(--sheet-y) flex-col overflow-hidden rounded-t-2xl border-t bg-background shadow-lg",
           dragY === null &&
             "transition-transform duration-200 ease-out motion-reduce:transition-none",
           "lg:relative lg:inset-auto lg:z-auto lg:h-full lg:w-95 lg:shrink-0 lg:translate-y-0 lg:rounded-none lg:border-t-0 lg:border-r lg:shadow-none",
@@ -173,12 +208,18 @@ export function Sidebar({
         )}
       >
         {/* 헤더: 모바일에서는 시트 손잡이(드래그·탭) 겸 peek 요약 줄 */}
+        {/* peek은 5.25rem + 하단 안전 영역만큼 보이므로, 그 높이를 헤더 아래 여백으로 채워 본문(탭 목록)이 홈 인디케이터 줄에 반쯤 걸치지 않게 한다 */}
         <div
+          ref={headerRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={() => setDragY(null)}
-          className="shrink-0 touch-none select-none px-4 pt-2 pb-2.5 lg:touch-auto lg:select-auto lg:p-5"
+          className={cn(
+            "shrink-0 touch-none select-none px-4 pt-2 pb-2.5 lg:touch-auto lg:select-auto lg:p-5",
+            snap === "peek" &&
+              "pb-[calc(0.625rem+env(safe-area-inset-bottom))]",
+          )}
         >
           <div
             aria-hidden
@@ -188,16 +229,26 @@ export function Sidebar({
             <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary p-1.5">
               <Image src="/logo.svg" alt="" width={28} height={28} />
             </span>
-            {/* 브랜드 → h1(무엇을 하는 지도인지) → 한 줄 소개. 접힌 모바일 시트(peek)에서도 세 줄이 다 보이게
-                각 줄 높이를 고정하고 자른다(16+20+20px). 데스크톱은 줄바꿈 허용 */}
+            {/* 브랜드 → h1(무엇을 하는 지도인지) → 한 줄 소개. 접힌 모바일 시트(peek)에서는 세 줄이 84px 안에 들어가도록
+                각 줄 높이를 고정하고 자른다(16+20+20px). 펼치면(half·full) 줄바꿈해 전체 문구를 보여준다. 데스크톱은 항상 줄바꿈 */}
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-muted-foreground text-xs leading-4 tracking-tight">
                 CleanBreath
               </p>
-              <h1 className="truncate font-bold text-base leading-5 tracking-tight lg:whitespace-normal lg:text-lg lg:leading-snug">
+              <h1
+                className={cn(
+                  "font-bold text-base leading-5 tracking-tight lg:whitespace-normal lg:text-lg lg:leading-snug",
+                  snap === "peek" && "truncate",
+                )}
+              >
                 {t("title")}
               </h1>
-              <p className="truncate text-muted-foreground text-sm leading-5 lg:mt-0.5 lg:whitespace-normal">
+              <p
+                className={cn(
+                  "text-muted-foreground text-sm leading-5 lg:mt-0.5 lg:whitespace-normal",
+                  snap === "peek" && "truncate",
+                )}
+              >
                 {t("tagline")}
               </p>
             </div>
@@ -221,10 +272,11 @@ export function Sidebar({
               )}
             </Button>
             <Button
+              ref={collapseRef}
               variant="ghost"
               size="icon-touch"
               className="hidden shrink-0 lg:inline-flex"
-              onClick={() => onCollapsedChange(true)}
+              onClick={() => setCollapsed(true)}
               aria-label={t("collapseSidebar")}
             >
               <PanelLeftClose aria-hidden />
@@ -261,7 +313,7 @@ export function Sidebar({
               <TabsContent value="list" className="p-2">
                 <AddressList
                   addresses={addresses}
-                  isLoading={isLoading}
+                  state={addressState}
                   onItemClick={selectAddress}
                 />
               </TabsContent>
@@ -269,7 +321,7 @@ export function Sidebar({
               <TabsContent value="apartments" className="p-2">
                 <ApartmentList
                   apartments={apartments}
-                  isLoading={isLoading}
+                  state={apartmentState}
                   onItemClick={selectApartment}
                 />
               </TabsContent>
@@ -313,10 +365,11 @@ export function Sidebar({
       {/* 데스크톱: 사이드바를 접었을 때 다시 여는 버튼 (상단은 필터 칩 영역이라 좌하단, NAVER 로고 줄 위) */}
       {isCollapsed && (
         <Button
+          ref={reopenRef}
           variant="outline"
           size="touch"
           className="fixed bottom-10 left-4 z-20 hidden bg-background shadow-md lg:inline-flex"
-          onClick={() => onCollapsedChange(false)}
+          onClick={() => setCollapsed(false)}
         >
           <PanelLeft aria-hidden />
           {t("openMenu")}
@@ -350,10 +403,11 @@ function ServiceInfo() {
   );
 
   return (
+    // 행 길이 제한(max-w-lg)은 영어 산문(소개·사용법)에만 건다. 범례·더 보기 목록은 탭 목록과 같은 전체 폭 (콘텐츠 페이지의 :lang(en) 규칙과 같은 기준)
     <div className="space-y-6 text-base leading-relaxed lg:text-sm">
       <section>
         <h2 className="mb-2 text-base font-semibold">{t("aboutTitle")}</h2>
-        <div className="space-y-2 text-muted-foreground">
+        <div className="space-y-2 text-muted-foreground [&:lang(en)]:max-w-lg">
           <p>{t("about1")}</p>
           <p>
             {t.rich("about2", {
@@ -375,7 +429,7 @@ function ServiceInfo() {
 
       <section>
         <h2 className="mb-2 text-base font-semibold">{t("howToTitle")}</h2>
-        <ol className="space-y-2">
+        <ol className="space-y-2 [&:lang(en)]:max-w-lg">
           {(t.raw("howTo") as string[]).map((text, i) => (
             <li key={text} className="flex items-start gap-3">
               <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold tabular-nums text-foreground">
@@ -394,7 +448,8 @@ function ServiceInfo() {
 
       <section>
         <h2 className="mb-2 text-base font-semibold">{t("moreTitle")}</h2>
-        <ul className="divide-y rounded-lg border">
+        {/* 목록은 자식을 자르지 않으므로(포커스 링 보존) 첫·마지막 행의 hover 배경에 안쪽 반경(12-1px)을 준다 */}
+        <ul className="divide-y rounded-lg border [&>li:first-child>a]:rounded-t-[calc(var(--radius-lg)_-_1px)] [&>li:last-child>a]:rounded-b-[calc(var(--radius-lg)_-_1px)]">
           {MORE_LINKS.map(({ href, icon: Icon, key }) => (
             <li key={href}>
               <Link
@@ -412,6 +467,7 @@ function ServiceInfo() {
                 </span>
                 <ChevronRight
                   className="size-4 shrink-0 text-muted-foreground"
+                  strokeWidth={1.5}
                   aria-hidden
                 />
               </Link>
@@ -423,11 +479,50 @@ function ServiceInfo() {
   );
 }
 
-function ListStatus({ isLoading }: { isLoading: boolean }) {
+// 실패(다시 시도) → 불러오는 중 → 빈 목록.
+// v5는 데이터 없는 쿼리를 다시 가져오면 status를 'pending'으로 되돌려 isError가 곧바로 false가 되므로,
+// 재시도 중임을 따로 기억해 실패 화면(누른 버튼)을 그대로 두고 버튼 문구만 바꾼다 (스피너로 바꾸면 포커스가 body로 떨어짐)
+function ListStatus({ state }: { state: ListState }) {
   const t = useTranslations();
+  const ref = useRef<HTMLDivElement>(null);
+  const [retrying, setRetrying] = useState(false);
+
+  const retry = async () => {
+    // aria-disabled는 클릭을 막지 않으므로 재시도 중 중복 요청은 여기서 막는다
+    if (retrying) return;
+    // 성공하면 이 상태 영역이 목록으로 바뀌어 사라지므로, 감싼 탭 패널(포커스 가능)로 포커스를 옮긴다
+    const panel = ref.current?.closest<HTMLElement>('[role="tabpanel"]');
+    setRetrying(true);
+    try {
+      const result = await state.onRetry();
+      if (!result.isError) panel?.focus();
+    } finally {
+      setRetrying(false);
+    }
+  };
+
   return (
-    <div className="flex h-40 items-center justify-center" role="status">
-      {isLoading ? (
+    <div
+      ref={ref}
+      className="flex min-h-40 flex-col items-center justify-center gap-3 text-center"
+      role="status"
+    >
+      {state.isError || retrying ? (
+        <>
+          <p className="text-sm text-muted-foreground">
+            {t("sidebar.loadError")}
+          </p>
+          <Button
+            variant="outline"
+            size="touch"
+            // 누른 버튼에 포커스가 남도록 disabled 대신 aria-disabled와 핸들러 가드로 막는다
+            aria-disabled={retrying || undefined}
+            onClick={retry}
+          >
+            {retrying ? t("common.loading") : t("common.retry")}
+          </Button>
+        </>
+      ) : state.isLoading ? (
         <div className="flex flex-col items-center gap-2">
           <div className="size-8 animate-spin rounded-full border-2 border-primary border-t-transparent motion-reduce:animate-none" />
           <p className="text-sm text-muted-foreground">{t("common.loading")}</p>
@@ -444,14 +539,13 @@ const rowClass =
 
 interface AddressListProps {
   addresses: AddressItem[];
-  isLoading: boolean;
+  state: ListState;
   onItemClick: (address: AddressItem) => void;
 }
 
-function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
+function AddressList({ addresses, state, onItemClick }: AddressListProps) {
   const t = useTranslations("sidebar.badge");
-  if (isLoading || !addresses.length)
-    return <ListStatus isLoading={isLoading} />;
+  if (state.isLoading || !addresses.length) return <ListStatus state={state} />;
 
   return (
     <ul className="space-y-0.5">
@@ -494,18 +588,14 @@ function AddressList({ addresses, isLoading, onItemClick }: AddressListProps) {
 
 interface ApartmentListProps {
   apartments: ApartmentItem[];
-  isLoading: boolean;
+  state: ListState;
   onItemClick: (apartment: ApartmentItem) => void;
 }
 
-function ApartmentList({
-  apartments,
-  isLoading,
-  onItemClick,
-}: ApartmentListProps) {
+function ApartmentList({ apartments, state, onItemClick }: ApartmentListProps) {
   const t = useTranslations("sidebar");
-  if (isLoading || !apartments.length)
-    return <ListStatus isLoading={isLoading} />;
+  if (state.isLoading || !apartments.length)
+    return <ListStatus state={state} />;
 
   const Icon = ZONE_GROUPS.apartment.icon;
 

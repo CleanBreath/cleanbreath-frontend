@@ -3,8 +3,10 @@ import {
   Bus,
   Cigarette,
   CigaretteOff,
+  DoorClosed,
   Footprints,
   type LucideIcon,
+  RectangleHorizontal,
   School,
   Trees,
 } from "lucide-react";
@@ -21,9 +23,8 @@ export interface ZoneStyle {
   stroke: string;
   /** 암묵적(비공식) 구역은 점선 테두리로 구분 */
   dashed: boolean;
+  /** 지도 마커·범례 아이콘. 흡연구역 하위 유형은 색만으로 구분하지 않도록 아이콘도 다르게 둔다 */
   icon: LucideIcon;
-  /** 지도 마커 배경 Tailwind 클래스 (fill과 같은 색) */
-  markerBg: string;
 }
 
 // 지도·범례·칩이 함께 쓰는 구역 스타일. 색 값은 styles/global.css의 --zone-* 변수와 맞춘다
@@ -34,7 +35,6 @@ export const ZONE_STYLES = {
     stroke: "#16A34A",
     dashed: false,
     icon: CigaretteOff,
-    markerBg: "bg-green-500",
   },
   SMOKING_ZONE_OPEN: {
     group: "smoking",
@@ -42,7 +42,6 @@ export const ZONE_STYLES = {
     stroke: "#EA580C",
     dashed: false,
     icon: Cigarette,
-    markerBg: "bg-orange-500",
   },
   SMOKING_ZONE_OPEN_IMPLICIT: {
     group: "smoking",
@@ -51,39 +50,34 @@ export const ZONE_STYLES = {
     stroke: "#EE6812",
     dashed: true,
     icon: Cigarette,
-    markerBg: "bg-orange-400",
   },
   SMOKING_ZONE_CLOSE: {
     group: "smoking",
     fill: "#EF4444",
     stroke: "#DC2626",
     dashed: false,
-    icon: Cigarette,
-    markerBg: "bg-red-500",
+    icon: DoorClosed,
   },
   SMOKING_ZONE_CLOSE_IMPLICIT: {
     group: "smoking",
     fill: "#F87171",
     stroke: "#EF4444",
     dashed: true,
-    icon: Cigarette,
-    markerBg: "bg-red-400",
+    icon: DoorClosed,
   },
   SMOKING_ZONE_LINE: {
     group: "smoking",
     fill: "#A855F7",
     stroke: "#9333EA",
     dashed: false,
-    icon: Cigarette,
-    markerBg: "bg-purple-500",
+    icon: RectangleHorizontal,
   },
   SMOKING_ZONE_LINE_IMPLICIT: {
     group: "smoking",
     fill: "#C084FC",
     stroke: "#A855F7",
     dashed: true,
-    icon: Cigarette,
-    markerBg: "bg-purple-400",
+    icon: RectangleHorizontal,
   },
   APARTMENT: {
     group: "apartment",
@@ -91,7 +85,6 @@ export const ZONE_STYLES = {
     stroke: "#2563EB",
     dashed: false,
     icon: Building2,
-    markerBg: "bg-blue-500",
   },
 } as const satisfies Record<string, ZoneStyle>;
 

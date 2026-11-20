@@ -33,6 +33,7 @@ export function ZoneLegend({ className }: { className?: string }) {
               <Icon
                 aria-hidden
                 className="size-4 shrink-0"
+                strokeWidth={1.5}
                 style={{ color: zone.stroke }}
               />
               <span>{t(`zoneTypes.${type}`)}</span>

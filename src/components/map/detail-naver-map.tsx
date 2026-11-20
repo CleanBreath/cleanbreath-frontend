@@ -19,7 +19,7 @@ export function DetailNaverMap({
 }: DetailNaverMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<naver.maps.Map | null>(null);
-  const isLoaded = useNaverMapLoader();
+  const { isLoaded, isError } = useNaverMapLoader();
   const t = useTranslations("map");
 
   // 지도 초기화
@@ -76,7 +76,10 @@ export function DetailNaverMap({
   if (!isLoaded) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-muted rounded-lg">
-        <p className="text-muted-foreground">{t("loading")}</p>
+        {/* 스크립트 로드가 실패하면 진행 문구 대신 복구 방법(새로고침)을 알린다 */}
+        <p className="text-muted-foreground">
+          {isError ? t("loadError") : t("loading")}
+        </p>
       </div>
     );
   }
