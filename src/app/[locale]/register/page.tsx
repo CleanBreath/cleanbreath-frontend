@@ -418,6 +418,7 @@ export default function RegisterPage() {
           title={t("header.title")}
           description={t("header.description")}
           icon={<SquarePlus />}
+          inPanel
         />
 
         <main className="p-4 text-base">

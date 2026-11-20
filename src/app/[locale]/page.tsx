@@ -147,8 +147,9 @@ export default function Home() {
             낮은 화면·확대에서 넘치면 auto 여백이 0이 되어 위부터 보이고 스크롤로 나머지에 닿는다 (px-1·pt-1은 포커스 링, pb-3은 shadow-md 잘림 방지).
             가시 가장자리는 inset-x-2+px-1=12px(lg 16px), CTA 아래 여백은 1rem+pb-3=1.75rem(lg 2rem)으로 기존과 같다.
             ::before를 first:mt-auto로 바꾸지 말 것 (첫 자식은 empty:hidden 안내 카드 래퍼).
-            ::before도 flex 항목이라 gap-3이 붙으므로 -mb-3으로 상쇄한다 (넘칠 때 첫 카드 위 12px 빈칸 방지) */}
-        <div className="pointer-events-none absolute inset-x-2 top-15 bottom-[calc(5.25rem+env(safe-area-inset-bottom)+1rem)] z-20 flex flex-col items-end gap-3 overflow-y-auto overscroll-contain px-1 pt-1 pb-3 before:mt-auto before:-mb-3 *:pointer-events-auto lg:inset-x-3 lg:bottom-5">
+            ::before도 flex 항목이라 gap-3이 붙으므로 -mb-3으로 상쇄한다 (넘칠 때 첫 카드 위 12px 빈칸 방지).
+            스크롤바는 숨긴다: 상자가 pointer-events-none이라 잡아 끌 수 없고 지도 위에 줄만 남는다. 휠·터치·Tab 포커스 이동으로는 그대로 스크롤된다 */}
+        <div className="pointer-events-none absolute inset-x-2 top-15 bottom-[calc(5.25rem+env(safe-area-inset-bottom)+1rem)] z-20 flex flex-col items-end gap-3 overflow-y-auto overscroll-contain [scrollbar-width:none] px-1 pt-1 pb-3 before:mt-auto before:-mb-3 *:pointer-events-auto lg:inset-x-3 lg:bottom-5">
           <div className="w-full empty:hidden sm:w-96">
             <DisclaimerModal />
           </div>
