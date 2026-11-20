@@ -8,8 +8,8 @@
     "description": "Mark a smoking area or no-smoking zone on the map to suggest it"
   },
   "guide": {
-    "draw": "Tap “Draw area”, then place at least 3 points on the map to mark the area.",
-    "publish": "Areas you submit are posted on the board. Once an area gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map."
+    "draw": "Select “Draw area”, then place at least 3 points on the map to mark the area.",
+    "publish": "Areas you suggest are posted on the board. Once an area gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map."
   },
   "category": {
     "title": "Area type",
@@ -18,25 +18,31 @@
   },
   "location": {
     "title": "Location",
-    "pinMode": "Tap the map to fill in the location automatically",
+    "pinMode": "Select a spot on the map to fill in the location automatically",
     "address": "Address",
     "addressPlaceholder": "e.g. Pyeongchon-dong, Dongan-gu, Anyang-si, Gyeonggi-do",
+    "addressRequired": "Enter an address",
+    "geocodeFailed": "Couldn’t find an address for this spot. Enter the address yourself.",
     "building": "Building name",
     "buildingPlaceholder": "e.g. Pyeongchon Station Plaza"
   },
   "area": {
     "title": "Area",
     "pointCount": "{count, plural, one {# point} other {# points}}",
-    "drawing": "Drawing...",
+    "drawing": "Drawing…",
     "draw": "Draw area",
+    "addCenter": "Add point at map center",
+    "samePoint": "There’s already a point here. Move the map, then add the next point.",
     "clear": "Clear all points",
+    "cleared": "All points cleared",
+    "undo": "Undo",
     "needMore": "Place at least 3 points ({remaining} more needed)",
     "done": "Area marked"
   },
   "privacyNotice": "When you submit a request, the information you entered, such as the area’s location, address, building name and type, is sent and posted publicly on the board. For details, see our <link>Privacy Policy</link>.",
-  "submitting": "Submitting...",
+  "submitting": "Submitting…",
   "submit": "Submit area request",
-  "submitFailed": "Something went wrong while submitting the area. Please try again later.",
+  "submitFailed": "Couldn’t submit the area. Try again later.",
   "success": {
     "title": "Request submitted!",
     "description": "The area you suggested will be posted on the board. Once it gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map.",
@@ -44,7 +50,7 @@
   },
   "map": {
     "label": "Map for choosing a location",
-    "drawingHint": "Tap the map to mark the area",
-    "pinHint": "Tap the map to fill in the address automatically"
+    "drawingHint": "Place points on the map to mark the area",
+    "pinHint": "Select a spot on the map to fill in the address automatically"
   }
 }
