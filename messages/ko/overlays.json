@@ -40,17 +40,19 @@
   },
   "feedback": {
     "title": "피드백 보내기",
-    "description": "서비스 개선을 위한 의견을 남겨주세요",
+    "description": "버그 신고, 기능 제안, 불편 사항 등 무엇이든 남겨주세요",
     "successTitle": "피드백이 전송되었습니다!",
     "successMessage": "소중한 의견 감사합니다.",
     "titleLabel": "제목",
-    "titlePlaceholder": "피드백 제목을 입력하세요",
+    "titlePlaceholder": "예: 없어진 흡연구역이 지도에 남아 있어요",
     "contentLabel": "내용",
-    "contentPlaceholder": "서비스 개선을 위한 의견을 자유롭게 작성해주세요.\n버그 신고, 기능 제안, 불편 사항 등 무엇이든 좋습니다.",
+    "contentPlaceholder": "예: ○○역 2번 출구 앞 흡연구역이 철거됐는데 지도에는 아직 표시돼요.",
+    "titleRequired": "제목을 입력해주세요",
+    "contentRequired": "내용을 입력해주세요",
     "submitFailed": "전송에 실패했습니다. 잠시 후 다시 시도해주세요.",
     "privacyNotice": "피드백 제목·내용과 작성 시각을 저장하며 1년 후 파기합니다. 개인정보는 적지 마세요.",
     "privacyLink": "개인정보처리방침",
-    "submitting": "전송 중...",
+    "submitting": "전송 중…",
     "submit": "피드백 보내기"
   }
 }

@@ -144,7 +144,7 @@ export default function AboutPage({
       />
 
       {/* 메인 컨텐츠 */}
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         <p className="px-1 text-sm tabular-nums">{lastUpdated}</p>
 
         <PageSection
@@ -184,7 +184,6 @@ export default function AboutPage({
           id="data-sources"
           title={t("dataSources.title")}
           icon={<FileText />}
-          className="scroll-mt-20"
         >
           <p className="mb-3">{t("dataSources.lead")}</p>
           <h3 className="mb-1 font-semibold text-foreground">
@@ -194,7 +193,10 @@ export default function AboutPage({
             <Bullet>{t.rich("dataSources.public", { strong })}</Bullet>
             <Bullet>{t("dataSources.publicDate")}</Bullet>
             <Bullet>
-              <Link href="/zones/seoul" className="text-primary underline">
+              <Link
+                href="/zones/seoul"
+                className="text-primary underline underline-offset-2"
+              >
                 {t("dataSources.publicLink")}
               </Link>
             </Bullet>
@@ -205,7 +207,10 @@ export default function AboutPage({
           <ul className="mb-3 space-y-1.5">
             <Bullet>{t("dataSources.anyang")}</Bullet>
             <Bullet>
-              <Link href="/zones/anyang" className="text-primary underline">
+              <Link
+                href="/zones/anyang"
+                className="text-primary underline underline-offset-2"
+              >
                 {t("dataSources.anyangLink")}
               </Link>
             </Bullet>
@@ -231,12 +236,18 @@ export default function AboutPage({
             <Bullet>
               {t.rich("data.proposal", {
                 register: (chunks) => (
-                  <Link href="/register" className="text-primary underline">
+                  <Link
+                    href="/register"
+                    className="text-primary underline underline-offset-2"
+                  >
                     {chunks}
                   </Link>
                 ),
                 board: (chunks) => (
-                  <Link href="/board" className="text-primary underline">
+                  <Link
+                    href="/board"
+                    className="text-primary underline underline-offset-2"
+                  >
                     {chunks}
                   </Link>
                 ),
@@ -251,11 +262,14 @@ export default function AboutPage({
           id="contact"
           title={t("contact.title")}
           icon={<MessageSquare />}
-          className="scroll-mt-20"
         >
           <p className="mb-3">{t("contact.body")}</p>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
+            <Button
+              variant="outline"
+              asChild
+              className="h-auto min-h-9 max-w-full whitespace-normal text-left"
+            >
               <Link href="/">{t("contact.feedback")}</Link>
             </Button>
             <Button variant="outline" asChild>
@@ -297,7 +311,7 @@ export default function AboutPage({
             <Button
               variant="outline"
               asChild
-              className="h-auto min-h-9 whitespace-normal text-left"
+              className="h-auto min-h-9 max-w-full whitespace-normal text-left"
             >
               <a href={LAW_URL} target="_blank" rel="noopener noreferrer">
                 {t("law.external")}
@@ -307,7 +321,9 @@ export default function AboutPage({
           </div>
         </PageSection>
 
-        <p className="text-center text-sm tabular-nums">{lastUpdated}</p>
+        <p className="mx-auto text-center text-sm tabular-nums">
+          {lastUpdated}
+        </p>
       </main>
     </div>
   );

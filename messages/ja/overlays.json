@@ -40,17 +40,19 @@
   },
   "feedback": {
     "title": "ご意見を送る",
-    "description": "サービス改善のためのご意見をお聞かせください",
+    "description": "不具合の報告、機能のご提案、ご不便な点など、何でもお寄せください",
     "successTitle": "ご意見を送信しました",
     "successMessage": "貴重なご意見をありがとうございます。",
     "titleLabel": "件名",
-    "titlePlaceholder": "件名を入力してください",
+    "titlePlaceholder": "例：撤去された喫煙所が地図に残っています",
     "contentLabel": "内容",
-    "contentPlaceholder": "サービス改善のためのご意見を自由にお書きください。\n不具合の報告、機能のご提案、ご不便な点など、何でも歓迎です。",
+    "contentPlaceholder": "例：○○駅2番出口前の喫煙所は撤去されましたが、地図にはまだ表示されています。",
+    "titleRequired": "件名を入力してください",
+    "contentRequired": "内容を入力してください",
     "submitFailed": "送信に失敗しました。しばらくしてからもう一度お試しください。",
     "privacyNotice": "ご意見の件名・内容と送信日時を保存し、1年後に破棄します。個人情報は書かないでください。",
     "privacyLink": "プライバシーポリシー",
-    "submitting": "送信中...",
+    "submitting": "送信中…",
     "submit": "ご意見を送る"
   }
 }

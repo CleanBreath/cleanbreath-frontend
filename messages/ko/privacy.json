@@ -144,7 +144,7 @@
         "purpose": "이전 목적",
         "retention": "보유 기간"
       },
-      "policyLink": "개인정보처리방침",
+      "policyLink": "{name} 개인정보처리방침",
       "country": "미국",
       "timing": "서비스 이용 시 네트워크를 통해 전송",
       "retention": "위탁 목적 달성 시까지 (접속 기록은 3절의 보유 기간 내)",
@@ -205,6 +205,7 @@
   "remedies": {
     "title": "11. 권익침해 구제방법",
     "lead": "개인정보 침해에 대한 신고나 상담이 필요하면 아래 기관에 문의할 수 있습니다.",
+    "line": "{name}: {phone}, <link>{site}</link>",
     "rows": [
       {
         "name": "개인정보분쟁조정위원회",
@@ -227,7 +228,7 @@
   "changes": {
     "title": "12. 개인정보처리방침의 변경",
     "effective": "이 개인정보처리방침은 <time>{date}</time>부터 시행합니다. 내용이 바뀌면 시행 7일 전부터 이 페이지에서 알려 드립니다.",
-    "related": "관련 안내:"
+    "related": "관련 안내: <link>{title}</link>"
   },
-  "effectiveDate": "시행일:"
+  "effectiveDate": "시행일: <time>{date}</time>"
 }

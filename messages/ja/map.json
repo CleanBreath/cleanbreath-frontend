@@ -1,6 +1,7 @@
 {
-  "loading": "地図を読み込み中...",
-  "zoomInHint": "地図を拡大すると区域が表示されます",
+  "loading": "地図を読み込み中…",
+  "loadError": "地図を読み込めませんでした。接続を確認して、ページを再読み込みしてください。",
+  "zoomInHint": "地図を拡大するとエリアが表示されます",
   "filterLabel": "地図のエリアフィルター",
   "legendLabel": "地図の凡例",
   "zoneTypes": {
@@ -20,7 +21,7 @@
   },
   "closeSelection": "選択を解除",
   "selectedAddress": {
-    "label": "選択した区域"
+    "label": "選択したエリア"
   },
   "selectedApartment": {
     "label": "選択したマンション",

@@ -41,13 +41,13 @@ export function DisclaimerModal() {
       // biome-ignore lint/a11y/noRedundantRoles: 랜드마크 역할을 명시적으로 유지 (기존 계약)
       role="region"
       aria-label={t("label")}
-      className="animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
+      className="animate-in fade-in-0 slide-in-from-bottom-2 duration-200 ease-out"
     >
       <Card className="gap-0 py-0 shadow-md">
         <CardContent className="space-y-3 p-4">
           <div className="flex items-start gap-3">
             <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-              <AlertTriangle size={16} aria-hidden />
+              <AlertTriangle size={16} strokeWidth={1.5} aria-hidden />
             </div>
             <p className="text-sm leading-relaxed">
               {t.rich("summary", { strong })}
@@ -57,6 +57,8 @@ export function DisclaimerModal() {
           <div
             id={detailsId}
             hidden={!isExpanded}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: 포커스 가능한 요소가 없는 세로 스크롤 영역 키보드 접근 (axe scrollable-region-focusable)
+            tabIndex={0}
             className="max-h-[40dvh] space-y-2 overflow-y-auto overscroll-contain rounded-lg bg-muted p-3 text-sm leading-relaxed text-muted-foreground"
           >
             <p>{t.rich("details1", { strong })}</p>

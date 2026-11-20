@@ -25,7 +25,7 @@ export default function NotFound() {
         aria-hidden
         className="flex size-14 items-center justify-center rounded-2xl bg-primary/10 text-primary"
       >
-        <MapPinOff size={28} />
+        <MapPinOff size={28} strokeWidth={2.5} />
       </div>
       <h1 className="text-2xl font-bold">{t("title")}</h1>
       <p className="text-base text-muted-foreground">{t("description")}</p>

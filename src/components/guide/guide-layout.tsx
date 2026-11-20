@@ -59,7 +59,7 @@ export function GuideLayout({
         backLabel={tc("goHome")}
       />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         <PageSection className="border-primary/20 bg-primary/5">
           <p className="font-medium text-foreground">{answer}</p>
           <p className="mt-3 text-sm tabular-nums">
@@ -141,15 +141,20 @@ export function GuideLayout({
                 className="inline-flex min-h-11 items-center gap-1 text-primary underline underline-offset-2"
               >
                 {ts("law.name")} ({ts("law.source")}) · {ts("law.view")}
-                <ExternalLink size={14} aria-hidden />
+                <ExternalLink
+                  aria-hidden
+                  className="size-[1em]"
+                  strokeWidth={1.5}
+                />
               </a>
             </li>
           </ul>
         </PageSection>
 
-        <p className="rounded-xl bg-muted px-4 py-3 text-center text-sm">
-          {ts("disclaimer")}
-        </p>
+        {/* 면은 위 카드와 같은 폭으로 두고, 영어 행 길이 제한(max-w-lg)은 안쪽 문단에만 걸린다 */}
+        <div className="rounded-xl bg-muted px-4 py-3 text-center text-sm">
+          <p className="mx-auto">{ts("disclaimer")}</p>
+        </div>
       </main>
     </div>
   );

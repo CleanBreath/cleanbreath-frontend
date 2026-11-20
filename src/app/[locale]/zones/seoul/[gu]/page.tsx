@@ -114,7 +114,7 @@ export default async function DistrictZonesPage({
         backLabel={t("district.backToSeoul")}
       />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         <ZonesBreadcrumbs
           items={[
             { name: tc("home"), href: "/" },
@@ -156,7 +156,10 @@ export default async function DistrictZonesPage({
                   </span>
                 }
               >
-                <PublicZoneTable rows={rows.slice(0, MAX_ROWS_PER_TYPE)} />
+                <PublicZoneTable
+                  label={tmap(`publicZoneTypes.${type}`)}
+                  rows={rows.slice(0, MAX_ROWS_PER_TYPE)}
+                />
                 {rows.length > MAX_ROWS_PER_TYPE && (
                   <p className="mt-2 text-sm">
                     {t("district.truncated", {
@@ -187,7 +190,7 @@ export default async function DistrictZonesPage({
               <li key={d.slug}>
                 <Link
                   href={ZONES_PATHS.district(d.slug)}
-                  className="text-primary underline"
+                  className="text-primary underline underline-offset-2"
                 >
                   {districtName(d, locale)}
                 </Link>
@@ -198,8 +201,12 @@ export default async function DistrictZonesPage({
             <Button variant="outline" asChild>
               <Link href={ZONES_PATHS.seoul}>{t("district.backToSeoul")}</Link>
             </Button>
-            <Button variant="outline" asChild>
-              <Link href={ZONES_PATHS.anyang}>{t("anyang.title")}</Link>
+            <Button
+              variant="outline"
+              asChild
+              className="h-auto min-h-9 max-w-full whitespace-normal text-left"
+            >
+              <Link href={ZONES_PATHS.anyang}>{t("anyang.breadcrumb")}</Link>
             </Button>
             <MapHomeLink />
           </div>

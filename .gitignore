@@ -46,5 +46,4 @@ public/sw.js.map
 .omc
 .claude/settings.local.json
 
-graphify-out/*
 .env*

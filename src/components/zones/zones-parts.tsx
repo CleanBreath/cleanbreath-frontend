@@ -47,7 +47,7 @@ export function ZonesUnavailable() {
     <PageSection
       title={t("title")}
       icon={<AlertTriangle />}
-      className="border-amber-300 bg-amber-50"
+      className="border-warning-border bg-warning-subtle"
     >
       <p>{t("body")}</p>
     </PageSection>
@@ -142,20 +142,52 @@ const TABLE_CLASS = [
   "[&_td]:border-b [&_td]:px-2 [&_td]:py-2 [&_td]:align-top",
 ].join(" ");
 
-/** 가로 스크롤되는 표 (모바일에서 페이지 전체가 가로로 밀리지 않게). 행 제목은 tbody의 th(scope="row") */
-export function TableScroll({ children }: { children: React.ReactNode }) {
+/**
+ * 가로 스크롤되는 표 (모바일에서 페이지 전체가 가로로 밀리지 않게). 행 제목은 tbody의 th(scope="row").
+ * 안에 포커스 가능한 요소가 없어도 키보드로 스크롤할 수 있게 스크롤 영역에 tabIndex·이름을 준다 (privacy 표와 같은 패턴)
+ */
+export function TableScroll({
+  label,
+  labelledBy,
+  children,
+}: {
+  /** 스크롤 영역·표 이름 (섹션 제목과 같은 문구) */
+  label: string;
+  /**
+   * 이름을 문자열 대신 화면의 제목 요소 id로 건다. 제목이 원문(한국어) 데이터라 lang="ko"를 지닌 요소를 참조할 때 쓴다
+   * (aria-label·caption에 복사하면 en/ja 화면에서 페이지 언어 음성으로 읽힘)
+   */
+  labelledBy?: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-      <table className={TABLE_CLASS}>{children}</table>
-    </div>
+    <section
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: 가로 스크롤 표 키보드 접근 (axe scrollable-region-focusable)
+      tabIndex={0}
+      aria-label={labelledBy ? undefined : label}
+      aria-labelledby={labelledBy}
+      className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 focus-visible:outline-2 focus-visible:outline-ring"
+    >
+      <table aria-labelledby={labelledBy} className={TABLE_CLASS}>
+        {!labelledBy && <caption className="sr-only">{label}</caption>}
+        {children}
+      </table>
+    </section>
   );
 }
 
 /** 공공데이터 금연구역 표. 이름·주소 등 데이터 값은 원문(한국어) 그대로 */
-export function PublicZoneTable({ rows }: { rows: PublicZoneItem[] }) {
+export function PublicZoneTable({
+  label,
+  rows,
+}: {
+  /** 표 이름 (섹션 제목과 같은 문구) */
+  label: string;
+  rows: PublicZoneItem[];
+}) {
   const t = useTranslations("zones.table");
   return (
-    <TableScroll>
+    <TableScroll label={label}>
       <thead>
         <tr>
           <th scope="col">{t("name")}</th>

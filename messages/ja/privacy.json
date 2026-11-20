@@ -144,7 +144,7 @@
         "purpose": "移転の目的",
         "retention": "保存期間"
       },
-      "policyLink": "プライバシーポリシー",
+      "policyLink": "{name}のプライバシーポリシー",
       "country": "米国",
       "timing": "サービス利用時にネットワーク経由で送信",
       "retention": "委託目的の達成時まで（アクセス記録は「3. 個人情報の取扱いおよび保存期間」に定める期間内）",
@@ -205,6 +205,7 @@
   "remedies": {
     "title": "11. 権利侵害の救済方法",
     "lead": "個人情報の侵害について申告や相談が必要な場合は、以下の機関にお問い合わせいただけます（主に韓国語での対応となります）。",
+    "line": "{name}：{phone}、<link>{site}</link>",
     "rows": [
       {
         "name": "個人情報紛争調停委員会",
@@ -227,7 +228,7 @@
   "changes": {
     "title": "12. プライバシーポリシーの変更",
     "effective": "このプライバシーポリシーは<time>{date}</time>から施行します。内容が変更される場合は、施行の7日前からこのページでお知らせします。",
-    "related": "関連情報："
+    "related": "関連情報：<link>{title}</link>"
   },
-  "effectiveDate": "施行日："
+  "effectiveDate": "施行日：<time>{date}</time>"
 }

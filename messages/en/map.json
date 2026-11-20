@@ -1,7 +1,8 @@
 {
-  "loading": "Loading map...",
-  "zoomInHint": "Zoom in to see zones",
-  "filterLabel": "Map zone filters",
+  "loading": "Loading map…",
+  "loadError": "Couldn’t load the map. Check your connection and reload the page.",
+  "zoomInHint": "Zoom in to see areas",
+  "filterLabel": "Map filters",
   "legendLabel": "Map legend",
   "zoneTypes": {
     "NON_SMOKING_ZONE": "No-smoking zone",

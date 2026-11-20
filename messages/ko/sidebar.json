@@ -5,7 +5,7 @@
   "expandPanel": "패널 펼치기",
   "collapsePanel": "패널 접기",
   "collapseSidebar": "사이드바 접기",
-  "openMenu": "메뉴 열기",
+  "openMenu": "사이드바 펼치기",
   "tabs": {
     "info": "소개",
     "list": "구역",
@@ -26,7 +26,7 @@
     "howToTitle": "사용 방법",
     "howTo": [
       "상단 필터로 금연구역·흡연구역·아파트 표시를 켜고 끄세요",
-      "지도의 마커를 클릭하면 상세 정보를 볼 수 있습니다",
+      "지도의 마커를 선택하면 상세 정보를 볼 수 있습니다",
       "목록에서 구역을 선택하면 해당 위치로 이동합니다"
     ],
     "legendTitle": "범례",
@@ -66,10 +66,11 @@
       }
     }
   },
-  "empty": "데이터가 없습니다",
+  "empty": "표시할 항목이 없습니다",
+  "loadError": "목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.",
   "badge": {
     "smoking": "흡연",
     "nonSmoking": "금연"
   },
-  "buildingCount": "{count}동"
+  "buildingCount": "{count, number, ::group-off}개 동"
 }

@@ -1,6 +1,10 @@
 import { Cigarette, CigaretteOff, MapPinned } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import {
+  getFormatter,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server";
 import { PageHeader } from "@/components/layout/page-header";
 import { PageSection } from "@/components/layout/page-section";
 import { Button } from "@/components/ui/button";
@@ -64,6 +68,7 @@ export default async function AnyangZonesPage({
   const t = await getTranslations("zones");
   const tc = await getTranslations("common");
   const tmap = await getTranslations("map");
+  const format = await getFormatter();
   const data = await getAnyangZones();
 
   const title = t("anyang.title");
@@ -98,7 +103,7 @@ export default async function AnyangZonesPage({
         backLabel={tc("goHome")}
       />
 
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground">
+      <main className="mx-auto w-full max-w-3xl flex-1 space-y-4 p-4 pb-8 text-base leading-relaxed text-muted-foreground [&:lang(en)_p]:max-w-lg [&:lang(en)_li]:max-w-lg">
         <ZonesBreadcrumbs
           items={[
             { name: tc("home"), href: "/" },
@@ -132,7 +137,7 @@ export default async function AnyangZonesPage({
               </span>
             }
           >
-            <TableScroll>
+            <TableScroll label={t("anyang.smokingTitle")}>
               <thead>
                 <tr>
                   <th scope="col">{t("table.name")}</th>
@@ -150,11 +155,11 @@ export default async function AnyangZonesPage({
                       </th>
                       <td lang="ko">{item.category}</td>
                       <td>
-                        {[
+                        {format.list([
                           ...new Set(
                             item.path.map((p) => divisionLabel(p.divisionArea)),
                           ),
-                        ].join(", ")}
+                        ])}
                       </td>
                       <td lang="ko">{item.addressName}</td>
                     </tr>
@@ -176,15 +181,21 @@ export default async function AnyangZonesPage({
             }
           >
             <div className="space-y-5">
-              {nonSmokingGroups.map(([category, items]) => (
+              {nonSmokingGroups.map(([category, items], i) => (
                 <section key={category}>
                   <h3 className="mb-2 flex items-baseline justify-between gap-2 font-semibold text-foreground">
-                    <span lang="ko">{category}</span>
+                    {/* 표 이름으로 참조한다. 분류명에 공백이 있어 id는 순번으로 만든다 */}
+                    <span id={`anyang-category-${i}`} lang="ko">
+                      {category}
+                    </span>
                     <span className="text-sm font-normal text-muted-foreground tabular-nums">
                       {t("unit", { count: items.length })}
                     </span>
                   </h3>
-                  <TableScroll>
+                  <TableScroll
+                    label={category}
+                    labelledBy={`anyang-category-${i}`}
+                  >
                     <thead>
                       <tr>
                         <th scope="col">{t("table.name")}</th>
@@ -218,7 +229,11 @@ export default async function AnyangZonesPage({
 
         <PageSection title={t("otherRegions")}>
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" asChild>
+            <Button
+              variant="outline"
+              asChild
+              className="h-auto min-h-9 max-w-full whitespace-normal text-left"
+            >
               <Link href={ZONES_PATHS.seoul}>{t("anyang.seoulLink")}</Link>
             </Button>
             <MapHomeLink />

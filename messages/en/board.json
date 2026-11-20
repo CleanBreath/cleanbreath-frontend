@@ -20,10 +20,12 @@
     "description": "Smoking areas and no-smoking zones suggested by users",
     "sectionTitle": "Area list",
     "empty": "No areas have been registered yet.",
+    "emptyAction": "Suggest an area",
+    "loadFailed": "Couldn’t load the area list. Try again in a moment.",
     "columns": {
       "id": "No.",
       "title": "Title",
-      "category": "Category"
+      "category": "Area type"
     },
     "pagination": "Pagination"
   },
@@ -31,6 +33,7 @@
     "title": "Area details",
     "description": "Location and votes for a suggested area",
     "notFound": "We couldn’t find this area.",
+    "loadFailed": "Couldn’t load this area. Try again in a moment.",
     "infoTitle": "Area info",
     "fields": {
       "category": "Area type",
@@ -40,7 +43,8 @@
     "pendingNotice": "This area was suggested by a user, so it may not be on the map yet. Once it gets 20 or more “Correct” votes, an administrator reviews it and adds it to the map.",
     "voteTitle": "Is this information correct?",
     "voteTrue": "Correct",
-    "voteFalse": "Incorrect"
+    "voteFalse": "Incorrect",
+    "voteDone": "Your vote was recorded."
   },
   "backToList": "Back to list"
 }

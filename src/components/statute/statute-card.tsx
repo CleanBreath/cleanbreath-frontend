@@ -36,7 +36,7 @@ export function StatuteCard({
     >
       {/* 카테고리 헤더: 아코디언 패턴(h3 > button[aria-expanded]). 제목에는 시설명만 두고,
           버튼의 ::after가 행 전체를 덮어 아이콘·항목 수를 눌러도 펼쳐진다 */}
-      <div className="relative flex min-h-11 items-center gap-3 rounded-xl p-4 transition-colors hover:bg-muted/50">
+      <div className="relative flex min-h-11 items-center gap-3 rounded-xl p-4 transition-colors hover:bg-muted/50 sm:px-6">
         <span
           aria-hidden
           className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary"
@@ -50,7 +50,7 @@ export function StatuteCard({
               aria-expanded={isExpanded}
               aria-controls={panelId}
               onClick={onToggle}
-              className="text-left outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
+              className="text-left outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:outline-2 focus-visible:after:outline-ring"
             >
               {category}
             </button>
@@ -63,8 +63,8 @@ export function StatuteCard({
           size={20}
           aria-hidden
           className={cn(
-            "shrink-0 text-muted-foreground transition-transform duration-200",
-            isExpanded && "rotate-180",
+            "shrink-0 text-muted-foreground transition-transform ease-out",
+            isExpanded ? "rotate-180 duration-200" : "duration-150",
           )}
         />
       </div>
@@ -74,10 +74,10 @@ export function StatuteCard({
         id={panelId}
         inert={!isExpanded}
         className={cn(
-          "grid transition-opacity duration-200",
+          "grid transition-[grid-template-rows,opacity] ease-out",
           isExpanded
-            ? "grid-rows-[1fr] opacity-100"
-            : "grid-rows-[0fr] opacity-0",
+            ? "grid-rows-[1fr] opacity-100 duration-200"
+            : "grid-rows-[0fr] opacity-0 duration-150",
         )}
       >
         <div className="overflow-hidden">
@@ -116,11 +116,11 @@ export function StatuteCard({
                 {content.map((item) => (
                   <div
                     key={item}
-                    className="flex items-start gap-2 rounded-lg bg-zone-non-smoking/10 p-3"
+                    className="flex items-start gap-2 rounded-lg bg-muted/60 p-3"
                   >
                     <span
                       aria-hidden
-                      className="mt-2.5 size-1.5 shrink-0 rounded-full bg-zone-non-smoking-ink"
+                      className="mt-2.5 size-1.5 shrink-0 rounded-full bg-primary"
                     />
                     <p className="text-muted-foreground">{item}</p>
                   </div>
